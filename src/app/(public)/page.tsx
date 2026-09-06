@@ -1,20 +1,29 @@
-import { Container, InstrumentRule, PageHeader, Panel, Section } from "@/components/ui";
+import type { Metadata } from "next";
 
-export default function PublicFoundationPage() {
+import Homepage from "@/components/home/homepage";
+import { getFeatureFlags } from "@/lib/feature-flags/server";
+
+export const metadata: Metadata = {
+  title: "Crypto Intelligence + Crypto Media",
+  description: "AI-assisted market intelligence, first-party research, and crypto-native media with clear sourcing, risk context, and commercial disclosures.",
+};
+
+export default async function HomePage() {
+  const flags = await getFeatureFlags([
+    "radar_enabled",
+    "research_enabled",
+    "featured_partners_enabled",
+    "newsletter_enabled",
+  ]);
+
   return (
-    <Section>
-      <Container>
-        <PageHeader
-          eyebrow="NEXT100XGEMS · Public foundation"
-          title="Crypto intelligence + media."
-          description="The reusable public shell is in place. The full homepage follows in the next gate."
-        />
-        <InstrumentRule className="mt-8 max-w-xl" />
-        <Panel className="mt-10 max-w-2xl" family="radar" padding="lg">
-          <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[var(--n100-radar)]">Shell verified</p>
-          <p className="mt-4 text-sm leading-6 text-[var(--n100-text-secondary)]">Navigation, page structure, responsive behavior, and trust-oriented disclosure patterns are ready for future public page gates.</p>
-        </Panel>
-      </Container>
-    </Section>
+    <Homepage
+      flags={{
+        radarEnabled: flags.radar_enabled ?? false,
+        researchEnabled: flags.research_enabled ?? false,
+        featuredPartnersEnabled: flags.featured_partners_enabled ?? false,
+        newsletterEnabled: flags.newsletter_enabled ?? false,
+      }}
+    />
   );
 }

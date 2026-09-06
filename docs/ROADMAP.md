@@ -32,6 +32,8 @@ Homepage, navigation, footer, Network, Methodology, Disclosures, and Work With U
 
 Gate 12 — Public application shell — COMPLETE. Added the reusable public route-group shell, responsive header and mobile navigation, footer link groups, global metadata, and structural placeholders for the Phase 2 public routes. The full homepage content build remains a later gate.
 
+Gate 13 — Real homepage — IMPLEMENTED. Added the first production-quality homepage composition with truthful Radar and Research framing, commercial/editorial separation, network distribution context, methodology disclosures, and a provider-free alerts proposition. Radar, Research, partner records, newsletter submission, and other backend workflows remain deferred to their own gates.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.
