@@ -34,6 +34,8 @@ Gate 12 — Public application shell — COMPLETE. Added the reusable public rou
 
 Gate 13 — Real homepage — IMPLEMENTED. Added the first production-quality homepage composition with truthful Radar and Research framing, commercial/editorial separation, network distribution context, methodology disclosures, and a provider-free alerts proposition. Radar, Research, partner records, newsletter submission, and other backend workflows remain deferred to their own gates.
 
+Gate 14 — Methodology and Disclosures — IMPLEMENTED. Added static public trust pages explaining the Radar pipeline, evidence states, AI assistance, human review, status and freshness principles, limitations, commercial independence, content classifications, risk, and user responsibility. No backend or security architecture was changed.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.
