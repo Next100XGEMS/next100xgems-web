@@ -36,6 +36,8 @@ Gate 13 — Real homepage — IMPLEMENTED. Added the first production-quality ho
 
 Gate 14 — Methodology and Disclosures — IMPLEMENTED. Added static public trust pages explaining the Radar pipeline, evidence states, AI assistance, human review, status and freshness principles, limitations, commercial independence, content classifications, risk, and user responsibility. No backend or security architecture was changed.
 
+Gate 15 — Network and Work With Us — IMPLEMENTED. Added static media-network and commercial pathway pages with confirmed channel types, service and engagement descriptions, sponsor-quality boundaries, disclosure treatment, factual metadata, and a non-functional inquiry state. No backend, contact, booking, payment, or CRM functionality was added.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.
