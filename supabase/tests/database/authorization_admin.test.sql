@@ -1,0 +1,10 @@
+begin;
+create extension if not exists pgtap with schema extensions; set local search_path = public, extensions; select no_plan();
+insert into auth.users (id) values ('00000000-0000-4000-8000-000000001071');
+insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001071', 'Admin');
+insert into public.user_roles (user_id, role_id) select '00000000-0000-4000-8000-000000001071', id from public.roles where key = 'admin';
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001071","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001071', true); set local role authenticated; select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001071","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001071', true);
+select is((select role_keys from public.get_my_authorization()), array['admin']::text[], 'Admin membership is live');
+select throws_ok($$insert into public.user_roles(user_id, role_id) values ('00000000-0000-4000-8000-000000001071', (select id from public.roles where key = 'owner'))$$, '42501', null, 'Admin cannot assign Owner');
+select throws_ok($$select * from public.audit_logs$$, '42501', null, 'Admin cannot read audit logs');
+select * from finish(); rollback;

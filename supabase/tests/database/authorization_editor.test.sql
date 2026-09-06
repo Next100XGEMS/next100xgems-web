@@ -1,0 +1,12 @@
+begin;
+create extension if not exists pgtap with schema extensions; set local search_path = public, extensions; select no_plan();
+insert into auth.users (id) values ('00000000-0000-4000-8000-000000001041');
+insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001041', 'Editor');
+insert into public.user_roles (user_id, role_id) select '00000000-0000-4000-8000-000000001041', id from public.roles where key = 'editor';
+insert into public.articles (id, title, slug, author_id, status) values ('00000000-0000-4000-8000-000000001042', 'Draft', 'editor-draft', '00000000-0000-4000-8000-000000001041', 'DRAFT');
+insert into public.sponsors (id, name) values ('00000000-0000-4000-8000-000000001043', 'Sponsor');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001041","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001041', true); set local role authenticated; select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001041","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001041', true); discard plans;
+select is((select count(*)::integer from public.articles), 1, 'Editor reads editorial content');
+select is((select count(*)::integer from public.sponsors), 0, 'Editor cannot read commercial administration');
+select throws_ok($$insert into public.sponsors(name) values ('Forged sponsor')$$, '42501', null, 'Editor cannot create sponsors');
+select * from finish(); rollback;

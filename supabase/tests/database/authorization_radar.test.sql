@@ -1,0 +1,14 @@
+begin;
+create extension if not exists pgtap with schema extensions; set local search_path = public, extensions; select no_plan();
+insert into auth.users (id) values ('00000000-0000-4000-8000-000000001051');
+insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001051', 'Radar Reviewer');
+insert into public.user_roles (user_id, role_id) select '00000000-0000-4000-8000-000000001051', id from public.roles where key = 'radar_reviewer';
+insert into public.tokens (id, chain, contract_address) values ('00000000-0000-4000-8000-000000001052', 'eip155:1', '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
+insert into public.radar_analyses (id, token_id, version, status, score, data_as_of) values ('00000000-0000-4000-8000-000000001053', '00000000-0000-4000-8000-000000001052', 1, 'EARLY', 1, now());
+insert into public.radar_reviews (id, analysis_id) values ('00000000-0000-4000-8000-000000001054', '00000000-0000-4000-8000-000000001053');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001051","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001051', true); set local role authenticated; select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001051","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001051', true); discard plans;
+select is((select count(*)::integer from public.radar_analyses), 1, 'Radar Reviewer reads analysis');
+select is((select count(*)::integer from public.radar_reviews), 1, 'Radar Reviewer reads review state');
+select throws_ok($$update public.radar_analyses set score = 100$$, '42501', null, 'Radar Reviewer cannot mutate score');
+select throws_ok($$update public.radar_reviews set state = 'PUBLISHED'$$, '42501', null, 'Radar Reviewer cannot mutate review state');
+select * from finish(); rollback;

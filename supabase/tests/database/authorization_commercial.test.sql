@@ -1,0 +1,15 @@
+begin;
+create extension if not exists pgtap with schema extensions; set local search_path = public, extensions; select no_plan();
+insert into auth.users (id) values ('00000000-0000-4000-8000-000000001061');
+insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001061', 'Ad Manager');
+insert into public.user_roles (user_id, role_id) select '00000000-0000-4000-8000-000000001061', id from public.roles where key = 'ad_manager';
+insert into public.sponsors (id, name) values ('00000000-0000-4000-8000-000000001062', 'Sponsor');
+insert into public.leads (id, project_name, contact_name, contact_method, contact_value, interested_service) values ('00000000-0000-4000-8000-000000001063', 'Project', 'Contact', 'EMAIL', 'ad@example.test', 'Research');
+insert into public.tokens (id, chain, contract_address) values ('00000000-0000-4000-8000-000000001064', 'eip155:1', '0xDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
+insert into public.radar_analyses (id, token_id, version, status, score, data_as_of) values ('00000000-0000-4000-8000-000000001065', '00000000-0000-4000-8000-000000001064', 1, 'EARLY', 1, now());
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001061","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001061', true); set local role authenticated; select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001061","role":"authenticated"}', true); select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001061', true); discard plans;
+select is((select count(*)::integer from public.sponsors), 1, 'Ad Manager reads sponsors');
+select is((select count(*)::integer from public.leads), 1, 'Ad Manager reads leads');
+select is((select count(*)::integer from public.radar_analyses), 0, 'Ad Manager cannot read Radar analysis');
+select throws_ok($$update public.radar_analyses set score = 100$$, '42501', null, 'Ad Manager cannot mutate Radar analysis');
+select * from finish(); rollback;

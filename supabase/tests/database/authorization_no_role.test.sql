@@ -1,0 +1,15 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = public, extensions;
+select no_plan();
+insert into auth.users (id) values ('00000000-0000-4000-8000-000000001011');
+insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001011', 'No role');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000001011","role":"authenticated"}', true);
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000001011', true);
+set local role authenticated;
+discard plans;
+select is((select role_keys from public.get_my_authorization()), array[]::text[], 'No-role user receives no roles');
+select is((select count(*)::integer from public.profiles), 0, 'No-role user cannot read its profile');
+select throws_ok($$insert into public.user_roles(user_id, role_id) values ('00000000-0000-4000-8000-000000001011', (select id from public.roles where key = 'owner'))$$, '42501', null, 'No-role user cannot self-assign Owner');
+select * from finish();
+rollback;

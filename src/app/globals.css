@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  --n100-canvas: #0d100f;
+  --n100-surface-elevated: #141918;
+  --n100-surface-secondary: #1a201e;
+  --n100-surface-subtle: #111514;
+  --n100-surface-editorial: #171a19;
+  --n100-surface-radar: #121a18;
+  --n100-surface-commercial: #1b1915;
+  --n100-surface-admin: #15191b;
+  --n100-text-primary: #f1f3ef;
+  --n100-text-secondary: #b8c1bc;
+  --n100-text-tertiary: #84908a;
+  --n100-border-subtle: #29322f;
+  --n100-border-strong: #41504a;
+  --n100-accent: #a6d4c0;
+  --n100-accent-strong: #c0ead7;
+  --n100-focus: #c7efdc;
+  --n100-positive: #91cda4;
+  --n100-negative: #e19a91;
+  --n100-warning: #d5b976;
+  --n100-info: #94b8d6;
+
+  --n100-editorial: #c0c9c3;
+  --n100-sponsored: #d5b976;
+  --n100-partner: #c4adcf;
+  --n100-advertisement: #d2a88f;
+  --n100-radar: #a6d4c0;
+  --n100-ai-assisted: #a8afd4;
+  --n100-verified-data: #91cda4;
+  --n100-strong-signal: #afd3c0;
+  --n100-ai-inference: #c4b2d0;
+  --n100-unknown: #9ba49e;
+
+  --n100-radius-panel: 0.42rem;
+  --n100-radius-control: 0.35rem;
+  --n100-content-max: 78rem;
+  --n100-content-reading: 44rem;
+  --n100-gutter: clamp(1rem, 3vw, 2.75rem);
+  --n100-section-gap: clamp(3.5rem, 8vw, 7rem);
+  --n100-grid-gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+@theme inline {
+  --color-canvas: var(--n100-canvas);
+  --color-surface-elevated: var(--n100-surface-elevated);
+  --color-surface-secondary: var(--n100-surface-secondary);
+  --color-surface-subtle: var(--n100-surface-subtle);
+  --color-text-primary: var(--n100-text-primary);
+  --color-text-secondary: var(--n100-text-secondary);
+  --color-text-tertiary: var(--n100-text-tertiary);
+  --color-border-subtle: var(--n100-border-subtle);
+  --color-border-strong: var(--n100-border-strong);
+  --color-accent: var(--n100-accent);
+  --color-accent-strong: var(--n100-accent-strong);
+  --color-positive: var(--n100-positive);
+  --color-negative: var(--n100-negative);
+  --color-warning: var(--n100-warning);
+  --color-info: var(--n100-info);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--n100-border-subtle);
+}
+
+body {
+  background: var(--n100-canvas);
+  color: var(--n100-text-primary);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--n100-focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--n100-accent) 28%, transparent);
+  color: var(--n100-text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
