@@ -1,5 +1,15 @@
-import PublicPlaceholderPage from "@/components/public/public-placeholder-page";
+import type { Metadata } from "next";
 
-export default function AdvertisePage() {
-  return <PublicPlaceholderPage eyebrow="Advertise" title="Reach the right crypto audience." description="Disclosed commercial opportunities will live here in a later product gate." />;
+import AdvertisePageContent from "@/components/advertise/advertise-page";
+import { getFeatureFlags } from "@/lib/feature-flags/server";
+
+export const metadata: Metadata = {
+  title: "Advertise — NEXT100XGEMS",
+  description: "Disclosed crypto advertising, sponsored media, and crypto-native audience distribution through NEXT100XGEMS inventory.",
+};
+
+export default async function AdvertisePage() {
+  const flags = await getFeatureFlags(["advertising_enabled"]);
+
+  return <AdvertisePageContent advertisingEnabled={flags.advertising_enabled ?? false} />;
 }

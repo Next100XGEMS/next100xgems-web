@@ -38,6 +38,8 @@ Gate 14 — Methodology and Disclosures — IMPLEMENTED. Added static public tru
 
 Gate 15 — Network and Work With Us — IMPLEMENTED. Added static media-network and commercial pathway pages with confirmed channel types, service and engagement descriptions, sponsor-quality boundaries, disclosure treatment, factual metadata, and a non-functional inquiry state. No backend, contact, booking, payment, or CRM functionality was added.
 
+Gate 16 — Partners and Advertise — IMPLEMENTED. Added static Featured Partners and advertising inventory pages with an honest no-partner state, commercial independence boundaries, conceptual placement/formats, planned reporting language, sponsor-quality standards, feature-flag-aware availability wording, and factual metadata. No partner records, pricing, campaign backend, forms, payments, analytics, or remote integrations were added.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.
