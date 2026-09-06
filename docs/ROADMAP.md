@@ -30,6 +30,8 @@ Gate dependencies and acceptance evidence are specified in the plan. The Phase 1
 
 Homepage, navigation, footer, Network, Methodology, Disclosures, and Work With Us.
 
+Gate 12 — Public application shell — COMPLETE. Added the reusable public route-group shell, responsive header and mobile navigation, footer link groups, global metadata, and structural placeholders for the Phase 2 public routes. The full homepage content build remains a later gate.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.

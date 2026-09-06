@@ -43,3 +43,7 @@ The small typed primitive set in `src/components/ui/primitives.tsx` includes `Co
 The Radar composition now separates token identity, freshness, market metrics, risk, and evidence confidence. Research uses a publication-style headline and TL;DR treatment; Sponsored uses a warmer commercial surface, explicit paid disclosure, campaign/category metadata, and restrained CTA; Admin uses tighter alignment, measured rules, and operational status rows. These are visual compositions only.
 
 These values and visual choices are a provisional Gate 9 foundation. Final brand decisions, chart conventions, and product-specific composition remain subject to review before later page gates.
+
+## Gate 12 public shell
+
+The reusable public shell lives in the `(public)` route group and is composed from `PublicHeader`, `PublicFooter`, and `PublicShell`. It reuses the Gate 9 `Container`, `Section`, `PageHeader`, `InstrumentRule`, and `Panel` primitives. Public navigation covers Radar, Research, Partners, Advertise, Network, and Work With Us; Admin and the development-only design-system laboratory are intentionally excluded. The current public routes are structural placeholders without product data, queries, or business workflows.
