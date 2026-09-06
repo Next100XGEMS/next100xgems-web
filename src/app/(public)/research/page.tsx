@@ -1,5 +1,15 @@
-import PublicPlaceholderPage from "@/components/public/public-placeholder-page";
+import type { Metadata } from "next";
 
-export default function ResearchPage() {
-  return <PublicPlaceholderPage eyebrow="Research" title="Research that gives signals a frame." description="Editorial and AI-assisted analysis will live here in a later product gate." />;
+import ResearchPageContent from "@/components/research/research-page";
+import { getFeatureFlags } from "@/lib/feature-flags/server";
+
+export const metadata: Metadata = {
+  title: "Research — NEXT100XGEMS",
+  description: "First-party crypto research, market intelligence, and editorial analysis from NEXT100XGEMS.",
+};
+
+export default async function ResearchPage() {
+  const flags = await getFeatureFlags(["research_enabled"]);
+
+  return <ResearchPageContent researchEnabled={flags.research_enabled ?? false} />;
 }

@@ -40,6 +40,8 @@ Gate 15 — Network and Work With Us — IMPLEMENTED. Added static media-network
 
 Gate 16 — Partners and Advertise — IMPLEMENTED. Added static Featured Partners and advertising inventory pages with an honest no-partner state, commercial independence boundaries, conceptual placement/formats, planned reporting language, sponsor-quality standards, feature-flag-aware availability wording, and factual metadata. No partner records, pricing, campaign backend, forms, payments, analytics, or remote integrations were added.
 
+Gate 17 — Public Research experience — IMPLEMENTED. Added the Research landing page, confirmed category rail, typed article presentation contract, empty production library, not-found article route, development-only neutral preview, publication-style renderer, classifications/disclosures, sources and related-content architecture, factual metadata, safe Article JSON-LD generation, and Research/Radar boundary language. No published research, CMS, backend, database, or publishing workflow was added.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.
