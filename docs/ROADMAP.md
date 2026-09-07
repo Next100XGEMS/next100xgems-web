@@ -46,7 +46,7 @@ Gate 18A — Research CMS architecture/security planning — COMPLETE. Approved 
 
 Gate 18B — Research database/authorization foundation — COMPLETE. Added two migrations for bounded structured content, independent AI classification, public authors, ordered sources, related Research/canonical tokens, revision-controlled publication, narrow public projections, staff RLS and six atomic audited mutation RPCs. No custom PostgreSQL reader role was created. Clean local replay and all **499/499** database tests pass, including **358/358** Research checks; separate-session concurrency/legacy upgrade checks **13/13**. Lint/typecheck, **50/50** application tests and Webpack build pass. The single `pnpm check` run reaches only the known Turbopack sandbox limitation.
 
-Gate 18C is NOT STARTED. Public database integration, Admin CMS/preview UI, Server Actions, rich-text/media handling and automatic scheduling remain unimplemented. No remote project or deployment was used.
+Gate 18C — Public Research database integration — IMPLEMENTED. Added the server-only publishable-key reader, strict DTO mapping, request-time landing/article reads through the Gate 18B public projections, truthful feature-flag/error/not-found behavior, safe structured-body rendering, and focused route/reader tests. No production Research content was seeded, no remote project was used, and Admin CMS/preview UI, Server Actions, rich-text/media handling, and automatic scheduling remain deferred to Gate 18D.
 
 ## Phase 3 — Research
 

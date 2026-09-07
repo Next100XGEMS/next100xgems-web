@@ -12,13 +12,13 @@ Radar surfaces intelligence. Research investigates context more deeply. The prod
 - `/research/[slug]` — production article route architecture. It returns not-found until a real published article source exists.
 - `/research-preview` — development-only article presentation preview. It is not linked from public navigation and returns not-found in production.
 
-Confirmed presentation categories are Market, Memecoins, Altcoins, and Deep Dives. No counts, article history, authors, dates, or production records are invented while the library is empty.
+Confirmed presentation categories are Market, Memecoins, Altcoins, and Deep Dives. The public library is populated only from the Gate 18B published Research projection; when it is empty, the landing page keeps the honest empty state without inventing counts, article history, authors, dates, or records.
 
 ## Article presentation contract
 
-The typed `ResearchArticle` presentation contract in `src/components/research/research-content.ts` includes only fields needed to render an article: identity and slug, title/dek, category, primary classification, optional AI-assisted and Radar context, author display information, publication dates, optional featured image reference, TL;DR, key facts with optional evidence state, structured analysis sections, optional data/chart embed areas, sources, related research, related tokens, disclosure, and SEO overrides.
+The typed `ResearchArticle` presentation contract in `src/components/research/research-content.ts` includes only fields needed to render an article: identity and slug, title/dek, category, primary classification, optional AI-assisted and Radar context, author display information, publication dates, optional featured image reference, TL;DR, key facts with optional evidence state, bounded structured analysis blocks, optional data/chart embed areas, sources, related research, related tokens, disclosure, and SEO overrides. `ResearchArticleSummary` is the smaller landing-card contract.
 
-This is a public presentation contract, not a database model. The current published collection is intentionally empty and can later be replaced by the Gate 18 repository/data source.
+This is a public presentation contract, not a database model. The server-only Research reader maps and validates the explicit fields returned by Gate 18B's public projection into this contract.
 
 ## Classifications and disclosure
 
@@ -31,18 +31,20 @@ Paid classifications remain visible near the article header. Radar context may b
 
 ## Article anatomy
 
-The renderer supports a publication-style header, TL;DR, Key Facts, readable analysis sections, optional data/chart embed areas, Sources, optional Related Research, optional Related Tokens, disclosure, and a route back to the Research landing page. Key Facts can carry evidence context without automatically asserting `VERIFIED DATA`.
+The renderer supports a publication-style header, TL;DR, Key Facts, readable analysis sections, closed paragraph/quote/callout/data-placeholder blocks, optional data/chart embed areas, Sources, optional Related Research, optional Related Tokens, disclosure, and a route back to the Research landing page. Key Facts can carry evidence context without automatically asserting `VERIFIED DATA`. Database body content is rendered as escaped text; unknown blocks fail the adapter rather than becoming HTML or executable markup.
 
 Sources are supplied by article data, rendered as a semantic list, and only `http`/`https` URLs become external links. Related tokens are contextual references and are not recommendations.
 
 ## SEO and structured data
 
-`generateResearchArticleMetadata()` provides factual title/description, a relative canonical path, Open Graph article basics, and a summary Twitter card from real article values. `researchArticleStructuredData()` and its safe serializer produce `Article` JSON-LD only when a real article is supplied; values are never fabricated. The publisher identity is NEXT100XGEMS and no external canonical domain is assumed.
+`generateResearchArticleMetadata()` provides factual title/description, a relative canonical path, Open Graph article basics, and a summary Twitter card from real published article values. `researchArticleStructuredData()` and its safe serializer produce `Article` JSON-LD only for a real published article; development preview content omits it and values are never fabricated. The publisher identity is NEXT100XGEMS and no external canonical domain is assumed.
 
 ## Development preview policy
 
 The preview uses neutral fixture content and an unmistakable `SAMPLE / DEVELOPMENT PREVIEW` label. It is excluded from public navigation and the page calls `notFound()` when `NODE_ENV` is `production`. Fixture content is not included in the empty production article collection.
 
-## Gate 18 handoff
+## Gate 18C implementation
 
-Gate 18 may replace the empty `publishedResearchArticles` source with a reviewed repository/data source, add CMS/article persistence, author and source records, real related content, publishing controls, and production media handling. Those concerns are intentionally absent from Gate 17.
+Gate 18C connects `/research` and `/research/[slug]` to the server-only `src/lib/research/server.ts` reader. It uses only `read_public_research_page` and `read_public_research_article`, the narrow Gate 18B public projections, with the publishable Supabase key and no cookies or persistent sessions. Reads are request-time and uncached so publication and availability changes become visible on subsequent requests. `research_enabled` gates public retrieval; disabled Research is not queried or exposed. Empty results, confirmed not-found slugs, and genuine read failures remain distinct.
+
+`/research-preview` remains a development-only fixture route and never reads the database or emits Article JSON-LD. Gate 18D owns the authenticated Admin CMS, preview, mutation Server Actions, media handling, and scheduling controls.

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Container, Panel, Section, StatusLabel } from "@/components/ui";
 
-import type { ResearchArticle, ResearchEvidenceKind } from "./research-content";
+import type { ResearchArticle, ResearchBodyBlock, ResearchEvidenceKind } from "./research-content";
 import { serializeResearchStructuredData } from "./research-content";
 
 const evidenceLabels: Record<ResearchEvidenceKind, string> = {
@@ -46,10 +46,37 @@ function ArticleRelatedContent({ article }: { article: ResearchArticle }) {
   return <Section density="compact" className="border-t border-[var(--n100-border-subtle)]"><Container size="reading"><div className="grid gap-8 sm:grid-cols-2">{hasResearch ? <div><h2 className="text-lg font-semibold text-[var(--n100-text-primary)]">Related Research</h2><ul className="mt-4 space-y-3">{article.relatedResearch?.map((item) => <li key={item.slug}><Link href={`/research/${item.slug}`} className="text-sm text-[var(--n100-text-secondary)] underline decoration-[var(--n100-border-strong)] underline-offset-4 hover:text-[var(--n100-accent)]">{item.title}</Link><p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[var(--n100-text-tertiary)]">{item.category}</p></li>)}</ul></div> : null}{hasTokens ? <div><h2 className="text-lg font-semibold text-[var(--n100-text-primary)]">Related Tokens</h2><ul className="mt-4 space-y-3">{article.relatedTokens?.map((token) => <li key={`${token.chain}-${token.symbol}-${token.contract ?? token.name}`} className="text-sm text-[var(--n100-text-secondary)]">{token.href ? <Link href={token.href} className="font-medium text-[var(--n100-text-primary)] underline decoration-[var(--n100-border-strong)] underline-offset-4 hover:text-[var(--n100-accent)]">{token.symbol} · {token.name}</Link> : <span className="font-medium text-[var(--n100-text-primary)]">{token.symbol} · {token.name}</span>}<p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[var(--n100-text-tertiary)]">{token.chain}{token.contract ? ` · ${token.contract}` : ""}</p></li>)}</ul><p className="mt-4 text-xs leading-5 text-[var(--n100-text-tertiary)]">Related token context is not a buy or sell recommendation.</p></div> : null}</div></Container></Section>;
 }
 
+function legacySectionBlocks(section: ResearchArticle["sections"][number]): ResearchBodyBlock[] {
+  return [
+    ...section.paragraphs.map((text) => ({ type: "paragraph" as const, text })),
+    ...(section.pullQuote ? [{ type: "quote" as const, text: section.pullQuote }] : []),
+  ];
+}
+
+function ArticleBodyBlock({ block }: { block: ResearchBodyBlock }) {
+  switch (block.type) {
+    case "paragraph":
+      return <p>{block.text}</p>;
+    case "quote":
+      return <blockquote className="border-l-2 border-[var(--n100-editorial)] pl-5 text-lg font-medium leading-7 text-[var(--n100-text-primary)]">{block.text}{block.attribution ? <cite className="mt-2 block text-sm font-normal not-italic text-[var(--n100-text-tertiary)]">— {block.attribution}</cite> : null}</blockquote>;
+    case "callout":
+      return <Panel tone="quiet" padding="md"><p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-accent)]">{block.label}</p><p className="mt-3 text-sm leading-6 text-[var(--n100-text-secondary)]">{block.text}</p></Panel>;
+    case "data-placeholder":
+      return <Panel tone="quiet" padding="lg"><p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">Data / chart embed area</p><h4 className="mt-3 text-lg font-semibold text-[var(--n100-text-primary)]">{block.label}</h4><p className="mt-2 text-sm leading-6 text-[var(--n100-text-secondary)]">{block.description}</p></Panel>;
+  }
+}
+
+function ArticleAnalysisSection({ section }: { section: ResearchArticle["sections"][number] }) {
+  const blocks = section.blocks ?? legacySectionBlocks(section);
+  const headingId = `section-${section.heading.toLowerCase().replaceAll(" ", "-")}`;
+
+  return <section aria-labelledby={headingId}><h3 id={headingId} className="text-xl font-semibold tracking-[-0.025em] text-[var(--n100-text-primary)]">{section.heading}</h3><div className="mt-4 space-y-4 text-base leading-8 text-[var(--n100-text-secondary)]">{blocks.map((block, index) => <ArticleBodyBlock key={`${block.type}-${index}`} block={block} />)}</div></section>;
+}
+
 export default function ResearchArticlePage({ article, previewLabel }: { article: ResearchArticle; previewLabel?: string }) {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeResearchStructuredData(article) }} />
+      {!previewLabel ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeResearchStructuredData(article) }} /> : null}
       {previewLabel ? <div className="border-b border-amber-400/30 bg-amber-400/10 px-4 py-3 text-center font-mono text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-amber-200">{previewLabel}</div> : null}
       <article aria-labelledby="research-article-title">
         <Section className="border-b border-[var(--n100-border-subtle)]">
@@ -78,7 +105,7 @@ export default function ResearchArticlePage({ article, previewLabel }: { article
 
         <Section>
           <Container size="reading">
-            <section aria-labelledby="article-analysis"><h2 id="article-analysis" className="text-2xl font-semibold tracking-[-0.035em] text-[var(--n100-text-primary)]">Analysis</h2><div className="mt-8 space-y-10">{article.sections.map((section) => <section key={section.heading} aria-labelledby={`section-${section.heading.toLowerCase().replaceAll(" ", "-")}`}><h3 id={`section-${section.heading.toLowerCase().replaceAll(" ", "-")}`} className="text-xl font-semibold tracking-[-0.025em] text-[var(--n100-text-primary)]">{section.heading}</h3><div className="mt-4 space-y-4 text-base leading-8 text-[var(--n100-text-secondary)]">{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>{section.pullQuote ? <p className="mt-6 border-l-2 border-[var(--n100-editorial)] pl-5 text-lg font-medium leading-7 text-[var(--n100-text-primary)]">{section.pullQuote}</p> : null}</section>)}</div></section>
+            <section aria-labelledby="article-analysis"><h2 id="article-analysis" className="text-2xl font-semibold tracking-[-0.035em] text-[var(--n100-text-primary)]">Analysis</h2><div className="mt-8 space-y-10">{article.sections.map((section) => <ArticleAnalysisSection key={section.heading} section={section} />)}</div></section>
             {article.dataEmbeds?.length ? <div className="mt-12 space-y-4">{article.dataEmbeds.map((embed) => <Panel key={embed.label} tone="quiet" padding="lg"><p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">Data / chart embed area</p><h3 className="mt-3 text-lg font-semibold text-[var(--n100-text-primary)]">{embed.label}</h3><p className="mt-2 text-sm leading-6 text-[var(--n100-text-secondary)]">{embed.description}</p></Panel>)}</div> : null}
           </Container>
         </Section>

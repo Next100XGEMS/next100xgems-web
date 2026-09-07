@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Container, EmptyState, InstrumentRule, Panel, Section, SectionHeader, StatusLabel } from "@/components/ui";
 
-import { researchAnatomy, researchCategories, researchClassifications } from "./research-content";
+import { researchAnatomy, researchCategories, researchClassifications, type ResearchArticleSummary } from "./research-content";
 
 function SectionMarker({ number, label }: { number: string; label: string }) {
   return <p className="mb-4 font-mono text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-[var(--n100-accent)]">{number} / {label}</p>;
@@ -12,7 +12,41 @@ function ResearchLink({ children, href, primary = false }: { children: React.Rea
   return <Link href={href} className={primary ? "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] bg-[var(--n100-accent)] px-5 text-sm font-semibold text-[#11201a] transition-colors hover:bg-[var(--n100-accent-strong)]" : "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] border border-[var(--n100-border-strong)] px-5 text-sm font-semibold text-[var(--n100-text-primary)] transition-colors hover:border-[var(--n100-accent)] hover:text-[var(--n100-accent)]"}>{children}</Link>;
 }
 
-export default function ResearchPageContent({ researchEnabled }: { researchEnabled: boolean }) {
+function formatDate(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(date);
+}
+
+function LatestResearch({
+  researchEnabled,
+  articles,
+  loadError,
+}: {
+  researchEnabled: boolean;
+  articles: readonly ResearchArticleSummary[];
+  loadError: boolean;
+}) {
+  const description = loadError
+    ? "The public Research library could not be read right now. Please try again later."
+    : articles.length > 0
+      ? "The latest reviewed Research, presented with its category, classification, author, and publication date."
+      : "No published research records are available for this release. The reading architecture is ready without manufacturing article cards, authors, dates, or token claims.";
+
+  return <>
+    <SectionHeader eyebrow="04 / Latest Research" title={loadError ? "Research is temporarily unavailable." : articles.length > 0 ? "The latest context, sourced and reviewed." : "A deliberate empty state until the library is ready."} description={description} />
+    {articles.length > 0 && researchEnabled && !loadError ? <ul className="mt-8 grid gap-px overflow-hidden border border-[var(--n100-border-subtle)] bg-[var(--n100-border-subtle)] md:grid-cols-2">{articles.map((article) => <li key={article.id} className="bg-[var(--n100-canvas)] p-6"><div className="flex flex-wrap items-center gap-2"><span className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-accent)]">{article.category}</span><StatusLabel kind={article.classification} />{article.aiAssisted ? <StatusLabel kind="ai-assisted" /> : null}</div><h2 className="mt-5 text-xl font-semibold tracking-[-0.03em] text-[var(--n100-text-primary)]"><Link href={`/research/${article.slug}`} className="hover:text-[var(--n100-accent)]">{article.title}</Link></h2>{article.dek ? <p className="mt-3 text-sm leading-6 text-[var(--n100-text-secondary)]">{article.dek}</p> : null}{article.tldr ? <p className="mt-4 text-sm leading-6 text-[var(--n100-text-primary)]">{article.tldr}</p> : null}<div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-[var(--n100-border-subtle)] pt-4 text-xs text-[var(--n100-text-tertiary)]"><span>By {article.author.name}</span><span>Published {formatDate(article.publishedAt)}</span></div></li>)}</ul> : <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-stretch"><EmptyState title={loadError ? "Research library unavailable." : "No research has been published yet."} description={loadError ? "The page remains available, but published records could not be confirmed. No article content was presented." : "When reviewed research is available, articles will appear here with category, classification, sources, and disclosure context."} /><Panel tone="subtle" padding="lg"><p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">Library status</p><p className="mt-5 text-sm leading-6 text-[var(--n100-text-secondary)]">{!researchEnabled ? "Research publishing is not currently active. This page explains the product without implying published work." : loadError ? "Published availability could not be confirmed from the public Research projection." : "Research structure is ready for a sourced library; no article records are rendered."}</p></Panel></div>}
+  </>;
+}
+
+export default function ResearchPageContent({
+  researchEnabled,
+  publishedArticles = [],
+  researchLoadError = false,
+}: {
+  researchEnabled: boolean;
+  publishedArticles?: readonly ResearchArticleSummary[];
+  researchLoadError?: boolean;
+}) {
   return (
     <>
       <Section className="border-b border-[var(--n100-border-subtle)]">
@@ -57,14 +91,7 @@ export default function ResearchPageContent({ researchEnabled }: { researchEnabl
 
       <Section id="latest-research">
         <Container size="wide">
-          <SectionHeader eyebrow="04 / Latest Research" title="A deliberate empty state until the library is ready." description="No published research records are available for this release. The reading architecture is ready without manufacturing article cards, authors, dates, or token claims." />
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-stretch">
-            <EmptyState title="No research has been published yet." description="When reviewed research is available, articles will appear here with category, classification, sources, and disclosure context." />
-            <Panel tone="subtle" padding="lg">
-              <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">Library status</p>
-              <p className="mt-5 text-sm leading-6 text-[var(--n100-text-secondary)]">{researchEnabled ? "Research structure is ready for a sourced library; no article records are rendered." : "Research publishing is not currently active. This page explains the product without implying published work."}</p>
-            </Panel>
-          </div>
+          <LatestResearch researchEnabled={researchEnabled} articles={publishedArticles} loadError={researchLoadError} />
         </Container>
       </Section>
 

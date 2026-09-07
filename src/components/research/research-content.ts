@@ -10,6 +10,25 @@ export const researchCategories = [
 export type ResearchCategory = (typeof researchCategories)[number][0];
 export type ResearchClassification = "editorial" | "sponsored" | "partner";
 export type ResearchEvidenceKind = "verified-data" | "strong-signal" | "ai-inference" | "unknown";
+export type ResearchBodyBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "quote"; text: string; attribution?: string }
+  | { type: "callout"; label: string; text: string }
+  | { type: "data-placeholder"; label: string; description: string };
+
+export type ResearchArticleSummary = {
+  id: string;
+  slug: string;
+  title: string;
+  dek?: string;
+  category: ResearchCategory;
+  classification: ResearchClassification;
+  aiAssisted?: boolean;
+  tldr?: string;
+  author: { name: string; role?: string };
+  publishedAt: string;
+  updatedAt?: string;
+};
 
 export type ResearchArticle = {
   id: string;
@@ -26,7 +45,7 @@ export type ResearchArticle = {
   featuredImage?: { src: string; alt: string };
   tldr: string;
   keyFacts: Array<{ label: string; detail: string; evidence?: ResearchEvidenceKind }>;
-  sections: Array<{ heading: string; paragraphs: string[]; pullQuote?: string }>;
+  sections: Array<{ heading: string; paragraphs: string[]; pullQuote?: string; blocks?: ResearchBodyBlock[] }>;
   dataEmbeds?: Array<{ label: string; description: string }>;
   sources: Array<{ title: string; publisher: string; url: string; publishedAt?: string; accessedAt?: string }>;
   relatedResearch?: Array<{ slug: string; title: string; category: ResearchCategory }>;

@@ -1,6 +1,6 @@
 # Research CMS architecture and security plan — Gate 18A
 
-Status: Gate 18B COMPLETE, database foundation only. Gate 18A designed this plan; the Gate 18B brief overrides two details: no custom PostgreSQL reader role, and structural/bounded SQL content validation rather than a duplicate of the later TypeScript schema. Public projections use the existing trusted `postgres` owner with explicit publication predicates; they bypass owner RLS and are not automatically RLS-filtered. Raw anonymous tables remain closed. No public/Admin UI integration was implemented.
+Status: Gate 18C COMPLETE, public Research integration only. Gate 18A designed this plan; the Gate 18B brief overrides two details: no custom PostgreSQL reader role, and structural/bounded SQL content validation rather than a duplicate of the later TypeScript schema. Public projections use the existing trusted `postgres` owner with explicit publication predicates; they bypass owner RLS and are not automatically RLS-filtered. Raw anonymous tables remain closed. Admin CMS/mutation UI remains deferred to Gate 18D.
 
 Local preflight (2026-09-07): PostgreSQL 17.6, all six historical migrations present, article columns/constraints/indexes/policy/owners matched source (15 existing columns, correcting the earlier count of 16). All business/Auth/profile/assignment/audit tables were empty and feature flags retained seeded defaults. Clean replay therefore targets verified disposable local state. Production upgrades must still reject incompatible legacy data rather than delete or reinterpret it.
 
@@ -113,9 +113,9 @@ No private editorial notes or review workflow are added. If later required, put 
 - `callout`: `label`, `text`; no arbitrary CSS or evidence badge selected through markup.
 - `data_placeholder`: `label`, `description`; no script, iframe, query, provider URL or renderer name. This marks unavailable data explicitly, not a fabricated chart.
 
-Section headings provide the heading architecture. No raw HTML/JSX/MDX/script block type exists. Gate 18B enforces version/container/section/block bounds, the four known block types, and core text types/sizes. Detailed optional-field schemas, section-ID uniqueness, and recursive unknown-key rejection belong to the later TypeScript adapter/renderer; it must treat stored strings as text, never executable markup, and reject unsupported content before rendering. No renderer integration is implemented here.
+Section headings provide the heading architecture. No raw HTML/JSX/MDX/script block type exists. Gate 18B enforces version/container/section/block bounds, the four known block types, and core text types/sizes. The Gate 18C TypeScript adapter adds bounded optional-field validation, section-ID uniqueness, date/URL checks, and closed block mapping; it treats stored strings as text, never executable markup, and rejects unsupported content before rendering.
 
-Later extend Gate 17's section contract to accept these ordered blocks and render a closed switch while preserving its reading measure, hierarchy and primitives. Do not flatten callouts/quotes into paragraphs or maintain two competing content renderers. Legacy test fixtures may be adapted once to the new contract in the application integration gate. No rich-text/editor dependency is needed for the first CMS.
+Gate 18C extends Gate 17's section contract to accept these ordered blocks and renders them through a closed switch while preserving its reading measure, hierarchy and primitives. Callouts and quotes are not flattened into arbitrary HTML or silently discarded. No rich-text/editor dependency is needed for the first CMS.
 
 ## 4. Sources model
 
@@ -207,7 +207,7 @@ Scheduling/publishing requires Research enabled and maintenance explicitly off; 
 
 ## 11. Public read architecture and exact boundary
 
-Use B: a server-mediated presentation API backed by narrow database RPC projections. In Gate 18C, Next.js will use a stateless publishable-key client without staff cookies, never a secret-key article reader. Gate 18B implements only the database boundary. Direct anonymous and authenticated projection calls have the same public-only contract.
+Use B: a server-mediated presentation API backed by narrow database RPC projections. Gate 18C uses a stateless publishable-key client without staff cookies, never a secret-key article reader. Gate 18B supplies the database boundary. Direct anonymous and authenticated projection calls have the same public-only contract.
 
 Why not raw anon SELECT plus an application filter? Public articles mix private account IDs, legacy content and operational fields; child token/byline access also needs careful scoping. Keep raw anon table access closed and make the returned field list explicit. An invoker view would still require underlying grants; it does not inherently solve that boundary.
 
@@ -261,7 +261,7 @@ For bylines expose only `profile_id, display_name, title` to authenticated staff
 
 ### Freshness and caching
 
-Gate 18C must replace the current static empty routes with request-time public reads and `no-store` behavior, including metadata and any homepage Research consumption. Do not use build-time publication snapshots, ISR/shared data caches or a staff-cookie client on public routes. Metadata and body may share only one request-local public result; Admin preview has a separate read function/cache namespace. Archive/flag changes suppress subsequent requests after commit; already-delivered public material cannot be recalled. Later persistent caching needs an explicit withdrawal bound and invalidation design.
+Gate 18C replaces the static empty routes with request-time public reads and no persistent cache, including metadata and landing-page Research consumption. It does not use build-time publication snapshots, ISR/shared data caches or a staff-cookie client on public routes. Metadata and body read through the same public reader contract; Admin preview has a separate future read function/cache namespace. Archive/flag changes suppress subsequent requests after commit; already-delivered public material cannot be recalled. Later persistent caching needs an explicit withdrawal bound and invalidation design.
 
 ## 12. Admin permission matrix
 
@@ -378,7 +378,7 @@ Reuse `generateResearchArticleMetadata()` and the safe JSON-LD serializer. One s
 
 Create a separate draft/editor DTO in the application integration gate; it has nullable publication fields, status and revision. Do not invent `publishedAt` to satisfy the current public type. The shared reading component must support preview mode that omits publication claims when never published and completely omits Article JSON-LD.
 
-The current renderer emits JSON-LD unconditionally and the metadata helper assumes a Person author. Gate 18C must make JSON-LD conditional on a verified public result and explicit published mode, never only a decorative preview label. Byline overlay is limited to real individual contributors for this phase; institutional/guest bylines need a later explicit author-kind extension, not a fictional Person.
+The Gate 18C renderer emits JSON-LD only for a verified public result and explicit published mode, never only from a decorative preview label. The byline overlay remains limited to real individual contributors; institutional/guest bylines need a later explicit author-kind extension, not a fictional Person.
 
 Root metadata currently has no `metadataBase` or canonical site domain. Keep canonical path generation; do not derive an origin from arbitrary request Host headers or invent a production URL. Absolute canonical/OG/mainEntityOfPage assembly requires an explicitly configured trusted site origin before production launch. If absent, omit absolute properties rather than publish localhost/preview-host canonical URLs. This is a deployment configuration decision, not a second SEO system.
 
@@ -535,7 +535,7 @@ Assumptions and decisions needing later confirmation:
 - Local preflight found empty business/Auth tables and seeded defaults. Production still needs preflight: compatible drafts are preserved; ambiguous AI classification, scheduled/published state or historical publication causes an explicit migration failure pending reviewed reconciliation.
 - The trusted production canonical origin is not configured in the inspected root metadata. It must be provided before production SEO integration; no URL is invented.
 - Numeric editorial limits can be tuned before implementation if real articles require it. Unknown rich-media, institutional authors, post-publication byline corrections and concurrent published/draft revisions remain unsupported rather than receiving unsafe fallback behavior.
-- The application adapter remains empty and raw anonymous tables remain closed. Gate 18B validates database boundaries with synthetic rollback-only fixtures and separate disposable concurrency databases; it does not claim UI integration or production deployment.
+- Gate 18C now provides the server-only public adapter and route integration; raw anonymous tables remain closed. Admin forms/preview, mutations, media, scheduling and production deployment remain deferred.
 
 Technical references checked for this plan: PostgreSQL documents that table owners normally bypass RLS, ordinary roles need grants and policies, and permissive policies combine with OR ([row security](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)). Function execution identity/search path and default EXECUTE must be explicitly controlled ([CREATE FUNCTION](https://www.postgresql.org/docs/17/sql-createfunction.html)). NOLOGIN is not a substitute for denying role membership/SET privileges ([CREATE ROLE](https://www.postgresql.org/docs/17/sql-createrole.html)). Row locks define transaction ordering and require consistent acquisition order ([locking](https://www.postgresql.org/docs/17/explicit-locking.html)). A PostgREST request executes in a database transaction; separate requests do not form one atomic mutation ([transactions](https://docs.postgrest.org/en/v12/references/transactions.html)). Installed Next.js guides `data-security.md` and `json-ld.md` support minimal server DTOs and escaping serialized structured data. These references inform the proposed design; the project's local ACL and integration tests remain required implementation evidence.
 
@@ -543,7 +543,7 @@ Technical references checked for this plan: PostgreSQL documents that table owne
 
 No automatic scheduled worker, CMS/rich-text dependency, Markdown/HTML renderer, media upload/storage policy, chart execution, source fetching, guest/organization author system, public profile directory, public preview tokens, comments, revisions/diff/restore history, bulk publishing, full-text search, analytics, paywalls, advertiser editing, Radar backend, trading/wallet features, or remote deployment.
 
-Gate 18A ended with planning. Gate 18B adds only database migrations, tests and factual documentation. Application/package files are unchanged; Gate 18C is not started.
+Gate 18A ended with planning. Gate 18B added the database foundation; Gate 18C adds only the public server reader, DTO mapping, route integration, safe structured rendering, focused application tests and factual documentation. Admin CMS/mutation work remains deferred.
 
 ## 28. Gate 18B implemented contract and validation
 
@@ -585,4 +585,14 @@ Test harness corrections were limited to a pgTAP query-format issue and supplyin
 
 Files: the two migrations; 15 `research_*.test.sql` files; three `supabase/tests/fixtures/*.inc` includes; `supabase/tests/scripts/research-concurrency.mjs`; updated `foundation.test.sql` and the existing Analyst/anon/Viewer authorization fixture files; and this plan, `DATABASE.md`, `AUTHORIZATION_PLAN.md`, `AUDIT_LOGGING.md` and `ROADMAP.md`.
 
-No unresolved Gate 18B blocker remains. Detailed application validation, real public repository queries, Admin forms/preview/Server Actions, uploads, automatic publishing and the production canonical origin remain later-gate/deployment concerns. Gate 18C is NOT STARTED.
+No unresolved Gate 18B blocker remains. Gate 18C's public reader, real projection integration, safe renderer mapping and route validation are complete. Admin forms/preview/Server Actions, uploads, automatic publishing and the production canonical origin remain later-gate/deployment concerns.
+
+## 29. Gate 18C public integration
+
+`src/lib/research/server.ts` is the sole public Research read boundary in the application. It imports `server-only`, creates a stateless Supabase client with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and calls only `read_public_research_page` and `read_public_research_article`. It does not use cookies, persist sessions, access `SUPABASE_SECRET_KEY`, query raw tables, or add a generic repository framework.
+
+The adapter maps uppercase database category/classification/evidence keys, public author fields, dates, sources, related Research and canonical token identity into `ResearchArticleSummary`/`ResearchArticle`. It rejects malformed records, duplicate section IDs, unknown body blocks, invalid dates, unsafe source URLs and invalid required fields with a generic `ResearchReadError`. The renderer accepts only paragraph, quote, callout and data-placeholder blocks as text nodes; it never renders database body content as HTML. Source links remain limited to HTTP(S), and related tokens carry context without recommendation links.
+
+The `/research` route checks the existing server-side `research_enabled` flag before reading the public list projection. Enabled published summaries render in the approved Latest Research area; empty and read-error states remain explicit. The `/research/[slug]` route checks the same flag, reads by slug through the detail projection, calls `notFound()` only for a confirmed empty result, and allows genuine reader failures to surface as failures rather than pretending they are absent. Both routes are request-time/dynamic with no long-lived cache. Metadata uses only the validated public article, and the Article JSON-LD script is omitted for the development-only `/research-preview` fixture.
+
+Gate 18C validation: local-only projection integration passed with one temporary published record and draft/scheduled/archived controls; the temporary data was removed and flags restored. Focused reader/route tests and the full application suite pass **60/60**, lint passes, typecheck passes, and `pnpm exec next build --webpack` passes. The single `pnpm check` run passes lint/typecheck/tests and reaches only the known Turbopack macOS process-binding `Operation not permitted` limitation. No dependency was added, no production Research content was seeded, no Gate 18B migration/RLS/grant was changed, and no remote Supabase project was used.
