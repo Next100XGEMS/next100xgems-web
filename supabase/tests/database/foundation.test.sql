@@ -8,15 +8,16 @@ select tables_are('public', array[
   'profiles', 'roles', 'user_roles', 'feature_flags', 'site_settings', 'audit_logs',
   'articles', 'partners', 'sponsors', 'ad_placements', 'ad_campaigns',
   'ad_creatives', 'ad_campaign_placements', 'leads', 'tokens',
-  'radar_analyses', 'radar_reviews'
-], 'Only the 17 intended application tables exist; no trading or analytics event tables');
+  'radar_analyses', 'radar_reviews', 'research_authors', 'article_sources',
+  'article_related_research', 'article_tokens'
+], 'Only the 21 intended foundation/Research tables exist; no trading or analytics event tables');
 
 select ok(c.relrowsecurity, c.relname || ': RLS enabled')
 from pg_class c join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public' and c.relkind = 'r' order by c.relname;
 
-select is((select count(*)::integer from pg_policies where schemaname = 'public'), 16,
-  'Exactly the approved Gate 6B staff-read policies exist');
+select is((select count(*)::integer from pg_policies where schemaname = 'public'), 20,
+  'Exactly the 16 Gate 6B and four Research staff-read policies exist');
 
 select ok(not exists (
   select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace

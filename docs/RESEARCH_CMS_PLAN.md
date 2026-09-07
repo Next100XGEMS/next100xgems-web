@@ -1,6 +1,8 @@
 # Research CMS architecture and security plan — Gate 18A
 
-Status: planning only. This document proposes Gate 18 implementation; it does not enable publication, database access, mutations, or a CMS. Inspected on 2026-09-07 on `feat/research-public`, following Gate 17 commit `bd5a721`. Only this document is created by Gate 18A.
+Status: Gate 18B COMPLETE, database foundation only. Gate 18A designed this plan; the Gate 18B brief overrides two details: no custom PostgreSQL reader role, and structural/bounded SQL content validation rather than a duplicate of the later TypeScript schema. Public projections use the existing trusted `postgres` owner with explicit publication predicates; they bypass owner RLS and are not automatically RLS-filtered. Raw anonymous tables remain closed. No public/Admin UI integration was implemented.
+
+Local preflight (2026-09-07): PostgreSQL 17.6, all six historical migrations present, article columns/constraints/indexes/policy/owners matched source (15 existing columns, correcting the earlier count of 16). All business/Auth/profile/assignment/audit tables were empty and feature flags retained seeded defaults. Clean replay therefore targets verified disposable local state. Production upgrades must still reject incompatible legacy data rather than delete or reinterpret it.
 
 ## 1. Evidence and existing schema assessment
 
@@ -15,7 +17,7 @@ Relevant inspected implementation:
 - `src/lib/auth/authorization.ts`, `src/lib/supabase/server.ts`, `src/lib/feature-flags/server.ts`, and the Admin Research placeholder/access/navigation components.
 - `src/components/research/research-content.ts`, `research-article.tsx`, Research public routes, the development preview, root metadata and existing Research tests.
 
-This is a migration/source assessment, not a live database catalogue attestation. No database connection, CLI reset, credential read, remote project access or runtime mutation was performed. Gate 18B must compare the local catalogue and actual existing content to this baseline before applying changes.
+This section records the original Gate 18A source assessment. Gate 18B subsequently compared the live LOCAL catalogue and row counts to it before migrations, as recorded above. No remote project or production credentials were used.
 
 ### Current `public.articles` columns
 
@@ -50,7 +52,7 @@ RLS is enabled. The one current article policy is `articles_staff_select`, SELEC
 
 Current internal published eligibility is PUBLISHED with `published_at <= statement_timestamp()` and `scheduled_at IS NULL OR scheduled_at <= statement_timestamp()`. It does not enforce feature flags or a reviewed-content version.
 
-`authenticated` has column SELECT on exactly the 16 columns listed above. There are no API-role article DML privileges or mutation policies. `PUBLIC`, `anon` and `service_role` have no article table grants. Audit function EXECUTE is a separate grant, not article access. Current access classification: private staff content with a restricted internal published reader; not an active anonymous publication contract.
+At Gate 18A, `authenticated` had SELECT on exactly the 15 columns listed above. Gate 18B preserves all direct-DML denials, explicitly adds SELECT for eight new article fields, and adds only the controlled operations/projections below. `PUBLIC`, `anon` and `service_role` still have no article table grants.
 
 ### Gaps against Gate 17
 
@@ -71,8 +73,8 @@ Keep `public.articles` as the aggregate root. Add four small relational tables; 
 | `ai_assisted` | boolean NOT NULL, default false | Independent of primary classification |
 | `classification` | retain text; replace CHECK to allow only EDITORIAL / SPONSORED / PARTNER after reviewed legacy reconciliation | Prevent conflating production method with compensation |
 | `public_author_id` | nullable UUID FK to `research_authors(profile_id)`, RESTRICT; when present must equal non-null `author_id` | Public byline without replacing existing ownership semantics |
-| `body_blocks` | JSONB NOT NULL, versioned empty document default; exact bounded schema below | Constrained reading content |
-| `key_facts` | JSONB NOT NULL, default `[]`; exact bounded schema below | Short ordered observations |
+| `body_blocks` | JSONB NOT NULL, versioned empty document default; SQL structural bounds plus later renderer validation | Constrained reading content |
+| `key_facts` | JSONB NOT NULL, default `[]`; bounded array/object/string/evidence structure | Short ordered observations |
 | `revision` | bigint NOT NULL, default 1, CHECK > 0 | Optimistic concurrency; server/database managed |
 | `published_revision` | nullable bigint | Set only by publication after full validation; PUBLISHED requires equality to `revision` |
 
@@ -111,7 +113,7 @@ No private editorial notes or review workflow are added. If later required, put 
 - `callout`: `label`, `text`; no arbitrary CSS or evidence badge selected through markup.
 - `data_placeholder`: `label`, `description`; no script, iframe, query, provider URL or renderer name. This marks unavailable data explicitly, not a fabricated chart.
 
-Section headings provide the heading architecture. Do not allow a content editor to inject H1, raw tags, JSX, MDX, scripts, CSS, arbitrary component names, event handlers or HTML blocks. Body strings are always React text. Unknown keys/types fail validation rather than being forwarded to components.
+Section headings provide the heading architecture. No raw HTML/JSX/MDX/script block type exists. Gate 18B enforces version/container/section/block bounds, the four known block types, and core text types/sizes. Detailed optional-field schemas, section-ID uniqueness, and recursive unknown-key rejection belong to the later TypeScript adapter/renderer; it must treat stored strings as text, never executable markup, and reject unsupported content before rendering. No renderer integration is implemented here.
 
 Later extend Gate 17's section contract to accept these ordered blocks and render a closed switch while preserving its reading measure, hierarchy and primitives. Do not flatten callouts/quotes into paragraphs or maintain two competing content renderers. Legacy test fixtures may be adapted once to the new contract in the application integration gate. No rich-text/editor dependency is needed for the first CMS.
 
@@ -205,30 +207,30 @@ Scheduling/publishing requires Research enabled and maintenance explicitly off; 
 
 ## 11. Public read architecture and exact boundary
 
-Recommend B: a server-mediated presentation API backed by narrow database RPC projections. Avoid a Supabase secret-key article reader. Next.js uses a stateless publishable-key client without staff cookies for public Research and receives public DTOs only. The database projection is also safe when called directly or from an authenticated session.
+Use B: a server-mediated presentation API backed by narrow database RPC projections. In Gate 18C, Next.js will use a stateless publishable-key client without staff cookies, never a secret-key article reader. Gate 18B implements only the database boundary. Direct anonymous and authenticated projection calls have the same public-only contract.
 
 Why not raw anon SELECT plus an application filter? Public articles mix private account IDs, legacy content and operational fields; child token/byline access also needs careful scoping. Keep raw anon table access closed and make the returned field list explicit. An invoker view would still require underlying grants; it does not inherently solve that boundary.
 
-### Database enforcement without an owner-bypass read
+### Database enforcement through narrow trusted projections
 
-Create one narrow database role, `research_public_reader`: NOLOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOREPLICATION, NOBYPASSRLS, no membership in application/service roles. It owns only the two read projection functions, never tables. No app/API/authenticator role may inherit or SET ROLE to it. This role is justified specifically to keep RLS active inside the public projections while withholding raw tables from anon; it is not a new application identity system. Verify role creation/ownership support locally before acceptance.
+The Gate 18B brief explicitly supersedes Gate 18A's custom-reader-role proposal. No PostgreSQL role or membership is created. Public projections use the existing trusted `postgres` migration owner. Owner reads bypass table RLS: reviewed static SQL predicates and explicit output columns are the public boundary, not a claim that staff RLS filters those reads.
 
-Proposed public functions: `read_public_research_page(category, cursor, limit)` and `read_public_research_article(slug)`. They are read-only/STABLE, SECURITY DEFINER under that restricted reader, with empty search path, `row_security=on`, explicit columns and static SQL. Revoke inherited PUBLIC/default EXECUTE then grant exact signatures to anon/authenticated. Do not grant raw tables or read RPCs to the API `service_role` as a convenience. Direct authenticated calls deliberately get the same public-only data, regardless of staff permission.
+Implemented public functions: `read_public_research_page(p_category text, p_cursor jsonb, p_limit integer)` and `read_public_research_article(p_slug text)`. They are read-only/STABLE, SECURITY DEFINER with `search_path = ''`, explicit columns and static SQL. PUBLIC/default EXECUTE is revoked; only anon/authenticated receive EXECUTE. The API `service_role` receives neither Research table nor new RPC grants.
 
-Give the reader column SELECT only where required for publication predicates and returned fields. RLS article eligibility is:
+Every public projection uses `private.research_is_public(article)`; eligible rows require:
 
 1. Status exactly PUBLISHED.
 2. Non-null `published_at <= statement_timestamp()` and absent/due `scheduled_at`.
 3. Non-null `published_revision = revision`, established by the controlled publish operation.
 4. `research_enabled` explicitly true and `maintenance_mode` explicitly false, with valid configuration and expected rows.
 
-A tiny private STABLE definer boolean helper may inspect only those two protected flags, matching Gate 7 safe defaults/configuration validity. Give EXECUTE only to the projection role and trusted CMS implementation as needed; no public access to flag rows/configuration or generic flag writer. Missing/malformed values deny serving. Predicate checks also remain inside the projection SQL as defense against later policy mistakes.
+`private.research_available()` reads only those two flags, matching Gate 7's null/object configuration validity and conservative defaults. This STABLE invoker helper is callable only internally by the trusted owner; API EXECUTE is revoked. Missing/invalid availability denies serving. `research_is_public` also requires matching author references, category and nonblank disclosure.
 
-Publication-time validation enforces complete byline, valid category/body/sources and required disclosure. The article row predicate must not depend on child RLS policies: children depend on eligible parent articles, not the reverse, preventing policy recursion. The public adapter validates required fields again and refuses malformed output rather than showing partial misleading content.
+Publication validation requires a matching byline, category, TL;DR, a meaningful paragraph, an active source and disclosure. Detailed renderer validation remains a later application requirement under the Gate 18B brief. New staff child RLS depends on existing article RLS, never the reverse. The future public adapter must validate the complete presentation contract and fail closed on malformed output.
 
 ### Public grants and projections
 
-| Resource | Anonymous raw access | Projection reader RLS / output |
+| Resource | Anonymous raw access | Explicit projection filter / output |
 |---|---|---|
 | Articles | None | Eligible published only; return id/slug/title/dek/category/classification/AI, TL;DR/Key Facts/blocks/disclosure/SEO and public timestamps |
 | Sources | None | Active source rows with eligible parent; no retired rows or operational timestamps |
@@ -236,9 +238,9 @@ Publication-time validation enforces complete byline, valid category/body/source
 | Article-token links | None | Eligible parent required; used to constrain canonical identity output |
 | Canonical tokens | None | Only identities referenced by an eligible parent; no entire registry enumeration |
 | Public bylines | None | Only bylines attached to eligible parent; return display name/title, never profile UUID |
-| Profiles/Auth/roles/audit | None | No reader grant, no joins through these objects |
+| Profiles/Auth/roles/audit | None | Not queried or serialized by public projection SQL |
 
-`articles` eligibility has no byline/source/token joins; source/link/byline policies may consult eligible articles, and token policy may consult eligible article-token links. Ensure this dependency graph remains acyclic. Public related target filtering uses the same eligible article policy, not the broad staff policy.
+Public source/token output is aggregated only under the eligible parent, and every related article independently passes `research_is_public`. Only the explicit public byline overlay is joined. There is no new token-table policy or public-reader RLS role. Staff child policies remain acyclic and cannot broaden the public SQL predicate.
 
 A list response contains only summary fields, not all article bodies. A detail response aggregates children in one database statement/snapshot; no parent-public/child-draft race across separate HTTP reads. Sorting is deterministic by publication time then ID, category is allowlisted, maximum page size 50 and cursor is validated. Errors return no data, not a privileged fallback. Unknown/unavailable articles return not-found with no hidden-state distinction.
 
@@ -255,7 +257,7 @@ Grant explicit SELECT columns only on the new staff-readable tables; never `SELE
 | `article_tokens` | Parent must be staff-readable; identity details come from the scoped token picker, not broader token-table grants |
 | `research_authors` | Owner/Admin/Editor may read configured public bylines; Analyst may read self or bylines on internally eligible published articles; Viewer only the latter; other/no effective roles denied |
 
-For bylines expose only `profile_id, display_name, title` to authenticated staff. The UUID is an internal form reference and never enters the public DTO. The Editor picker reads this public-display overlay under RLS, not the private profile directory. For other child tables grant only the explicitly listed content/reference/order/retirement fields needed by forms; creation/update timestamps are not required. Article SELECT grants expand explicitly for the added CMS fields, preserving existing Gate 6 row scope. Public-reader policies target only `research_public_reader`, so broad staff policies cannot OR into public serving.
+For bylines expose only `profile_id, display_name, title` to authenticated staff. The UUID is an internal form reference, never a public DTO field. The future Editor picker reads this overlay under RLS, not private profiles. Child grants omit creation/update timestamps. Eight new article column grants preserve Gate 6 row scope. Public functions use explicit predicates independently of staff policies.
 
 ### Freshness and caching
 
@@ -279,7 +281,7 @@ All entries below require live ACTIVE membership and the existing mixed-role rul
 | Preview unpublished | All allowed states | Same | Same | Own DRAFT only | No | No | No |
 | Hard-delete article/source | No | No | No | No | No | No | No |
 
-Keep `research.read.all`, `research.read.own_draft`, `research.read.published`. Add explicit permissions `research.create`, `research.edit`, `research.schedule`, `research.publish`, `research.archive`, `research.restore`, `research.classification.change`, `research.author.assign`, `research.author.manage`. The first two carry the Analyst ownership/classification restriction in both application and SQL. Permission membership alone never authorizes a submitted ID.
+Keep `research.read.all`, `research.read.own_draft`, `research.read.published`. Gate 18B enforces create/edit/schedule/publish/archive/restore/classification-change/author-assignment/author-management capabilities in SQL, including Analyst scope. The TypeScript catalogue remains unchanged in this database-only gate; later integration must add matching `research.*` permissions and independent application guards. Permission membership alone never authorizes a submitted ID.
 
 Editor editing correctly classified paid content fits editorial management; Ad Manager's commercial access does not confer it. Owner/Admin may span domains but still cannot relabel paid material Editorial or bypass validation/audit. A permitted role union expands only the named operations; an incompatible union yields no effective roles, including with Owner present.
 
@@ -343,7 +345,7 @@ Do not log complete article bodies, TL;DR, full Key Facts, tokens/keys, request 
 
 ## 16. Validation rules
 
-Proposed initial bounds are deliberate application/DB limits, not claims about editorial policy. Enforce matching TypeScript schemas and immutable PostgreSQL validators/constraints. Gate 18B tests SQL directly; TypeScript-only validation is insufficient for directly callable RPCs.
+The bounds below combine implemented database safeguards with the later editor/renderer contract. Gate 18B enforces scalar/state/identity/relationship checks and bounded structural JSON validation; it deliberately does not duplicate an entire TypeScript schema in SQL. Publication completeness is structural, not a certification of editorial quality.
 
 | Field | Save validation | Additional schedule/publication validation |
 |---|---|---|
@@ -364,7 +366,7 @@ Proposed initial bounds are deliberate application/DB limits, not claims about e
 | Related tokens | 0–12 distinct existing canonical UUIDs | No new token storage or assumed live Radar route |
 | Concurrency | Article UUID and positive exact expected revision for edits/transitions | Stale version fails, no implicit merge |
 
-Reject unknown object keys recursively, oversized arrays, invalid Unicode/control payloads, unsafe URLs and client writes to generated fields. No freeform style/HTML attributes. PostgreSQL JSON type tests must distinguish missing, JSON null and boolean/numeric/string values. Validate JSON object keys before casting to avoid permissive coercion.
+Gate 18B rejects unknown root mutation/source keys, oversized arrays, unsafe URLs, invalid scalar types and submitted actor/generated/state fields. It distinguishes JSON null/boolean/string values before casting. Detailed recursive block-key, optional label/attribution, unique section-ID and display-text validation remains for TypeScript integration; stored keys never authorize HTML or components. Facts are additionally capped at 16 KiB and aggregate input at 384 KiB.
 
 Database URL validation should deliberately support a small well-defined absolute HTTP(S) subset with authority, optional port and bounded path/query/fragment, explicitly excluding credentials, control escapes and malformed authority. Require parity cases with the application parser; a bare `^https?://` check is insufficient. Internationalized domains may be parser-normalized to ASCII; unsupported forms fail with an actionable field error. URL validity is not proof of source authenticity. No remote source fetching belongs to this implementation.
 
@@ -446,7 +448,7 @@ Use existing local Supabase/pgTAP, isolated persona test transactions and contro
 | Atomic audit failure | Force audit insert failure in rollback-only test setup; assert parent, children, state, revision and history remain unchanged; no success receipt |
 | Audit append integrity | Successful mutation writes exact actor/action/resource; fixed payload excludes body/secrets; no authenticated append/alter/delete/TRUNCATE or audit-only forgery path |
 | Concurrent access | Two editors same revision: one succeeds; save-vs-publish, child-vs-archive and classification-vs-publish serialize; revocation and flag changes tested in separate backends |
-| Projection security | Function owner is restricted non-table owner; no API SET ROLE/membership; exact ACLs; no broad SELECT, wildcard fields, default PUBLIC EXECUTE, search-path shadowing or RLS recursion |
+| Projection security | Existing trusted owner is explicit; no custom role; exact EXECUTE ACLs and static public-only predicates/output; no raw anon grants, default PUBLIC EXECUTE or search-path-controlled SQL |
 | Direct interfaces | REST/RPC and applicable GraphQL/embedded reads cannot exceed the same visibility; no accidental Realtime publication |
 
 Preserve existing foundation/authorization/audit coverage, adapting expected new tables/permissions only where this plan intentionally changes them. Existing anon-denial tests must distinguish denied raw tables from the newly permitted public projection. Test SQL function ACLs including inherited PUBLIC privileges, not only policy counts.
@@ -466,7 +468,7 @@ Preserve existing foundation/authorization/audit coverage, adapting expected new
 | Cache isolation | Public response never uses staff reads; revoked access/archival/flags take effect on next request; no cross-user preview caching; metadata cannot leak cached draft |
 | Rendering | 375/768/1440 actual browser viewports; long sources/contracts/title wrapping; keyboard block/source reordering; one H1; meaningful labels and focus |
 
-Later implementation validation includes lint, strict typecheck, focused/full application tests, deterministic Webpack production build and diff checks. Run `pnpm check` once when an implementation gate requests it; keep the documented Turbopack sandbox failure separate. Gate 18A has no runtime changes and does not run this implementation suite.
+Gate 18B runs lint, typecheck, full existing application tests, Webpack build and diff checks despite having no application integration. `pnpm check` is run once, with its known Turbopack sandbox failure reported separately. The later 18C/18D application matrix above is not claimed as implemented by database tests.
 
 ## 24. Migration sequence and compatibility
 
@@ -484,7 +486,7 @@ Rows classified AI_ASSISTED require `ai_assisted=true` AND an explicitly reviewe
 
 ### Migration B — Research publication, authorization and atomic operations
 
-Install restricted projection role/functions, private eligibility/validation helpers, narrow staff/public-reader RLS, exact column/EXECUTE grants, lifecycle/field guards, and transactionally audited mutation functions. Keep raw API writes revoked. New authenticated column grants must be explicit; retain Gate 6 article ownership/read rules and add child policies mirroring the parent. Gate 8 writer ACL/immutability remains unchanged. No role catalogue, Auth, Radar or advertising architecture is redesigned.
+Install trusted-owner projections, private helpers, four child staff SELECT policies, exact column/EXECUTE grants and audited functions enforcing lifecycle/protected fields. No custom reader role/public raw-table policy exists. Raw API writes stay revoked. Gate 6 article policies and Gate 8 writer ACL/immutability remain unchanged. No role catalogue, Auth, Radar or advertising architecture is redesigned.
 
 Migration B must enforce the same protections for a direct RPC as an application caller: actor validation, content checks, state/revision rules, protected fields, publication gating, relationship validation and audit. New child tables cannot ship temporarily accessible before their policies. Migration commit is the exposure boundary.
 
@@ -492,14 +494,14 @@ Migration B must enforce the same protections for a direct RPC as an application
 
 Before reset, verify a disposable LOCAL target and preserve any existing local data unless reset is explicitly authorized. No `--linked`, remote URLs or production credentials. Replay historical + A + B on a disposable local database, run foundation/security/Research SQL suites and direct API tests. Also test upgrade from a populated synthetic Gate 17 schema, including legacy AI rows and migration failure rollback.
 
-Roles are cluster-scoped: local replay must inspect an existing same-name projection role's attributes/ownership and safely converge only the intended role, never drop an unrelated role. Verify no API membership and all expected ACLs after replay.
+No PostgreSQL role creation/ownership transfer is required. Verify existing `postgres` function ownership, revoked PUBLIC EXECUTE and exact API ACLs after replay.
 
 After applied/shared migrations, fix forward. Emergency disablement removes serving/RPC execution or uses the existing availability controls through authorized infrastructure; never drop article/source/audit data as a rollback shortcut. A snapshot/restore procedure is required before any later real data conversion.
 
 ## 25. Gate 18B implementation sequence
 
 1. Reconfirm assigned scope, clean/known worktree, migration history, PostgreSQL 17 catalogue/owners/ACLs, local data presence and whether reset is authorized. No remote target.
-2. Lock legacy-data mapping or establish empty database evidence. Confirm restricted projection-role support locally before relying on it.
+2. Lock legacy-data mapping or establish empty database evidence. Verify existing trusted ownership; do not create a custom role.
 3. Implement Migration A plus structural/invalid-input tests; maintain closed exposure.
 4. Implement the exact permission/transition/content validation, restricted public projection and explicit object ACLs in Migration B.
 5. Implement named aggregate mutations and nested existing audit append within the same transaction; include revision/actor/flag/parent locking, source retention and protected-field guards.
@@ -517,7 +519,7 @@ Later 18C integrates typed DTOs/public renderer/metadata and preview behavior; l
 | Ad Manager escalation | Existing role scope/mixed-role checks retained; no Research writes or private reads from commercial permission |
 | Unauthorized publishing | Named publish permission and fresh SQL actor/resource/transition checks; raw DML unavailable |
 | Audit bypass or partial commit | Nested Gate 8 append within same DB transaction; fixed SQL payload, rollback on failure; no HTTP two-step |
-| Definer privilege misuse | Restricted RLS reader role for public reads; powerful mutation owner explicitly trusted only behind static narrow RPCs and exact ACLs |
+| Definer privilege misuse | Existing powerful owner explicitly trusted only behind reviewed static projections/mutations, exact output/predicates and narrow RPC ACLs; no general reader/writer |
 | Profile/byline disclosure | Public overlay plus matching references; no Auth/profile join or UUID in public DTO; no automatic private-name copy |
 | HTML/script/URL injection | Closed text blocks, bounded exact shape, source protocol/authority checks, internally generated related links, safe JSON-LD escaping |
 | Slug collisions/path abuse | Strict ASCII regex, bounded slug, DB-wide uniqueness, generic collision error, immutable post-publication slug |
@@ -530,10 +532,10 @@ Later 18C integrates typed DTOs/public renderer/metadata and preview behavior; l
 Assumptions and decisions needing later confirmation:
 
 - This plan chooses manual due publishing, offline editing of published articles, no hard deletes, restricted classification changes, profile-linked individual bylines and deferred uploads as the safe Phase 2 defaults. Implementation can follow these defaults when authorized; no new product choice is required merely to write this plan.
-- Actual legacy database contents and managed-role privileges were not inspected live. Nonempty data requires explicit reconciliation before a constraint change; there is no authorization here to migrate, quarantine, unpublish or reset it.
+- Local preflight found empty business/Auth tables and seeded defaults. Production still needs preflight: compatible drafts are preserved; ambiguous AI classification, scheduled/published state or historical publication causes an explicit migration failure pending reviewed reconciliation.
 - The trusted production canonical origin is not configured in the inspected root metadata. It must be provided before production SEO integration; no URL is invented.
 - Numeric editorial limits can be tuned before implementation if real articles require it. Unknown rich-media, institutional authors, post-publication byline corrections and concurrent published/draft revisions remain unsupported rather than receiving unsafe fallback behavior.
-- There is no demonstrated operational leak today: the current public Research adapter returns an empty collection and raw anonymous table access is closed. Actual database contents were not inspected. The findings identify activation hazards to resolve before connecting CMS data, not a claim that an exploitation test was run.
+- The application adapter remains empty and raw anonymous tables remain closed. Gate 18B validates database boundaries with synthetic rollback-only fixtures and separate disposable concurrency databases; it does not claim UI integration or production deployment.
 
 Technical references checked for this plan: PostgreSQL documents that table owners normally bypass RLS, ordinary roles need grants and policies, and permissive policies combine with OR ([row security](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)). Function execution identity/search path and default EXECUTE must be explicitly controlled ([CREATE FUNCTION](https://www.postgresql.org/docs/17/sql-createfunction.html)). NOLOGIN is not a substitute for denying role membership/SET privileges ([CREATE ROLE](https://www.postgresql.org/docs/17/sql-createrole.html)). Row locks define transaction ordering and require consistent acquisition order ([locking](https://www.postgresql.org/docs/17/explicit-locking.html)). A PostgREST request executes in a database transaction; separate requests do not form one atomic mutation ([transactions](https://docs.postgrest.org/en/v12/references/transactions.html)). Installed Next.js guides `data-security.md` and `json-ld.md` support minimal server DTOs and escaping serialized structured data. These references inform the proposed design; the project's local ACL and integration tests remain required implementation evidence.
 
@@ -541,4 +543,46 @@ Technical references checked for this plan: PostgreSQL documents that table owne
 
 No automatic scheduled worker, CMS/rich-text dependency, Markdown/HTML renderer, media upload/storage policy, chart execution, source fetching, guest/organization author system, public profile directory, public preview tokens, comments, revisions/diff/restore history, bulk publishing, full-text search, analytics, paywalls, advertiser editing, Radar backend, trading/wallet features, or remote deployment.
 
-Gate 18A ends with this document. Gate 18B, application code, package files, migrations, database state and the roadmap remain unchanged by this planning task.
+Gate 18A ended with planning. Gate 18B adds only database migrations, tests and factual documentation. Application/package files are unchanged; Gate 18C is not started.
+
+## 28. Gate 18B implemented contract and validation
+
+The eight new article columns, four relationship/byline tables, four staff SELECT policies, two public projections, token picker and six authenticated mutation RPCs are implemented by `20260907000001_research_schema.sql` and `20260907000002_research_operations.sql`. Existing migrations and the corrected Gate 6 helper remain unchanged.
+
+Exact mutation signatures (schema `public`; all return a narrow JSON receipt):
+
+| Function | Arguments |
+|---|---|
+| `create_research_draft` | `p_input jsonb` |
+| `save_research_draft` | `p_article_id uuid, p_expected_revision bigint, p_input jsonb` |
+| `transition_research_article` | `p_article_id uuid, p_expected_revision bigint, p_action text, p_scheduled_at timestamptz DEFAULT NULL, p_reason text DEFAULT NULL` |
+| `change_research_classification` | `p_article_id uuid, p_expected_revision bigint, p_classification text, p_disclosure text, p_reason text` |
+| `assign_research_author` | `p_article_id uuid, p_expected_revision bigint, p_author_id uuid, p_reason text` |
+| `save_research_author` | `p_profile_id uuid, p_display_name text, p_title text DEFAULT NULL` |
+
+`research_token_options(p_search text DEFAULT '', p_limit integer DEFAULT 20)` returns only id/chain/contract_address/symbol/name, at most 50 rows. Public list defaults are category/cursor NULL and limit 20; cursor is exactly `{published_at, id}` and list/detail return the explicit columns in the migration. No normal public read uses a Supabase secret key.
+
+Draft input accepts title/slug/dek/category/AI/TL;DR/body/facts/disclosure/SEO and optional source/reference arrays. Create additionally accepts classification and an authorized author; ordinary save cannot set either. Source-array positions derive from order; optional IDs must belong to currently active sources on that article. Omitted arrays are unchanged, empty arrays clear active associations, and changed previously published source text creates a retained-old/new-row correction. Source rows are retired, never hard-deleted. Every aggregate mutation checks/increments the parent revision and includes audit in the same transaction.
+
+Final self-review reproduced a SQL three-valued-logic defect in the new Analyst resource check: a legacy DRAFT with NULL author could pass a negative ownership comparison. The check now requires authorization `IS TRUE`; regression tests prove that unassigned drafts are unreadable/unwritable to Analyst, remain unchanged, and produce no false audit event. No existing authorization helper or role semantics were changed.
+
+| Validation | Final result |
+|---|---|
+| Clean local replay | All eight migrations PASS |
+| Foundation pgTAP | 85/85 |
+| Existing authorization pgTAP | 37/37 |
+| Existing audit pgTAP | 19/19 |
+| Research pgTAP | 358/358 across 15 isolated files |
+| Complete `supabase test db --local` | 499/499 across 29 files |
+| Separate-session concurrency / populated upgrade | 13/13; scratch databases removed |
+| Lint / typecheck | PASS |
+| Existing application tests | 50/50 across 12 files |
+| Webpack production build | PASS in restricted environment |
+| `pnpm check` | Run once; lint/types/tests pass; known Turbopack process/port binding `Operation not permitted` only |
+| Diff/footprint | No application/package/historical-migration edits; no commit/push |
+
+Test harness corrections were limited to a pgTAP query-format issue and supplying shared fixtures for explicit-path CLI runs. Use the commands in [DATABASE.md](DATABASE.md#11-research-database-foundation--gate-18b); a single-file run must also supply `supabase/tests/fixtures`. No security assertion was removed to get a green result. Existing test changes only extend the table/policy inventory and satisfy new fixture constraints.
+
+Files: the two migrations; 15 `research_*.test.sql` files; three `supabase/tests/fixtures/*.inc` includes; `supabase/tests/scripts/research-concurrency.mjs`; updated `foundation.test.sql` and the existing Analyst/anon/Viewer authorization fixture files; and this plan, `DATABASE.md`, `AUTHORIZATION_PLAN.md`, `AUDIT_LOGGING.md` and `ROADMAP.md`.
+
+No unresolved Gate 18B blocker remains. Detailed application validation, real public repository queries, Admin forms/preview/Server Actions, uploads, automatic publishing and the production canonical origin remain later-gate/deployment concerns. Gate 18C is NOT STARTED.

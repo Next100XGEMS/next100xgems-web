@@ -42,6 +42,12 @@ Gate 16 — Partners and Advertise — IMPLEMENTED. Added static Featured Partne
 
 Gate 17 — Public Research experience — IMPLEMENTED. Added the Research landing page, confirmed category rail, typed article presentation contract, empty production library, not-found article route, development-only neutral preview, publication-style renderer, classifications/disclosures, sources and related-content architecture, factual metadata, safe Article JSON-LD generation, and Research/Radar boundary language. No published research, CMS, backend, database, or publishing workflow was added.
 
+Gate 18A — Research CMS architecture/security planning — COMPLETE. Approved the article evolution, public byline, source/relationship, publication, authorization and atomic-audit contracts in [RESEARCH_CMS_PLAN.md](RESEARCH_CMS_PLAN.md).
+
+Gate 18B — Research database/authorization foundation — COMPLETE. Added two migrations for bounded structured content, independent AI classification, public authors, ordered sources, related Research/canonical tokens, revision-controlled publication, narrow public projections, staff RLS and six atomic audited mutation RPCs. No custom PostgreSQL reader role was created. Clean local replay and all **499/499** database tests pass, including **358/358** Research checks; separate-session concurrency/legacy upgrade checks **13/13**. Lint/typecheck, **50/50** application tests and Webpack build pass. The single `pnpm check` run reaches only the known Turbopack sandbox limitation.
+
+Gate 18C is NOT STARTED. Public database integration, Admin CMS/preview UI, Server Actions, rich-text/media handling and automatic scheduling remain unimplemented. No remote project or deployment was used.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.

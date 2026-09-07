@@ -51,3 +51,15 @@ Future privileged operations should follow: verify identity → require active m
 ## Deferred functionality
 
 Gate 8 does not implement feature-flag mutation, article publishing, role management, Radar review/publication, commercial operations, an audit UI, audit export/retention jobs, analytics, system workers, or Gate 9 design primitives.
+
+## Gate 18B Research integration
+
+Research now implements the transaction strategy above inside six named database RPCs: `create_research_draft`, `save_research_draft`, `transition_research_article`, `change_research_classification`, `assign_research_author` and `save_research_author`. Each derives the actor from `auth.uid()`, verifies live ACTIVE roles/resource scope, locks and validates, writes, then calls the existing `public.write_audit_event` internally under the trusted migration owner. The writer's API ACL and append-only triggers are unchanged; authenticated callers cannot append arbitrary audit events.
+
+Actions are `article.created`, `article.updated`, `article.scheduled` (including reschedule), `article.unscheduled`, `article.published`, `article.archived`, `article.restored`, `article.classification_changed`, `article.author_changed` and `research_author.updated`. Article snapshots contain state/classification/AI, validated author references, revision/schedule/first-publication context and source/relationship IDs, not complete content. Metadata contains a schema version, changed-field names, bounded reasons, or relevant disclosure changes. Byline events capture explicitly public name/title before and after.
+
+No full article body, TL;DR, Key Facts, source URLs/query strings, private profile values, request/session data or credentials are logged. Canonical token relationship UUIDs are domain references, not authentication tokens. The SQL functions construct the narrow payload themselves; the TypeScript redactor is not part of a direct RPC call. The application action union/writer remains unchanged because no Server Action integration is included.
+
+Any required audit failure aborts parent, child, source-retirement, state, revision and byline changes. Tests inject an audit INSERT failure in a rollback-only fixture and prove all six operation families leave exact prior state and no false success record. Ordinary audit UPDATE/DELETE/TRUNCATE and direct API reads/writes remain denied.
+
+Validation: existing audit **19/19**, Research audit/authorization/lifecycle coverage included in Research **358/358**, full database suite **499/499**. No audit viewer, retention job, general elevated application client or external two-request transaction was added.

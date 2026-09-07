@@ -4,8 +4,9 @@ set local search_path = public, extensions;
 select no_plan();
 insert into auth.users (id) values ('00000000-0000-4000-8000-000000001001');
 insert into public.profiles (id, display_name) values ('00000000-0000-4000-8000-000000001001', 'Published author');
-insert into public.articles (id, title, slug, author_id, status, published_at)
-values ('00000000-0000-4000-8000-000000001002', 'Published', 'anon-published', '00000000-0000-4000-8000-000000001001', 'PUBLISHED', now());
+insert into public.research_authors(profile_id,display_name) values ('00000000-0000-4000-8000-000000001001','Published author');
+insert into public.articles (id, title, slug, author_id, status, published_at,category,public_author_id,published_revision)
+values ('00000000-0000-4000-8000-000000001002', 'Published', 'anon-published', '00000000-0000-4000-8000-000000001001', 'PUBLISHED', now(),'MARKET','00000000-0000-4000-8000-000000001001',1);
 insert into public.tokens (id, chain, contract_address)
 values ('00000000-0000-4000-8000-000000001003', 'eip155:1', '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 insert into public.radar_analyses (id, token_id, version, status, score, data_as_of)

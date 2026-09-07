@@ -1,5 +1,7 @@
 # Database Foundation — Gate 4
 
+Sections 1–10 preserve the Gate 4 foundation record, with subsequent gate notes. The active Research extension and Gate 18B validation are documented in section 11 below; the historical 17-table inventory is now extended to 21.
+
 ## 1. Design principles and scope
 
 The local Supabase PostgreSQL foundation uses three ordered SQL migrations under `supabase/migrations/`. Each migration is transactional and includes access restrictions before commit. This gate creates tables, constraints, indexes, timestamp/immutability triggers and structural tests. It does not create clients, login flows, ingestion, scoring, final authorization policies, public queries or admin interfaces.
@@ -112,3 +114,35 @@ The API can bypass application code, so Gate 6B implements server checks, operat
 ## 10. Intentionally deferred work
 
 Auth profile provisioning; future domain-specific permissions/RLS and mutation workflows; public views; flag mutation operations; audit retention workflows; role-aware admin operations; categories/tags/authors-as-a-separate-system; media tables/buckets/uploads; impression/click events and sponsor analytics; bookings/payments; ingestion queues; wallets; score algorithms; AI payload contracts; Radar publish/moderation procedures; production migrations and remote setup. Trading, custody, signing, transaction submission and automated buying/selling remain out of scope entirely.
+
+## 11. Research database foundation — Gate 18B
+
+Implemented with two additive migrations; the six earlier migrations are unchanged:
+
+- `20260907000001_research_schema.sql`: extends the existing 15-column article table with `dek`, `category`, `ai_assisted`, `public_author_id`, `body_blocks`, `key_facts`, `revision` and `published_revision`. Primary classification is EDITORIAL/SPONSORED/PARTNER; AI assistance is independent.
+- `20260907000002_research_operations.sql`: scoped staff reads, two public projections, a bounded token picker and six authenticated transactional mutation RPCs. No custom PostgreSQL role or API raw-write grant is created.
+
+New tables are `research_authors` (explicit public bylines keyed by existing profile UUID), `article_sources` (ordered HTTP(S) source references with retained retirement history), `article_related_research` (directional, unique, non-self links), and `article_tokens` (canonical token FKs). All four have RLS and restrictive parent FKs; no article/source hard-delete RPC exists. Mutable bylines/sources use the existing timestamp trigger. Public bylines freeze once attributed work has first been published.
+
+Article bodies are bounded version-1 JSON sections with paragraph/quote/callout/data-placeholder block kinds, not HTML/MDX. Key Facts are bounded JSON arrays. SQL enforces structural/type/size checks, not a duplicate of the future TypeScript editor schema. `body_markdown` remains retained legacy data and is neither writable by new CMS RPCs nor returned publicly.
+
+Draft saving, scheduling/rescheduling/unscheduling, explicit publication, archival and restoration-to-Draft are controlled operations. Scheduled content remains private even after its due time. Published content must be withdrawn before editing. First publication time, post-publication slug/classification/author and prior source evidence cannot be silently rewritten. Revision checks serialize aggregate changes; publication records the exact revision.
+
+Public list/detail RPCs use the existing trusted `postgres` definer owner, `search_path = ''` and static explicit output. They bypass owner RLS intentionally and enforce exact publication/time/version/availability predicates themselves. Only anon/authenticated EXECUTE is granted; raw anon tables stay closed. The detail query independently filters related targets, emits only active sources, and returns display-only author data and curated canonical token identity. No normal public read needs a Supabase secret key.
+
+Preflight found PostgreSQL 17.6, the six expected migrations, no Auth/business rows, and seeded conservative flags. Replay was permitted on that disposable local state. Production migrations preserve compatible drafts; legacy AI_ASSISTED or scheduled/published/historical-publication rows stop migration before changes until explicitly reconciled. A scratch upgrade test proves draft/Markdown preservation and transactional rejection of ambiguous AI data.
+
+Validation commands (local only):
+
+```text
+pnpm supabase db reset --local --no-seed
+pnpm supabase test db --local
+pnpm supabase test db --local supabase/tests/database/research_*.test.sql supabase/tests/fixtures
+node supabase/tests/scripts/research-concurrency.mjs
+```
+
+Explicit file-path test runs must also include `supabase/tests/fixtures`: the CLI otherwise omits sibling `.inc` files from its test container. Default full-suite discovery includes them automatically. Each Research test file has one persona and a rollback transaction; shared fixtures are test-only, never migrations/seeds. The concurrency harness copies only local Auth/extension schema into generated scratch databases, replays the real migrations, tests separate sessions, and drops only databases created by that run. It copies no Auth/business data or credentials and requires no new dependencies.
+
+Acceptance evidence: clean eight-migration replay; foundation **85/85**, existing authorization **37/37**, existing audit **19/19**, Research **358/358**, full database suite **499/499**. Separate-session concurrency/upgrade checks **13/13**. Lint/typecheck, all **50/50** application tests and Webpack production build passed. `pnpm check` ran once: underlying checks passed, then the known Turbopack macOS process-binding `Operation not permitted` occurred. No workaround/dependency change was made.
+
+The application remains unintegrated: no Admin CMS pages/forms, public queries, Server Actions, preview implementation, upload, scheduler or remote Supabase work. Generated application database types and new TypeScript mutation permissions remain part of the later integration gate, not this database-only change.

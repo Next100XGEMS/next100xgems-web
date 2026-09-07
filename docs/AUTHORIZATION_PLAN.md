@@ -1,6 +1,6 @@
 # Phase 1 — Gate 6B: Authorization and RLS Implementation
 
-Status: Gate 6B complete. Gate 6C security audit passed with non-blocking findings. Gate 6D addressed session refresh and redirect hardening. Gates 7–10 are implemented; operational mutations remain deferred.
+Status: Gate 6B complete. Gate 6C security audit passed with non-blocking findings. Gate 6D addressed session refresh and redirect hardening. Gates 7–10 are implemented. Gate 18B now adds the Research-only extension in section 19; other operational mutations remain deferred. The Gate 6 historical matrices below are unchanged except where that extension explicitly adds Research capabilities.
 
 Reviewed project sources: `AGENTS.md`, [ARCHITECTURE.md](ARCHITECTURE.md), [SECURITY.md](SECURITY.md), [DATABASE.md](DATABASE.md), [ADMIN_SPEC.md](ADMIN_SPEC.md), [PHASE1_PLAN.md](PHASE1_PLAN.md), and [DECISIONS.md](DECISIONS.md). The schema inventory below comes from the three existing migrations: `20260906000001_core_foundation.sql`, `20260906000002_content_commercial_foundation.sql`, and `20260906000003_radar_foundation.sql`. Gate 5 source was inspected for authentication, session refresh, redirects and logout. Current Supabase/PostgreSQL guidance and the installed Next.js Proxy convention were checked where relevant.
 
@@ -409,3 +409,24 @@ Gate 6B runtime validation completed with clean migration replay, isolated autho
 - Gate 7 flag reads and Gate 8 audit foundation are implemented; flag mutation, audit reads, the final operational dashboard and later product phases remain deferred. Wallets, custody, signers, trading execution and automated buying/selling remain out of scope entirely.
 
 Gate 6A created this document. Gate 6B is complete, Gate 6C passed with non-blocking findings, and Gate 6D is complete. Gates 7–10 are implemented in the local project; operational flag mutation, audit reads, product workflows and full domain dashboards remain deferred.
+
+## 19. Gate 18B — Research-specific authorization extension
+
+The corrected `private.current_app_roles()`, existing article staff SELECT policy, profile/role model and all non-Research policies remain unchanged. The new functions resolve live ACTIVE roles from that helper; email/user metadata/JWT role labels are not application authority. Each mutation locks/rechecks the actor, permitted resource and expected revision, then appends its required audit in the same database transaction.
+
+| Capability | Enforced roles / restriction |
+|---|---|
+| Create and edit | Owner/Admin/Editor; Analyst only own EDITORIAL DRAFT |
+| Schedule, reschedule, unschedule, publish, archive, restore | Owner/Admin/Editor; exact approved state machine |
+| Classification change | Owner/Admin; DRAFT before first publication; only transitions into SPONSORED/PARTNER, never paid → Editorial |
+| Author assignment/public byline management | Owner/Admin; explicit validated profile references; frozen post-publication attribution |
+| Viewer, Ad Manager, Radar Reviewer | No Research mutation authority |
+| Missing/no-role/inactive/conflicting identity | No private Research or mutation access |
+
+Raw API DML remains denied even for application Owner. Eight new article column SELECT grants and four child SELECT policies mirror existing staff scope. Analyst still reads own paid drafts under the unchanged Gate 6 read rule but cannot mutate them. Public author overlay reads never imply private profile-directory access. The token picker exposes only bounded identity fields to Owner/Admin/Editor/Analyst; Editor's raw token RLS remains unchanged.
+
+Two public definer RPCs deliberately return only eligible published DTOs to anon/authenticated, including no-role users viewing intentionally public information. This does not grant Admin/private membership. They use the existing trusted migration owner with explicit SQL predicates/output, not a custom reader role or automatic owner-RLS filtering. They never return account UUIDs, private profiles, audit fields or concurrency metadata.
+
+PUBLIC/anon/service-role EXECUTE is revoked from the six mutation RPCs and token picker; authenticated receives exact-signature EXECUTE. All new private helpers are closed to API roles. Public projections alone grant EXECUTE to anon/authenticated. No general SQL/RLS-bypass utility, role-management RPC, raw write policy, public preview token or Realtime publication was introduced.
+
+Database permission enforcement is implemented now; the TypeScript catalogue and Server Action guards remain untouched until application integration. Full signatures and test commands are in [RESEARCH_CMS_PLAN.md](RESEARCH_CMS_PLAN.md). Research pgTAP **358/358** and the full suite **499/499** pass; separate-session tests prove stale-write denial, revocation/suspension, flag ordering, classification/publication ordering and byline freeze.
