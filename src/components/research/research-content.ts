@@ -40,7 +40,7 @@ export type ResearchArticle = {
   aiAssisted?: boolean;
   radarContext?: { summary: string; href?: string };
   author: { name: string; role?: string };
-  publishedAt: string;
+  publishedAt?: string;
   updatedAt?: string;
   featuredImage?: { src: string; alt: string };
   tldr: string;
@@ -96,11 +96,14 @@ export function researchArticleStructuredData(article: ResearchArticle) {
     headline: article.title,
     description: article.seo?.description ?? article.dek ?? article.tldr,
     author: { "@type": "Person", name: article.author.name },
-    datePublished: article.publishedAt,
     mainEntityOfPage: { "@type": "WebPage", "@id": `/research/${article.slug}` },
     publisher: { "@type": "Organization", name: "NEXT100XGEMS" },
     articleSection: article.category,
   };
+
+  if (article.publishedAt) {
+    structuredData.datePublished = article.publishedAt;
+  }
 
   if (article.updatedAt) {
     structuredData.dateModified = article.updatedAt;

@@ -47,4 +47,12 @@ The preview uses neutral fixture content and an unmistakable `SAMPLE / DEVELOPME
 
 Gate 18C connects `/research` and `/research/[slug]` to the server-only `src/lib/research/server.ts` reader. It uses only `read_public_research_page` and `read_public_research_article`, the narrow Gate 18B public projections, with the publishable Supabase key and no cookies or persistent sessions. Reads are request-time and uncached so publication and availability changes become visible on subsequent requests. `research_enabled` gates public retrieval; disabled Research is not queried or exposed. Empty results, confirmed not-found slugs, and genuine read failures remain distinct.
 
-`/research-preview` remains a development-only fixture route and never reads the database or emits Article JSON-LD. Gate 18D owns the authenticated Admin CMS, preview, mutation Server Actions, media handling, and scheduling controls.
+`/research-preview` remains a development-only fixture route and never reads the database or emits Article JSON-LD. Gate 18D implements the authenticated Admin CMS, preview, mutation Server Actions, and explicit lifecycle controls; media handling and richer workflow expansion remain deferred.
+
+## Gate 18D operational Admin CMS
+
+The authenticated Admin Research workspace now lives at `/admin/research`, `/admin/research/new`, `/admin/research/[id]`, and `/admin/research/[id]/preview`. It reads through the existing cookie-backed user session and database RLS, never through the server secret key. The list exposes only real RLS-visible records grouped by Draft, Scheduled, Published, and Archived state.
+
+The editor provides explicit Save Draft, Schedule, Publish, Archive, and Restore → Draft controls; scheduling does not publish automatically. It includes TL;DR, Key Facts with evidence states, category, AI-assisted indicator, accountable public byline, structured plain-text sections/blocks, HTTP(S) sources, related Research/tokens, disclosure, classification, and SEO fields. Sponsored and Partner labels remain prominent. All writes call the named Gate 18B audited RPCs and revision conflicts fail safely; no direct table writes or second audit call are made by the application.
+
+The Admin preview is private, request-time, noindex, visibly marked unpublished, and omits Article JSON-LD. It reuses the safe public renderer without exposing private profile/auth data or making a publication claim. Rich text, arbitrary HTML, media uploads, autosave, source fetching, and automatic publishing remain intentionally deferred.

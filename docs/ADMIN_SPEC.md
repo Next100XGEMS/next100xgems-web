@@ -61,3 +61,11 @@ Desktop uses a compact left navigation and a focused main content region. At mob
 ### Deferred operations
 
 Gate 10 creates no Server Actions, mutation endpoints, toggles, role assignment, article editing, Radar moderation, sponsor/campaign editing, settings editing, navigation editing, analytics, or audit-log reader. Audit infrastructure remains active but its records stay closed. Future mutations must be named, permission-checked, validated, and persisted through the required audited path.
+
+## Gate 18D Research operations
+
+Research is the first operational Admin content module. Its request-time routes are `/admin/research`, `/admin/research/new`, `/admin/research/[id]`, and `/admin/research/[id]/preview`. The list is filtered by the existing Research read permissions and RLS, with honest state groupings and revision information rather than invented metrics.
+
+The editor uses native form controls and the Gate 18B closed structured block contract. Draft saves, classification changes, author assignments, lifecycle transitions, and token option searches are thin adapters over the exact named RPCs. Each Server Action rechecks identity and current application roles; database authorization, validation, optimistic revision checks, and atomic audit logging remain authoritative. No Server Action imports the secret-key audit writer, performs direct article DML, or exposes auth email/private profile data.
+
+Publication UX is deliberately explicit: Draft → Scheduled requires a future timestamp and publishability checks; Publish is a separate confirmed action; Archive, Restore → Draft, and other reason-bearing transitions require a reason. The preview is protected by the Admin layout, noindex, and visibly marked `PREVIEW · UNPUBLISHED · NOT INDEXED`; it emits no Article JSON-LD. There is no autosave, media upload, automatic scheduler, arbitrary HTML, hard delete, or remote integration in this gate. Gate 18E is not started.

@@ -508,7 +508,7 @@ After applied/shared migrations, fix forward. Emergency disablement removes serv
 6. Add isolated persona pgTAP, direct API and separate-session concurrency tests. Prove audit rollback, no raw DML, no-profile leakage, public filtering and classification denials before application integration.
 7. Validate clean local replay and populated synthetic upgrade; inspect final ACLs and scope. Report SQL pass counts and stop at 18B. Admin pages/Server Actions/public real-data integration belong to separately authorized 18C/18D work.
 
-Later 18C integrates typed DTOs/public renderer/metadata and preview behavior; later 18D provides the Admin form/lifecycle UI. These labels are proposed sequencing only, not authorization to begin them.
+Later 18C integrates typed DTOs/public renderer/metadata and preview behavior; Gate 18D provides the Admin form/lifecycle UI. These labels are sequencing records, not authorization to begin later work.
 
 ## 26. Risks, assumptions and final adversarial review
 
@@ -535,7 +535,7 @@ Assumptions and decisions needing later confirmation:
 - Local preflight found empty business/Auth tables and seeded defaults. Production still needs preflight: compatible drafts are preserved; ambiguous AI classification, scheduled/published state or historical publication causes an explicit migration failure pending reviewed reconciliation.
 - The trusted production canonical origin is not configured in the inspected root metadata. It must be provided before production SEO integration; no URL is invented.
 - Numeric editorial limits can be tuned before implementation if real articles require it. Unknown rich-media, institutional authors, post-publication byline corrections and concurrent published/draft revisions remain unsupported rather than receiving unsafe fallback behavior.
-- Gate 18C now provides the server-only public adapter and route integration; raw anonymous tables remain closed. Admin forms/preview, mutations, media, scheduling and production deployment remain deferred.
+- Gate 18C provided the server-only public adapter and route integration; Gate 18D now provides the authenticated Admin forms/preview, mutation adapters, and explicit scheduling controls. Raw anonymous tables remain closed; media and production deployment remain deferred.
 
 Technical references checked for this plan: PostgreSQL documents that table owners normally bypass RLS, ordinary roles need grants and policies, and permissive policies combine with OR ([row security](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)). Function execution identity/search path and default EXECUTE must be explicitly controlled ([CREATE FUNCTION](https://www.postgresql.org/docs/17/sql-createfunction.html)). NOLOGIN is not a substitute for denying role membership/SET privileges ([CREATE ROLE](https://www.postgresql.org/docs/17/sql-createrole.html)). Row locks define transaction ordering and require consistent acquisition order ([locking](https://www.postgresql.org/docs/17/explicit-locking.html)). A PostgREST request executes in a database transaction; separate requests do not form one atomic mutation ([transactions](https://docs.postgrest.org/en/v12/references/transactions.html)). Installed Next.js guides `data-security.md` and `json-ld.md` support minimal server DTOs and escaping serialized structured data. These references inform the proposed design; the project's local ACL and integration tests remain required implementation evidence.
 
@@ -543,7 +543,7 @@ Technical references checked for this plan: PostgreSQL documents that table owne
 
 No automatic scheduled worker, CMS/rich-text dependency, Markdown/HTML renderer, media upload/storage policy, chart execution, source fetching, guest/organization author system, public profile directory, public preview tokens, comments, revisions/diff/restore history, bulk publishing, full-text search, analytics, paywalls, advertiser editing, Radar backend, trading/wallet features, or remote deployment.
 
-Gate 18A ended with planning. Gate 18B added the database foundation; Gate 18C adds only the public server reader, DTO mapping, route integration, safe structured rendering, focused application tests and factual documentation. Admin CMS/mutation work remains deferred.
+Gate 18A ended with planning. Gate 18B added the database foundation; Gate 18C added the public server reader, DTO mapping, route integration, safe structured rendering, focused application tests and factual documentation. Gate 18D now adds the operational Admin CMS; media, autosave, and richer workflow expansion remain deferred.
 
 ## 28. Gate 18B implemented contract and validation
 
@@ -596,3 +596,15 @@ The adapter maps uppercase database category/classification/evidence keys, publi
 The `/research` route checks the existing server-side `research_enabled` flag before reading the public list projection. Enabled published summaries render in the approved Latest Research area; empty and read-error states remain explicit. The `/research/[slug]` route checks the same flag, reads by slug through the detail projection, calls `notFound()` only for a confirmed empty result, and allows genuine reader failures to surface as failures rather than pretending they are absent. Both routes are request-time/dynamic with no long-lived cache. Metadata uses only the validated public article, and the Article JSON-LD script is omitted for the development-only `/research-preview` fixture.
 
 Gate 18C validation: local-only projection integration passed with one temporary published record and draft/scheduled/archived controls; the temporary data was removed and flags restored. Focused reader/route tests and the full application suite pass **60/60**, lint passes, typecheck passes, and `pnpm exec next build --webpack` passes. The single `pnpm check` run passes lint/typecheck/tests and reaches only the known Turbopack macOS process-binding `Operation not permitted` limitation. No dependency was added, no production Research content was seeded, no Gate 18B migration/RLS/grant was changed, and no remote Supabase project was used.
+
+## 30. Gate 18D operational Admin CMS
+
+Gate 18D implements the authenticated Admin Research workspace at `/admin/research`, `/admin/research/new`, `/admin/research/[id]`, and `/admin/research/[id]/preview`. The list is request-time and RLS-filtered, grouped by Draft, Scheduled, Published, and Archived state, and reports only real records and revisions. It contains no invented performance metrics.
+
+The editor uses native inputs and a closed, version-1 structured document model: sections containing only paragraph, quote, callout, and `data_placeholder` blocks, plus bounded Key Facts, sources, related Research, related canonical tokens, disclosure, AI-assisted state, classification, and SEO fields. There is no HTML/MDX/rich-text dependency, `contentEditable`, autosave, media upload, source unfurling, or automatic scheduled worker. Sponsored and Partner classification is prominent; the editor requires separate disclosure/reason handling for the exceptional classification operation.
+
+`src/app/admin/research/actions.ts` is a thin Server Action adapter. Every user-triggered mutation re-resolves the cookie-backed authenticated context and calls only the exact Gate 18B RPCs: `create_research_draft`, `save_research_draft`, `transition_research_article`, `change_research_classification`, and `assign_research_author`. Audit rows are written atomically by those database operations; the application does not make a second audit write and never uses `SUPABASE_SECRET_KEY`. Revision conflicts and database authorization errors are mapped to generic UI messages.
+
+Preview is an authenticated Admin route, request-time, `force-dynamic`, `noindex`, and visibly labeled `PREVIEW · UNPUBLISHED · NOT INDEXED`. It reuses the safe Research presentation renderer with no Article JSON-LD and no publication claim. It exposes only public byline fields and validated text/source content. Public `/research` and `/research/[slug]` remain separate publication projections and never read this preview route.
+
+Gate 18D application tests cover validation of the closed block/source contract, RPC-only mutation adapters, secret-key absence, private preview/noindex behavior, and migration non-interference. Existing Gate 18B SQL tests remain the database acceptance evidence. Gate 18E is reserved for later operational refinements such as media handling, autosave, richer relation selection, and any separately approved workflow expansion.
