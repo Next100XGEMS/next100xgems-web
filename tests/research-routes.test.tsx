@@ -87,6 +87,20 @@ describe("public Research routes", () => {
     expect(metadata.openGraph).toMatchObject({ url: "/research/published-research" });
   });
 
+  it("renders nullable canonical token labels truthfully through the public route", async () => {
+    mockIsFeatureEnabled.mockResolvedValue(true);
+    mockReadArticle.mockResolvedValue({
+      ...article,
+      relatedTokens: [{ symbol: undefined, name: undefined, chain: "eip155:1", contract: "0xcanonical" }],
+    });
+
+    render(await ResearchArticleRoute({ params: Promise.resolve({ slug: article.slug }) }));
+
+    expect(screen.getByText("Canonical token identity", { exact: true })).toBeTruthy();
+    expect(screen.getByText("eip155:1 · 0xcanonical", { exact: true })).toBeTruthy();
+    expect(screen.queryByText("Token · Unnamed", { exact: true })).toBeNull();
+  });
+
   it("maps an empty public result to not-found", async () => {
     mockIsFeatureEnabled.mockResolvedValue(true);
     mockReadArticle.mockResolvedValue(null);

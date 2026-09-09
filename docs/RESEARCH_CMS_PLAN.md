@@ -1,6 +1,6 @@
 # Research CMS architecture and security plan — Gate 18A
 
-Status: Gate 18C COMPLETE, public Research integration only. Gate 18A designed this plan; the Gate 18B brief overrides two details: no custom PostgreSQL reader role, and structural/bounded SQL content validation rather than a duplicate of the later TypeScript schema. Public projections use the existing trusted `postgres` owner with explicit publication predicates; they bypass owner RLS and are not automatically RLS-filtered. Raw anonymous tables remain closed. Admin CMS/mutation UI remains deferred to Gate 18D.
+Status: Research system COMPLETE through Gate 18E4. Gate 18C delivered the public Research integration; Gate 18D delivered the operational Admin CMS; corrective Gates 18F1–18F4 and the Gate 18E4 final audit are complete. Gate 18A designed this plan; the Gate 18B brief overrides two details: no custom PostgreSQL reader role, and structural/bounded SQL content validation rather than a duplicate of the later TypeScript schema. Public projections use the existing trusted `postgres` owner with explicit publication predicates; they bypass owner RLS and are not automatically RLS-filtered. Raw anonymous tables remain closed.
 
 Local preflight (2026-09-07): PostgreSQL 17.6, all six historical migrations present, article columns/constraints/indexes/policy/owners matched source (15 existing columns, correcting the earlier count of 16). All business/Auth/profile/assignment/audit tables were empty and feature flags retained seeded defaults. Clean replay therefore targets verified disposable local state. Production upgrades must still reject incompatible legacy data rather than delete or reinterpret it.
 
@@ -608,3 +608,49 @@ The editor uses native inputs and a closed, version-1 structured document model:
 Preview is an authenticated Admin route, request-time, `force-dynamic`, `noindex`, and visibly labeled `PREVIEW · UNPUBLISHED · NOT INDEXED`. It reuses the safe Research presentation renderer with no Article JSON-LD and no publication claim. It exposes only public byline fields and validated text/source content. Public `/research` and `/research/[slug]` remain separate publication projections and never read this preview route.
 
 Gate 18D application tests cover validation of the closed block/source contract, RPC-only mutation adapters, secret-key absence, private preview/noindex behavior, and migration non-interference. Existing Gate 18B SQL tests remain the database acceptance evidence. Gate 18E is reserved for later operational refinements such as media handling, autosave, richer relation selection, and any separately approved workflow expansion.
+
+## 32. Gate 18F4 final public contract correction
+
+Gate 18F4 makes the publication/read contract explicit across both runtimes.
+Required Research blankness is the documented set of tab/line-break
+characters, ASCII space, NBSP, Ogham space, U+2000–U+200A, U+2028/U+2029,
+U+202F, U+205F, U+3000, and U+FEFF; it is tested for blankness only and
+never used to normalize stored content. Title, source/byline values,
+disclosure, structured IDs, labels, TL;DR, and required body content use the
+same semantics.
+
+The supported source URL subset is lower-case HTTP(S), an ASCII DNS hostname
+or valid dotted-decimal IPv4 host, and an optional port from 1 through 65535.
+Credentials, malformed numeric hosts, IPv6, and internationalized domains are
+excluded pending a separately aligned contract. Source dates are strict
+Gregorian AD/CE YYYY-MM-DD values from 0001-01-01 through 9999-12-31. Public
+timestamps are bounded to the same application-representable range. The
+additive migration 20260909000003_research_contract_final.sql aligns Admin
+validation, direct RPC input/publication validation, database constraints,
+public projections, and DTO parsing while preserving RLS, grants, RBAC,
+lifecycle, concurrency, and atomic audit behavior.
+
+## 31. Gate 18F2 corrective public contract alignment
+
+Gate 18F2 corrected the Gate 18E M1 drift without changing the approved authorization architecture. The additive `20260909000001_research_public_contract.sql` migration tightens the write/publication boundary for source title (240), publisher (160), public byline name/title (160), structured section/block identity, callout/data-placeholder labels, and publication-time body validation. It rejects new invalid values before persistence and revalidates historical values at publication; it does not rewrite historical rows or alter RLS, grants, role semantics, lifecycle transitions, projections, or audit ordering.
+
+The Admin validator and public adapter use the same bounded contract. The public adapter enforces the 12-item relationship limit and preserves nullable canonical token labels. The renderer displays whichever token labels exist and otherwise shows only a truthful canonical identity label plus chain/contract context. Regression coverage includes exact 240/160 boundaries, over-limit rejection, duplicate IDs, required labels, nullable token output, and the complete local pgTAP/application validation suites.
+
+Gate 18F3 closes the remaining cross-layer contract drift. Bounded Research text uses PostgreSQL-compatible Unicode code-point length semantics in both TypeScript Admin/reader validation and SQL. Limits apply to raw persisted values; required values reject empty or whitespace-only input; structured identifiers reject whitespace forms without normalization. Publication validation remains authoritative for direct RPC callers and does not trim, truncate, or drop content.
+
+The canonical token registry permits nullable display metadata as text, so the public adapter does not impose a stricter arbitrary name/symbol/contract limit. It preserves whatever safe labels exist and always retains truthful chain/contract identity. Publication success guarantees compatibility with the public Research projection, DTO reader, metadata, and renderer.
+
+## 33. Gate 18E4 final completion audit
+
+Gate 18F1, Gate 18F2, Gate 18F3, and Gate 18F4 are complete. The final
+Gate 18E4 read-only audit passed with non-blocking findings: H1, M1, M2,
+and M3 are fixed; no Critical, High, or Medium finding remains; and the
+Research system is COMPLETE.
+
+The validated evidence includes 453/453 Research pgTAP checks, 594/594
+complete database checks, 86/86 application tests, the mounted disclosure
+sync regression, clean migration replay, lint, typecheck, and the Webpack
+production build. The remaining coverage note is limited to a dedicated
+mounted Editorial → Partner disclosure-synchronization case; the shared
+classification-reconciliation path is already validated, so this is not a
+Research completion blocker.

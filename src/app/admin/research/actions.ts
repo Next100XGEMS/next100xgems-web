@@ -5,7 +5,14 @@ import { revalidatePath } from "next/cache";
 import { getAuthorizationContext, type RoleKey } from "@/lib/auth/authorization";
 import { validateResearchInput } from "@/lib/research/validation";
 
-type Receipt = { article_id?: string; revision?: number; status?: string; audit_id?: string };
+type Receipt = {
+  article_id?: string;
+  revision?: number;
+  status?: string;
+  audit_id?: string;
+  classification?: "EDITORIAL" | "SPONSORED" | "PARTNER";
+  disclosure?: string;
+};
 export type ResearchActionResult = { ok: true; receipt?: Receipt; articleId?: string } | { ok: false; error: string; field?: string };
 
 function messageFor(error: { code?: string | null } | null) {
@@ -17,7 +24,7 @@ function success(receipt: unknown): ResearchActionResult { const value = receipt
 function revalidateResearch(articleId?: string) { revalidatePath("/admin/research"); if (articleId) { revalidatePath(`/admin/research/${articleId}`); revalidatePath(`/admin/research/${articleId}/preview`); } revalidatePath("/research"); }
 
 export async function createResearchDraftAction(inputJson: string): Promise<ResearchActionResult> {
-  try { const context = await getAuthorizationContext(); if (!rolesInclude(context.roles, ["owner", "admin", "editor", "analyst"])) return { ok: false, error: "You are not authorized to create Research." }; const input = parseJson(inputJson); const valid = validateResearchInput(input, "create"); if (!valid.ok) return valid; if (!rolesInclude(context.roles, ["owner", "admin"])) { delete valid.value.classification; delete valid.value.author_id; } const { data, error } = await context.supabase.rpc("create_research_draft", { p_input: valid.value }); if (error) return { ok: false, error: messageFor(error) }; const result = success(data); if (result.ok) revalidateResearch(result.articleId); return result; } catch { return { ok: false, error: "Research administration is temporarily unavailable." }; }
+  try { const context = await getAuthorizationContext(); if (!rolesInclude(context.roles, ["owner", "admin", "editor", "analyst"])) return { ok: false, error: "You are not authorized to create Research." }; const input = parseJson(inputJson); const valid = validateResearchInput(input, "create"); if (!valid.ok) return valid; if (!rolesInclude(context.roles, ["owner", "admin", "editor"]) && valid.value.classification !== undefined && valid.value.classification !== "EDITORIAL") return { ok: false, error: "Only Owner, Admin, or Editor can create Sponsored or Partner Research." }; if (!rolesInclude(context.roles, ["owner", "admin"])) delete valid.value.author_id; const { data, error } = await context.supabase.rpc("create_research_draft", { p_input: valid.value }); if (error) return { ok: false, error: messageFor(error) }; const result = success(data); if (result.ok) revalidateResearch(result.articleId); return result; } catch { return { ok: false, error: "Research administration is temporarily unavailable." }; }
 }
 
 export async function saveResearchDraftAction(articleId: string, expectedRevision: number, inputJson: string): Promise<ResearchActionResult> {
@@ -29,7 +36,7 @@ export async function transitionResearchArticleAction(articleId: string, expecte
 }
 
 export async function changeResearchClassificationAction(articleId: string, expectedRevision: number, classification: string, disclosure: string, reason: string): Promise<ResearchActionResult> {
-  try { const context = await getAuthorizationContext(); if (!rolesInclude(context.roles, ["owner", "admin"])) return { ok: false, error: "Only Owner or Admin can change Research classification." }; const { data, error } = await context.supabase.rpc("change_research_classification", { p_article_id: articleId, p_expected_revision: expectedRevision, p_classification: classification, p_disclosure: disclosure, p_reason: reason }); if (error) return { ok: false, error: messageFor(error) }; const result = success(data); if (result.ok) revalidateResearch(articleId); return result; } catch { return { ok: false, error: "Research administration is temporarily unavailable." }; }
+  try { const context = await getAuthorizationContext(); if (!rolesInclude(context.roles, ["owner", "admin"])) return { ok: false, error: "Only Owner or Admin can change Research classification." }; const { data, error } = await context.supabase.rpc("change_research_classification", { p_article_id: articleId, p_expected_revision: expectedRevision, p_classification: classification, p_disclosure: disclosure, p_reason: reason }); if (error) return { ok: false, error: messageFor(error) }; const result = success(data); if (!result.ok) return result; const canonical = await context.supabase.from("articles").select("classification,disclosure,revision").eq("id", articleId).maybeSingle(); if (canonical.error || !canonical.data || !["EDITORIAL", "SPONSORED", "PARTNER"].includes(canonical.data.classification) || typeof canonical.data.disclosure !== "string" || typeof canonical.data.revision !== "number") return { ok: false, error: "Classification changed. Refresh the editor before saving again." }; result.receipt = { ...result.receipt, classification: canonical.data.classification, disclosure: canonical.data.disclosure, revision: canonical.data.revision }; revalidateResearch(articleId); return result; } catch { return { ok: false, error: "Research administration is temporarily unavailable." }; }
 }
 
 export async function assignResearchAuthorAction(articleId: string, expectedRevision: number, authorId: string, reason: string): Promise<ResearchActionResult> {

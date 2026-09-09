@@ -146,3 +146,27 @@ Explicit file-path test runs must also include `supabase/tests/fixtures`: the CL
 Acceptance evidence: clean eight-migration replay; foundation **85/85**, existing authorization **37/37**, existing audit **19/19**, Research **358/358**, full database suite **499/499**. Separate-session concurrency/upgrade checks **13/13**. Lint/typecheck, all **50/50** application tests and Webpack production build passed. `pnpm check` ran once: underlying checks passed, then the known Turbopack macOS process-binding `Operation not permitted` occurred. No workaround/dependency change was made.
 
 The application remains unintegrated: no Admin CMS pages/forms, public queries, Server Actions, preview implementation, upload, scheduler or remote Supabase work. Generated application database types and new TypeScript mutation permissions remain part of the later integration gate, not this database-only change.
+
+## 13. Research final public contract — Gate 18F4
+
+The additive 20260909000003_research_contract_final.sql migration makes the
+Research publication boundary explicit across SQL and TypeScript. Its
+required-text blankness set is tab/line-break characters, ASCII space, NBSP,
+Ogham space, U+2000–U+200A, U+2028/U+2029, U+202F, U+205F, U+3000, and
+U+FEFF. It applies raw Unicode code-point limits without trimming,
+normalization, truncation, or content dropping.
+
+Source URLs support only HTTP(S), ASCII DNS names or valid dotted-decimal IPv4
+hosts, and optional valid ports; credentials, malformed numeric hosts, IPv6,
+and internationalized hosts are not accepted. Source dates are Gregorian
+AD/CE YYYY-MM-DD values from 0001-01-01 through 9999-12-31. Public timestamps
+are bounded to the same JavaScript-representable AD range. Title, byline,
+disclosure, structured identifiers, labels, URL, and date checks are aligned
+at the Admin, RPC/publication, projection, and DTO boundaries. RLS, grants,
+RBAC, lifecycle, and audit behavior are unchanged.
+
+## 12. Research public contract correction — Gate 18F3
+
+The additive `20260909000002_research_contract_alignment.sql` migration aligns Research body, Key Fact, source, public-author, and publication checks with the public DTO contract. PostgreSQL `char_length(text)` is the contract length semantic, equivalent to Unicode code-point counting in TypeScript. Maximums apply to the raw stored value; required values reject empty and all-whitespace text; structured IDs reject whitespace forms and preserve duplicate protections. No trimming, truncation, or silent dropping is performed.
+
+The migration replaces only affected Research validation/publication helper definitions and the public-author mutation function. Existing RLS, grants, role semantics, audit atomicity, lifecycle/concurrency behavior, canonical token schema, and public projection shape remain unchanged. Canonical token display metadata remains nullable registry text; the public reader accepts legitimate labels without a stricter arbitrary name/symbol/contract bound and safely preserves chain/contract identity.

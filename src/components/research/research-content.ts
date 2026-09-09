@@ -49,7 +49,7 @@ export type ResearchArticle = {
   dataEmbeds?: Array<{ label: string; description: string }>;
   sources: Array<{ title: string; publisher: string; url: string; publishedAt?: string; accessedAt?: string }>;
   relatedResearch?: Array<{ slug: string; title: string; category: ResearchCategory }>;
-  relatedTokens?: Array<{ symbol: string; name: string; chain: string; contract?: string; href?: string }>;
+  relatedTokens?: Array<{ symbol?: string; name?: string; chain: string; contract?: string; href?: string }>;
   disclosure: string;
   seo?: { title?: string; description?: string };
 };

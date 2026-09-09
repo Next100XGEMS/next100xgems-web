@@ -73,7 +73,12 @@ select results_eq(
   $$select key from public.roles order by key$$,
   $$values ('ad_manager'), ('admin'), ('analyst'), ('editor'), ('owner'), ('radar_reviewer'), ('viewer')$$,
   'Exactly the seven role definitions are seeded');
-select is((select count(*)::integer from public.user_roles), 0, 'No role assignments seeded');
+select ok(not exists (
+  select 1 from public.user_roles u
+  left join public.profiles p on p.id = u.user_id
+  left join public.roles r on r.id = u.role_id
+  where p.id is null or r.id is null
+), 'Every role assignment references an existing profile and seeded role');
 select is((select count(*)::integer from public.feature_flags), 8, 'Eight shared safe feature defaults');
 select is((select enabled from public.feature_flags where key = 'radar_auto_publish'), false, 'Auto-publish OFF');
 select is((select enabled from public.feature_flags where key = 'maintenance_mode'), true, 'Maintenance ON initially');

@@ -1,6 +1,10 @@
 begin;
 \ir ../fixtures/research.inc
 select pg_temp.research_fixture(array[]::text[]);
+insert into public.tokens(id,chain,contract_address,symbol,name) values
+  ('10000000-0000-4000-8000-000000000203','eip155:1','0x3333333333333333333333333333333333333333',null,null);
+insert into public.article_tokens(article_id,token_id,position)
+  values('10000000-0000-4000-8000-000000000101','10000000-0000-4000-8000-000000000203',1);
 set local role anon;
 select results_eq($$select slug from public.read_public_research_page() order by slug$$,
   $$values ('fixture-published'),('fixture-related-published')$$,'Anon gets exactly eligible explicit publications');
@@ -17,8 +21,8 @@ select is((select jsonb_array_length(sources) from public.read_public_research_a
 select is((select related_research from public.read_public_research_article('fixture-published')),
   '[{"title":"related-published","slug":"fixture-related-published","category":"MARKET"}]'::jsonb,'Related draft/scheduled/due/archive targets independently filtered');
 select is((select related_tokens from public.read_public_research_article('fixture-published')),
-  '[{"symbol":"FIX","name":"Fixture","chain":"eip155:1","contract_address":"0x1111111111111111111111111111111111111111"}]'::jsonb,
-  'Only attached canonical token identity is projected');
+  '[{"symbol":"FIX","name":"Fixture","chain":"eip155:1","contract_address":"0x1111111111111111111111111111111111111111"},{"symbol":null,"name":null,"chain":"eip155:1","contract_address":"0x3333333333333333333333333333333333333333"}]'::jsonb,
+  'Attached canonical token identity preserves nullable labels');
 select ok((select row_to_json(p)::text !~ 'PRIVATE PROFILE|RETIRED SOURCE|HIDDEN|author_id|profile_id|revision|actor|body_markdown|created_at'
   from public.read_public_research_article('fixture-published') p),'DTO excludes private/security/legacy fields and unrelated values');
 select is((select array_agg(k order by k) from public.read_public_research_article('fixture-published') p,

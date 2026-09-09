@@ -8,11 +8,15 @@ from (values(''),('../escape'),('a/b'),('a%2fb'),('Uppercase'),('a?b'),('a#b'),(
 select throws_ok($$select public.create_research_draft(pg_temp.research_input('fixture-draft'))$$,'23505',null,'Slug collision across existing drafts denied');
 select throws_ok(format('select public.create_research_draft(%L::jsonb)',
   pg_temp.research_input('bad-source')||jsonb_build_object('sources',jsonb_build_array(jsonb_build_object('title','Test','publisher','Test','url',url)))),
-  '23514',null,'Unsafe source denied: '||url)
+  '22023',null,'Unsafe source denied: '||url)
 from (values('javascript:alert(1)'),('data:text/html,hello'),('file:///etc/passwd'),('//example.test/x'),
   ('https://user:pass@example.test'),('https:///empty'),('https://example.test:99999'),('https://example.test:'),
   ('https://example.test/%0a'),(E'https://example.test\\evil'),('https://bad_host.test'),('https://example.test/%xx')) u(url);
 select lives_ok($$select public.create_research_draft(pg_temp.research_input('https-valid')||'{"sources":[{"title":"HTTPS","publisher":"Test","url":"https://docs.example.test:8443/a?b=1#c"},{"title":"HTTP","publisher":"Test","url":"http://example.test/a"}]}')$$,'Supported absolute HTTP(S) sources accepted');
+select throws_ok(format('select public.create_research_draft(%L::jsonb)', pg_temp.research_input('source-title-too-long') || jsonb_build_object('sources', jsonb_build_array(jsonb_build_object('title', repeat('T',241), 'publisher','Test','url','https://example.test/source')))), '22023', null, 'Source title cannot exceed the public 240-character boundary');
+select throws_ok(format('select public.create_research_draft(%L::jsonb)', pg_temp.research_input('source-publisher-too-long') || jsonb_build_object('sources', jsonb_build_array(jsonb_build_object('title','Test','publisher',repeat('P',161),'url','https://example.test/source')))), '22023', null, 'Source publisher cannot exceed the public 160-character boundary');
+select throws_ok($$select public.save_research_draft('10000000-0000-4000-8000-000000000107',1,'{"body_blocks":{"version":1,"sections":[{"id":"duplicate","heading":"One","blocks":[{"type":"paragraph","text":"A"}]},{"id":"duplicate","heading":"Two","blocks":[{"type":"paragraph","text":"B"}]}]}}')$$,'22023',null,'Duplicate section IDs denied at the database boundary');
+select throws_ok($$select public.save_research_draft('10000000-0000-4000-8000-000000000107',1,'{"body_blocks":{"version":1,"sections":[{"id":"callout","heading":"Callout","blocks":[{"type":"callout","text":"Missing label"}]}]}}')$$,'22023',null,'Callouts require a public label at the database boundary');
 select throws_ok($$select public.save_research_draft('10000000-0000-4000-8000-000000000107',1,'{"actor_id":"10000000-0000-4000-8000-000000000002"}')$$,'22023',null,'Actor spoofing field denied');
 select throws_ok($$select public.save_research_draft('10000000-0000-4000-8000-000000000107',1,'{"status":"PUBLISHED","published_at":"2020-01-01"}')$$,'22023',null,'State and time spoofing denied');
 select throws_ok($$select public.save_research_draft('10000000-0000-4000-8000-000000000107',1,'{"classification":"SPONSORED"}')$$,'22023',null,'Ordinary save cannot mutate classification');

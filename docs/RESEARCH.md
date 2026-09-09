@@ -1,5 +1,15 @@
 # NEXT100XGEMS Research
 
+Status: Research system COMPLETE through Gate 18E4. Gates 18F1, 18F2,
+18F3, and 18F4 are complete. Gate 18E4 passed with non-blocking findings;
+H1, M1, M2, and M3 are fixed, with no Critical, High, or Medium finding
+remaining.
+
+The remaining coverage note is a dedicated mounted Editorial → Partner
+disclosure-synchronization test that may be added later. The shared
+reconciliation path is already validated, so this is not a Research
+completion blocker. Radar remains separately gated.
+
 ## Positioning
 
 Research is the first-party publication layer for crypto research, market intelligence, and editorial analysis. It is not a news-reposting feed, influencer article page, paid-token directory, or buy/sell signal feed.
@@ -56,3 +66,31 @@ The authenticated Admin Research workspace now lives at `/admin/research`, `/adm
 The editor provides explicit Save Draft, Schedule, Publish, Archive, and Restore → Draft controls; scheduling does not publish automatically. It includes TL;DR, Key Facts with evidence states, category, AI-assisted indicator, accountable public byline, structured plain-text sections/blocks, HTTP(S) sources, related Research/tokens, disclosure, classification, and SEO fields. Sponsored and Partner labels remain prominent. All writes call the named Gate 18B audited RPCs and revision conflicts fail safely; no direct table writes or second audit call are made by the application.
 
 The Admin preview is private, request-time, noindex, visibly marked unpublished, and omits Article JSON-LD. It reuses the safe public renderer without exposing private profile/auth data or making a publication claim. Rich text, arbitrary HTML, media uploads, autosave, source fetching, and automatic publishing remain intentionally deferred.
+
+## Gate 18F2 public contract alignment
+
+The corrective migration `20260909000001_research_public_contract.sql` keeps the Gate 18B tables, RLS, grants, role semantics, lifecycle, and atomic audit model unchanged while aligning newly saved and published content with the public reader. Source titles are limited to 240 characters, publishers to 160, public byline name/title fields to 160, and related Research/token relationships to the existing 12-row public boundary. Structured sections and optional structural block IDs must be unique; callouts and data placeholders require nonblank labels. Historical private rows are not rewritten, while publication revalidates legacy rows before exposing them.
+
+The Admin validator, server DTO adapter, and renderer now share these limits. Canonical token `symbol` and `name` remain nullable end to end; the public presentation uses available labels and falls back to the truthful chain/contract identity rather than inventing a token name. Boundary regressions are covered by application tests and isolated pgTAP tests. No remote project, Radar functionality, or production data is involved.
+
+## Gate 18F4 final public contract correction
+
+Gate 18F4 adds the final explicit cross-layer Research contract. Required
+blankness uses the same set in TypeScript and PostgreSQL: tab, line breaks,
+ASCII space, NBSP, Ogham space, U+2000–U+200A, line/paragraph separators,
+narrow NBSP, medium mathematical space, ideographic space, and BOM. The
+contract tests blankness without trimming or normalizing valid content.
+
+Research source URLs are limited to HTTP(S) with an ASCII DNS hostname or
+unambiguous dotted-decimal IPv4 host, optional valid port, and no userinfo;
+IPv6 and internationalized hosts remain deferred. Source dates are ISO
+Gregorian AD/CE dates from 0001-01-01 through 9999-12-31. Public timestamps
+are bounded to the same application-representable AD range. Database
+publication validation and the server DTO reader use these same rules,
+including title, structured IDs, callout labels, sources, and dates.
+
+## Gate 18F3 public contract alignment
+
+Gate 18F3 adds a shared `unicodeCodePointLength()` utility for Admin and public-reader validation, matching PostgreSQL `char_length(text)` semantics. Bounded values are measured as stored, without trimming or truncation; required text rejects empty and whitespace-only values, and structured identifiers reject whitespace forms. The additive `20260909000002_research_contract_alignment.sql` migration applies the same raw/code-point and blank-value rules to Research mutation/publication validation.
+
+The public reader now accepts legitimate nullable canonical token labels without imposing arbitrary Research-only name, symbol, or contract limits. It retains truthful chain/contract identity and renders registry values as escaped text. Publication success is the compatibility boundary: a published Research article must pass the public projection, DTO, listing/detail, metadata, and renderer contract. No RLS, grants, RBAC, audit, lifecycle, token-registry, or Radar behavior changed.

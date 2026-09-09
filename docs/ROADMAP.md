@@ -50,6 +50,16 @@ Gate 18C — Public Research database integration — IMPLEMENTED. Added the ser
 
 Gate 18D — Operational Admin Research CMS — IMPLEMENTED. Added the RLS-filtered Admin Research list, new-draft/editor/preview routes, explicit draft and lifecycle controls, closed structured block editor, Key Facts, sources, related Research/tokens, public byline/classification/disclosure/SEO fields, and thin Server Action adapters over the named Gate 18B audited RPCs. Preview is authenticated, noindex, visibly unpublished, and omits Article JSON-LD. No secret-key user operation, direct table mutation, media upload, autosave, automatic scheduler, migration change, or remote integration was added. Gate 18E remains separately gated.
 
+Gate 18F1 — Research corrective integrity fixes — COMPLETE. Corrected the historical classification-trust, Key Facts preservation, and disclosure-synchronization findings while retaining named audited RPCs and the existing Research security boundaries.
+
+Gate 18F2 — Research public-contract correction — COMPLETE. Aligned Admin validation, database save/publication validation, public DTO mapping, and rendering for source/byline bounds, structured IDs/labels, relationship cardinality, and nullable canonical token labels. Added one additive migration and regression coverage without changing RLS, grants, role semantics, lifecycle behavior, or audit architecture. Complete local pgTAP and application validation passed; the final Gate 18E4 audit is recorded below.
+
+Gate 18F4 — Research final public-contract correction — COMPLETE. Added one explicit cross-layer contract for Unicode blankness, supported HTTP(S)/DNS-or-IPv4 source URLs, AD-only source dates, and public timestamp bounds; aligned Admin validation, direct RPC/publication checks, and the public DTO reader; added the final URL/date/whitespace corpus without changing RLS, grants, RBAC, lifecycle, audit, or Radar architecture.
+
+Gate 18F3 — Research public-contract alignment — COMPLETE. Added shared Unicode code-point length semantics, raw-value and whitespace validation alignment, structured identifier protections, direct-RPC publication checks, and reader support for legitimate nullable/unbounded canonical token display metadata. Added additive migration and boundary regressions without changing RLS, grants, RBAC, audit, lifecycle, or Radar architecture. Webpack build and complete database/application validations pass; default `pnpm check` remains limited by the known local Turbopack sandbox process-binding error.
+
+Gate 18E4 — Final Research completion audit — PASSED WITH NON-BLOCKING FINDINGS. H1, M1, M2, and M3 are fixed; no Critical, High, or Medium findings remain. Research is COMPLETE. A dedicated mounted Editorial → Partner disclosure-synchronization test may be added later; the shared reconciliation path is already validated and this is not a completion blocker. Radar remains separately gated.
+
 ## Phase 3 — Research
 
 Content model, articles, categories, authors, sources, related content, SEO, structured data, and disclosures.

@@ -15,11 +15,12 @@ export type ResearchInputSource = {
 };
 
 export type ResearchInputFact = { label: string; detail: string; evidence?: ResearchDbEvidence };
-export type ResearchAdminBlock =
+export type ResearchAdminBlock = { id?: string } & (
   | { type: "paragraph"; text: string }
   | { type: "quote"; text: string; attribution?: string }
   | { type: "callout"; label: string; text: string }
-  | { type: "data_placeholder"; label: string; description: string };
+  | { type: "data_placeholder"; label: string; description: string }
+);
 export type ResearchInputSection = { id: string; heading: string; blocks: ResearchAdminBlock[] };
 
 export type ResearchEditorInput = {

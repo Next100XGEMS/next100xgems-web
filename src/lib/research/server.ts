@@ -11,6 +11,7 @@ import {
   type ResearchClassification,
   type ResearchEvidenceKind,
 } from "@/components/research/research-content";
+import { hasResearchWhitespace, isBlankResearchText, isResearchPublicTimestamp, isResearchSourceDate, isResearchSourceUrl, unicodeCodePointLength } from "@/lib/research/text";
 
 const CATEGORY_MAP: Record<string, ResearchCategory> = Object.fromEntries(
   researchCategories.map(([category]) => [category.toUpperCase().replaceAll(" ", "_"), category]),
@@ -66,7 +67,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function boundedString(value: unknown, maxLength: number, required = true) {
-  if (typeof value !== "string" || value.length > maxLength || (required && value.trim().length === 0)) {
+  if (typeof value !== "string" || unicodeCodePointLength(value) > maxLength || (required && isBlankResearchText(value))) {
     throw new ResearchReadError();
   }
   return value;
@@ -77,16 +78,22 @@ function optionalString(value: unknown, maxLength: number) {
   return boundedString(value, maxLength, false) || undefined;
 }
 
+function optionalProjectedString(value: unknown) {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value !== "string") throw new ResearchReadError();
+  return value || undefined;
+}
+
 function dateString(value: unknown) {
   const result = boundedString(value, 64);
-  if (Number.isNaN(Date.parse(result))) throw new ResearchReadError();
+  if (!isResearchPublicTimestamp(result)) throw new ResearchReadError();
   return result;
 }
 
 function optionalDateString(value: unknown, maxLength: number) {
   if (value === null || value === undefined) return undefined;
   const result = boundedString(value, maxLength);
-  if (Number.isNaN(Date.parse(result))) throw new ResearchReadError();
+  if (!isResearchSourceDate(result)) throw new ResearchReadError();
   return result;
 }
 
@@ -151,11 +158,11 @@ function mapBodyBlocks(value: unknown) {
     }
 
     const sectionId = boundedString(section.id, 80);
-    if (sectionIds.has(sectionId)) throw new ResearchReadError();
+    if (hasResearchWhitespace(sectionId) || sectionIds.has(sectionId)) throw new ResearchReadError();
     sectionIds.add(sectionId);
     const blocks = section.blocks.map(mapResearchBlock);
     return {
-      heading: boundedString(section.heading, 160, false),
+      heading: boundedString(section.heading, 160),
       paragraphs: blocks.filter((block) => block.type === "paragraph").map((block) => block.text),
       blocks,
     };
@@ -183,21 +190,7 @@ function mapKeyFacts(value: unknown) {
 
 function safeSourceUrl(value: unknown) {
   const source = boundedString(value, 2048);
-  try {
-    const url = new URL(source);
-    if (
-      (url.protocol !== "http:" && url.protocol !== "https:") ||
-      !url.hostname ||
-      url.username ||
-      url.password ||
-      /[\s\\<>"\u0000-\u001f]/.test(source)
-    ) {
-      throw new ResearchReadError();
-    }
-  } catch (error) {
-    if (error instanceof ResearchReadError) throw error;
-    throw new ResearchReadError();
-  }
+  if (!isResearchSourceUrl(source)) throw new ResearchReadError();
   return source;
 }
 
@@ -216,24 +209,24 @@ function mapSources(value: unknown) {
 }
 
 function mapRelatedResearch(value: unknown) {
-  if (!Array.isArray(value) || value.length > 20) throw new ResearchReadError();
+  if (!Array.isArray(value) || value.length > 12) throw new ResearchReadError();
   return value.map((item) => {
     if (!isRecord(item)) throw new ResearchReadError();
     const slug = boundedString(item.slug, 160);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new ResearchReadError();
-    return { slug, title: boundedString(item.title, 240), category: mapCategory(item.category) };
+    return { slug, title: boundedString(item.title, 200), category: mapCategory(item.category) };
   });
 }
 
 function mapRelatedTokens(value: unknown) {
-  if (!Array.isArray(value) || value.length > 20) throw new ResearchReadError();
+  if (!Array.isArray(value) || value.length > 12) throw new ResearchReadError();
   return value.map((item) => {
     if (!isRecord(item)) throw new ResearchReadError();
     return {
-      symbol: boundedString(item.symbol, 64),
-      name: boundedString(item.name, 160),
+      symbol: optionalProjectedString(item.symbol),
+      name: optionalProjectedString(item.name),
       chain: boundedString(item.chain, 120),
-      contract: optionalString(item.contract_address, 256),
+      contract: optionalProjectedString(item.contract_address),
     };
   });
 }
@@ -247,12 +240,12 @@ function mapListRow(row: unknown): ResearchArticleSummary {
   return {
     id: boundedString(typedRow.id, 80),
     slug,
-    title: boundedString(typedRow.title, 240),
+    title: boundedString(typedRow.title, 200),
     dek: optionalString(typedRow.dek, 500),
     category: mapCategory(typedRow.category),
     classification: mapClassification(typedRow.classification),
     aiAssisted: typedRow.ai_assisted,
-    tldr: optionalString(typedRow.tldr, 10000),
+    tldr: optionalString(typedRow.tldr, 1200),
     author: mapAuthor(typedRow.author),
     publishedAt: dateString(typedRow.published_at),
     updatedAt: dateString(typedRow.updated_at),
@@ -264,7 +257,7 @@ function mapArticleRow(row: unknown): ResearchArticle {
   const typedRow = row as PublicResearchArticleRow;
   return {
     ...mapListRow(row),
-    tldr: boundedString(typedRow.tldr, 10000),
+    tldr: boundedString(typedRow.tldr, 1200),
     keyFacts: mapKeyFacts(typedRow.key_facts),
     sections: mapBodyBlocks(typedRow.body_blocks),
     sources: mapSources(typedRow.sources),
@@ -272,8 +265,8 @@ function mapArticleRow(row: unknown): ResearchArticle {
     relatedTokens: mapRelatedTokens(typedRow.related_tokens),
     disclosure: boundedString(typedRow.disclosure, 2000),
     seo: {
-      title: optionalString(typedRow.seo_title, 240),
-      description: optionalString(typedRow.seo_description, 500),
+      title: optionalString(typedRow.seo_title, 200),
+      description: optionalString(typedRow.seo_description, 320),
     },
   };
 }

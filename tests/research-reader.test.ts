@@ -95,6 +95,57 @@ describe("server Research reader", () => {
     expect(mockRpc).toHaveBeenCalledWith("read_public_research_article", { p_slug: "fixture-published" });
   });
 
+  it("keeps the database publication contract at its exact boundaries", async () => {
+    const boundaryRow = {
+      ...articleRow,
+      title: "T".repeat(200),
+      author: { display_name: "A".repeat(160), title: "R".repeat(160) },
+      sources: [{ title: "S".repeat(240), publisher: "P".repeat(160), url: "https://example.test/source" }],
+      related_tokens: [
+        { symbol: null, name: null, chain: "eip155:1", contract_address: "0x1111" },
+        { symbol: "FIX", name: null, chain: "eip155:1", contract_address: null },
+      ],
+    };
+    mockRpc.mockResolvedValue({ data: [boundaryRow], error: null });
+
+    await expect(readPublicResearchArticle("fixture-published")).resolves.toMatchObject({
+      title: "T".repeat(200),
+      author: { name: "A".repeat(160), role: "R".repeat(160) },
+      sources: [{ title: "S".repeat(240), publisher: "P".repeat(160) }],
+      relatedTokens: [
+        { symbol: undefined, name: undefined, chain: "eip155:1" },
+        { symbol: "FIX", name: undefined, chain: "eip155:1" },
+      ],
+    });
+  });
+
+  it("accepts Unicode code-point boundaries and legitimate canonical token labels", async () => {
+    mockRpc.mockResolvedValue({ data: [{
+      ...articleRow,
+      title: "😀".repeat(200),
+      author: { display_name: "😀".repeat(160), title: "😀".repeat(160) },
+      sources: [{ title: "😀".repeat(240), publisher: "😀".repeat(160), url: "https://example.test/source" }],
+      related_tokens: [{ symbol: "S".repeat(65), name: "N".repeat(161), chain: "eip155:1", contract_address: "0x1111" }],
+    }], error: null });
+
+    await expect(readPublicResearchArticle("fixture-published")).resolves.toMatchObject({
+      title: "😀".repeat(200),
+      author: { name: "😀".repeat(160), role: "😀".repeat(160) },
+      sources: [{ title: "😀".repeat(240), publisher: "😀".repeat(160) }],
+      relatedTokens: [{ symbol: "S".repeat(65), name: "N".repeat(161) }],
+    });
+  });
+
+  it("rejects whitespace-only identifiers and callout labels", async () => {
+    mockRpc.mockResolvedValue({ data: [{ ...articleRow, body_blocks: { version: 1, sections: [{ id: " ", heading: "Context", blocks: [{ type: "callout", label: "\t", text: "Text" }] }] } }], error: null });
+    await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
+  });
+
+  it("rejects public relationship output beyond the database cardinality", async () => {
+    mockRpc.mockResolvedValue({ data: [{ ...articleRow, related_research: Array.from({ length: 13 }, (_, index) => ({ slug: `related-${index}`, title: "Related", category: "MARKET" })) }], error: null });
+    await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
+  });
+
   it("fails closed for an unknown body block instead of rendering it", async () => {
     mockRpc.mockResolvedValue({
       data: [{ ...articleRow, body_blocks: { version: 1, sections: [{ id: "x", heading: "X", blocks: [{ type: "html", text: "<script>" }] }] } }],
@@ -107,6 +158,35 @@ describe("server Research reader", () => {
   it("fails closed for an unsafe source URL", async () => {
     mockRpc.mockResolvedValue({ data: [{ ...articleRow, sources: [{ ...articleRow.sources[0], url: "javascript:alert(1)" }] }], error: null });
 
+    await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
+  });
+
+  it("accepts the shared source URL and AD-only date boundaries", async () => {
+    mockRpc.mockResolvedValue({ data: [{ ...articleRow, sources: [
+      { title: "Lower", publisher: "Publisher", url: "https://127.0.0.1/source", published_on: "0001-01-01" },
+      { title: "Upper", publisher: "Publisher", url: "https://192.168.1.10/source", published_on: "9999-12-31" },
+    ] }], error: null });
+    await expect(readPublicResearchArticle("fixture-published")).resolves.toMatchObject({
+      sources: [{ publishedAt: "0001-01-01" }, { publishedAt: "9999-12-31" }],
+    });
+
+    for (const url of ["https://999.999.999.999/source", "https://256.1.1.1/source", "https://example..com/path", "https://user:pass@example.com/source"]) {
+      mockRpc.mockResolvedValue({ data: [{ ...articleRow, sources: [{ ...articleRow.sources[0], url }] }], error: null });
+      await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
+    }
+    for (const date of ["0001-01-01 BC", "0001-01-01T00:00:00Z"]) {
+      mockRpc.mockResolvedValue({ data: [{ ...articleRow, sources: [{ ...articleRow.sources[0], published_on: date }] }], error: null });
+      await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
+    }
+  });
+
+  it("accepts public timestamp boundaries and rejects unsupported eras", async () => {
+    mockRpc.mockResolvedValue({ data: [{ ...articleRow, published_at: "0001-01-01T00:00:00.000Z", updated_at: "9999-12-31T23:59:59.999Z" }], error: null });
+    await expect(readPublicResearchArticle("fixture-published")).resolves.toMatchObject({
+      publishedAt: "0001-01-01T00:00:00.000Z",
+      updatedAt: "9999-12-31T23:59:59.999Z",
+    });
+    mockRpc.mockResolvedValue({ data: [{ ...articleRow, published_at: "0001-01-01 BC", updated_at: "2026-09-07T01:00:00.000Z" }], error: null });
     await expect(readPublicResearchArticle("fixture-published")).rejects.toBeInstanceOf(ResearchReadError);
   });
 
