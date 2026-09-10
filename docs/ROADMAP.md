@@ -80,6 +80,10 @@ Radar listing and token views, statuses, scores, evidence states, sources, metho
 
 Market/on-chain ingestion, deterministic screening, risk filtering, deep analysis, persistence, review queue, human approval, and public presentation. Automatic publishing remains OFF initially.
 
+Gate 19A — Radar implementation architecture and safety plan — COMPLETE. Added the scoped Radar architecture, data model, provider boundaries, freshness/evidence semantics, public-read contract, review/audit model, adversarial test matrices, and deferred decisions in [RADAR_IMPLEMENTATION_PLAN.md](RADAR_IMPLEMENTATION_PLAN.md). No Radar runtime, database, provider, or AI implementation was started.
+
+Gate 19B — Public Radar UX — IMPLEMENTED. Added the truthful flag-aware `/radar` explanation page, development-only `/radar-preview` list and synthetic detail preview, reusable Radar evidence/status/score/freshness presentation, and [RADAR_UI.md](RADAR_UI.md). No live Radar records, provider integrations, database changes, migrations, workers, Admin review queue, or execution functionality were added. Gate 19C remains separately gated.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.
