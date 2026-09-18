@@ -8,16 +8,18 @@ select tables_are('public', array[
   'profiles', 'roles', 'user_roles', 'feature_flags', 'site_settings', 'audit_logs',
   'articles', 'partners', 'sponsors', 'ad_placements', 'ad_campaigns',
   'ad_creatives', 'ad_campaign_placements', 'leads', 'tokens',
-  'radar_analyses', 'radar_reviews', 'research_authors', 'article_sources',
+  'radar_analyses', 'radar_reviews', 'radar_events', 'radar_observations',
+  'radar_work_items', 'radar_work_inputs', 'radar_evidence', 'radar_methodology_versions',
+  'radar_freshness_policies', 'radar_evidence_freezes', 'research_authors', 'article_sources',
   'article_related_research', 'article_tokens'
-], 'Only the 21 intended foundation/Research tables exist; no trading or analytics event tables');
+], 'Only the intended foundation/Research/Radar tables exist; no trading or analytics event tables');
 
 select ok(c.relrowsecurity, c.relname || ': RLS enabled')
 from pg_class c join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public' and c.relkind = 'r' order by c.relname;
 
-select is((select count(*)::integer from pg_policies where schemaname = 'public'), 20,
-  'Exactly the 16 Gate 6B and four Research staff-read policies exist');
+select is((select count(*)::integer from pg_policies where schemaname = 'public'), 25,
+  'Exactly the Gate 6B, Research, and Radar staff-read policies exist');
 
 select ok(not exists (
   select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -79,10 +81,11 @@ select ok(not exists (
   left join public.roles r on r.id = u.role_id
   where p.id is null or r.id is null
 ), 'Every role assignment references an existing profile and seeded role');
-select is((select count(*)::integer from public.feature_flags), 8, 'Eight shared safe feature defaults');
+select is((select count(*)::integer from public.feature_flags), 9, 'Nine shared safe feature defaults');
 select is((select enabled from public.feature_flags where key = 'radar_auto_publish'), false, 'Auto-publish OFF');
 select is((select enabled from public.feature_flags where key = 'maintenance_mode'), true, 'Maintenance ON initially');
-select is((select count(*)::integer from public.feature_flags where key <> 'maintenance_mode' and enabled), 0,
+select is((select enabled from public.feature_flags where key = 'radar_emergency_paused'), true, 'Radar emergency pause ON initially');
+select is((select count(*)::integer from public.feature_flags where key not in ('maintenance_mode', 'radar_emergency_paused') and enabled), 0,
   'All feature availability defaults OFF');
 
 select ok(exists (

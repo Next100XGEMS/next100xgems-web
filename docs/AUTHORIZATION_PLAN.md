@@ -410,6 +410,36 @@ Gate 6B runtime validation completed with clean migration replay, isolated autho
 
 Gate 6A created this document. Gate 6B is complete, Gate 6C passed with non-blocking findings, and Gate 6D is complete. Gates 7–10 are implemented in the local project; operational flag mutation, audit reads, product workflows and full domain dashboards remain deferred.
 
+## 20. Gate 19C Radar database authorization
+
+The additive Radar migration preserves Gate 6's live ACTIVE-role resolver and
+adds no role keys. Owner/Admin may approve, publish, reject, hide and update
+private editorial notes; Owner/Admin alone controls the emergency pause.
+Radar Reviewer may perform the moderation actions but not the emergency
+control. Analyst may request reanalysis or score recalculation without
+supplying output. Editor, Ad Manager, Viewer, no-role and inactive identities
+have no private Radar mutation authority.
+
+Raw DML remains denied for all browser roles, including Owner/Admin. The new
+Radar tables expose only role-filtered authenticated reads. Human actions use
+revision-checked audited RPCs that derive `auth.uid()` and recheck authority;
+system ingestion/result functions are `SECURITY DEFINER` with empty search
+path and EXECUTE only for `service_role`. Anonymous callers receive only the
+two narrow published Radar projection functions. Commercial tables have no
+Radar analytical write path. Gate 19C-F3 also revalidates historical
+approvers through the same effective-role conflict semantics used by the live
+authorization architecture; an Ad Manager conflict cannot publish Radar. See
+[RADAR_DATABASE.md](RADAR_DATABASE.md) for the table and function contract.
+
+Gate 19C-F4 keeps those production authorization semantics unchanged while
+moving the final publication authorization/approver checks after every
+mutable blocking lock. It validates the authoritative analysis source for
+legacy publication safety, so historical unsafe JSON cannot cross the public
+boundary. Work renewal and failure recheck the service fence after locking
+the work row and taking a fresh wall-clock reading. The F4 upgrade and
+lock-wait tests model separate request sessions; they do not weaken RLS,
+grants or role resolution.
+
 ## 19. Gate 18B — Research-specific authorization extension
 
 The corrected `private.current_app_roles()`, existing article staff SELECT policy, profile/role model and all non-Research policies remain unchanged. The new functions resolve live ACTIVE roles from that helper; email/user metadata/JWT role labels are not application authority. Each mutation locks/rechecks the actor, permitted resource and expected revision, then appends its required audit in the same database transaction.

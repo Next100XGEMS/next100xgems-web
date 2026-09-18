@@ -1,6 +1,6 @@
 # Radar Implementation Architecture and Safety Plan — Gate 19A
 
-Status: planning deliverable only, 2026-09-10. This document records the recommended architecture for separately approved Gates 19B–19G. It does not authorize implementation or claim that the proposed controls exist. Branch inspected: `feat/radar`; the working tree was clean before this document was created.
+Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. This document records the approved architecture and the implementation boundary for separately approved Gates 19D–19G. Branch: `feat/radar`.
 
 Source of truth reviewed: `AGENTS.md`, [RADAR_SPEC.md](RADAR_SPEC.md), [PROJECT_SPEC.md](PROJECT_SPEC.md), [ARCHITECTURE.md](ARCHITECTURE.md), [DATABASE.md](DATABASE.md), [AUTHORIZATION_PLAN.md](AUTHORIZATION_PLAN.md), [AUDIT_LOGGING.md](AUDIT_LOGGING.md), [FEATURE_FLAGS.md](FEATURE_FLAGS.md), [SECURITY.md](SECURITY.md), and [ROADMAP.md](ROADMAP.md). Schema statements below describe migration source, not an inspection of live database contents. Research is complete; only its established narrow-projection and atomic audited-mutation principles are relevant here. Its content architecture is not copied.
 
@@ -389,6 +389,33 @@ Highest risks are publication-time authorization/concurrency, pause/cache consis
 
 No claim is made that database RLS constrains a compromised database owner or authenticates the correctness of a trusted worker's calculation. Retention, recovery, source licensing, budget/rate limits and operational monitoring need explicit decisions before sustained ingestion; they do not justify additional platforms now. Reviewers can assess intelligence, not certify investment safety.
 
+## 31. Gate 19C implementation record
+
+Gate 19C's original foundation is implemented by the additive
+`20260910000001_radar_database_foundation.sql` migration and documented in
+[RADAR_DATABASE.md](RADAR_DATABASE.md). It adds the event, observation, work,
+frozen-input and evidence domains; extends immutable analysis and revisioned
+review records; adds audited human operations, a trusted service-role-only
+system boundary, emergency pause, role-filtered RLS and narrow public
+projections. Gate 19C-F1 is a separate additive corrective migration. Gate
+19C-F2 adds typed human approval inputs, approved method/freshness registries,
+derived and frozen public snapshots, safe source references, evidence freeze
+after approval, and lock-time authorization/revision/pause/flag revalidation.
+Gate 19C-F3 adds the final typed nested-data boundary, effective approver
+conflict validation, durable evidence freeze, finite timestamp constraints,
+post-lock wall-clock deadlines, and read-time policy withdrawal checks. The
+original, F1, and F2 migrations remain untouched. Gate 19C-F4 is a new
+additive correction for upgrade-safe authoritative-source validation, canonical
+publication lock ordering, post-lock authorization/time checks, and work-row
+lease revalidation. It also corrects the lock-wait fixtures so tests begin
+with valid authority and cross deadlines only while blocked. No provider,
+worker, automatic publisher or Gate 19D capability is included.
+
+`contract-v1` is a schema-contract identifier used to validate persistence and
+publication wiring; it is not an empirically approved score formula. No real
+provider, Fast Lane evaluator, Deep Lane model, background worker or automatic
+publisher was started. Gate 19D remains separately gated.
+
 ## 30. Intentionally deferred decisions
 
 - Exact market, discovery, on-chain, contract-risk and social providers; licensing/retention rights, supported capabilities and chain coverage.
@@ -399,4 +426,4 @@ No claim is made that database RLS constrains a compromised database owner or au
 - Public historical-version browsing, advanced organic ranking, additional asset identifier forms and provider administration UI.
 - Any future automatic-publication caller or change to mandatory human review; flag availability is not approval for either.
 
-These decisions are not filled with invented defaults. Until their relevant prerequisite is approved, that capability stays unsupported, nonpublic or disabled. Gate 19A created only this plan: no application code, migration, dependency, database state, provider/AI connection, Radar UI, ingestion or scoring implementation. Gate 19B is not started.
+These decisions are not filled with invented defaults. Until their relevant prerequisite is approved, that capability stays unsupported, nonpublic or disabled. Gate 19A created only this plan; later gates remain separately scoped and no gate after the current Gate 19C corrective work has started.

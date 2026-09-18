@@ -147,6 +147,68 @@ Acceptance evidence: clean eight-migration replay; foundation **85/85**, existin
 
 The application remains unintegrated: no Admin CMS pages/forms, public queries, Server Actions, preview implementation, upload, scheduler or remote Supabase work. Generated application database types and new TypeScript mutation permissions remain part of the later integration gate, not this database-only change.
 
+## 14. Radar database foundation — Gate 19C / Gate 19C-F1 / Gate 19C-F2 / Gate 19C-F3 / Gate 19C-F4
+
+The additive `20260910000001_radar_database_foundation.sql` migration preserves
+the canonical token registry and existing immutable analysis/review tables.
+It adds `radar_events`, `radar_observations`, `radar_work_items`,
+`radar_work_inputs` and `radar_evidence`, then extends analysis provenance,
+method/input/freshness fields and review revision/publication bindings. The
+new Radar tables are RLS-enabled with default-deny grants; existing Research
+migrations and application behavior are unchanged.
+
+Events are unique by versioned deterministic key, with a database-derived
+canonical fingerprint rather than caller hash trust. Observations retain
+explicit `AVAILABLE`/`UNKNOWN`/`UNAVAILABLE`/`UNSUPPORTED`/`STALE` state,
+provenance and PostgreSQL `numeric` values; non-AVAILABLE states cannot carry
+authoritative numeric values and provenance keys are bounded/allowlisted. Work
+requests are idempotent, lease-fenced and pause-generation-bound; claiming
+seals the exact observation set before evaluation. Analysis/evidence result
+acceptance requires the producing fence and sealed input hash. Recalculation
+copies the original frozen inputs and reserves a version above persisted and
+pending versions.
+
+Owner/Admin/Radar Reviewer moderation uses atomic audited RPCs with revision
+checks. Analyst requests are bounded; commercial roles cannot write analytical
+state. Service-role-only system functions provide the future ingestion/result
+boundary without granting browser execution. The emergency pause is seeded
+ON and missing/malformed state fails closed across ingestion, work, result and
+publication operations. `radar_auto_publish` remains a non-action flag and no
+automatic publisher exists.
+
+Gate 19C-F1 adds the service-role-only fenced pending-review transition,
+actor/action/target/payload-bound human request receipts, exact replay conflict
+checks and explicit rejection of NULL expected revisions/generations/fences.
+The original Gate 19C and F1 migrations are not rewritten. Gate 19C-F2 adds
+approved methodology/freshness registries, typed human approval fields,
+system-derived and frozen public metrics/evidence/presentation snapshots, safe
+source references, evidence freeze after approval, and lock-time revalidation
+of all publication bindings and active authorization. Approval requires a
+finite eligible score, a sealed nonempty PASS result and an approved
+method/policy; publication exposes only its frozen 17-key snapshot.
+
+Gate 19C-F3 adds a durable evidence-freeze marker, finite timestamp checks for
+observation/evidence/analysis/review publication times, post-lock wall-clock
+lease and publication deadlines, effective-role approver revalidation, and
+current methodology/freshness eligibility checks on public list/detail reads.
+Nested analytical JSON is rejected before text coercion. Historical review,
+analysis, evidence, and publication rows remain preserved when a policy is
+withdrawn.
+
+Gate 19C-F4 is additive and leaves the original, F1, F2 and F3 migrations
+unchanged. It validates authoritative typed analytical source data at the
+upgrade boundary, keeps unsafe legacy approvals/publications stored but
+nonpublishable and nonpublic, and preserves safe legacy string publications.
+Publication takes all mutable blocking locks before its final authorization,
+approver, eligibility and wall-clock checks. Work renewal/failure takes the
+authoritative work-row lock before checking fresh expiry and pause fences.
+
+Two narrow public projection functions return only explicitly published,
+eligible, non-expired Radar fields and allowlisted evidence. Raw Radar tables,
+private notes, work state, reviewer data, provider secrets and audit metadata
+remain unavailable to anonymous callers. The public UI is intentionally not
+connected in Gate 19C.
+
 ## 13. Research final public contract — Gate 18F4
 
 The additive 20260909000003_research_contract_final.sql migration makes the
