@@ -1,0 +1,30 @@
+export type RadarReviewState = "PENDING" | "APPROVED" | "PUBLISHED" | "REJECTED" | "HIDDEN";
+export type RadarAnalysisStatus = "EARLY" | "TRENDING" | "HIGH_RISK" | "REJECTED";
+
+export type RadarAdminRecord = {
+  reviewId: string | null;
+  analysisId: string;
+  tokenId: string;
+  chain: string;
+  contractAddress: string;
+  symbol: string | null;
+  name: string | null;
+  analysisVersion: number;
+  status: RadarAnalysisStatus;
+  score: string | null;
+  riskSummary: string | null;
+  analyzedAt: string;
+  dataAsOf: string;
+  publicEligible: boolean;
+  runType: string;
+  workState: string | null;
+  workMethodVersion: string | null;
+  workInputHash: string | null;
+  screeningResult: "PASS" | "REJECT" | "INCOMPLETE" | null;
+  evidenceCount: number;
+  reviewState: RadarReviewState | null;
+  reviewRevision: number | null;
+  editorialNote: string | null;
+  publicNote: string | null;
+  publicDisclosure: string | null;
+};
