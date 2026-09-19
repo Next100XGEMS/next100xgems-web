@@ -503,6 +503,8 @@ Evaluate in order: mandatory capability feasibility → verifiability/history/ri
 
 ## 15. Completion and scope record
 
+Follow-on planning: [RADAR_PROVIDER_EVALUATION.md](RADAR_PROVIDER_EVALUATION.md) maps these unchanged requirements to ten sources, including direct Pump/PumpSwap data and read-only GMGN, with conditional authority/stack recommendations. [RADAR_AI_EVALUATION.md](RADAR_AI_EVALUATION.md) defines the proprietary/open-weight bake-off and bounded research-agent option. These documents do not change the 80 candidate signals, 30 proposed mandatory signals, 31 capabilities, 21 mandatory capabilities, lane eligibility, scoring or freshness policy; recommendations and empirical testing still require human approval before implementation.
+
 Deliverables A–J are defined above: minimum set (section 6), full inventory (3/6), provider matrix (9), Fast/Deep Lane eligibility (6), exclusions (6), chain recommendation (8), unresolved decisions/provider criteria (14), empirical validation (12). This document is complete as a **requirements baseline**, not as an approved production methodology.
 
 Gate 19G software foundation remains approved. Production intelligence remains unconfigured pending requirements review, capability/provider evaluation, empirical method/freshness decisions and separately authorized implementation/activation. No live provider/model, API key, schema change, Fast Lane change, score weight, final threshold, deployment, feature-flag mutation or trading/execution capability is introduced by this document.

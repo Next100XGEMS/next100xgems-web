@@ -6,9 +6,9 @@ The approved requirements remain unchanged: **80 candidate signals, 30 proposed 
 
 ## 1. Decision summary
 
-Recommend **Option B: Birdeye + Helius + CoinGecko Onchain** for a restricted Solana beta, conditional on the acceptance gates below. Birdeye is the proposed market/discovery source; Helius transports verifiable chain facts and indexed accounts/history; CoinGecko provides a second market observation and historical comparison path. These are recommendations requiring human approval, not already selected production providers.
+Revised recommendation: **Option D: direct Pump/PumpSwap data + Helius + Birdeye + read-only GMGN + CoinGecko Onchain** for an instrumented private beta, conditional on GMGN price/rights and all acceptance gates below. Pump is a program-truth layer using Helius, not a second paid RPC service. GMGN is a bounded enrichment/shadow feed, not the authority for objective facts. CoinGecko remains the separately sourced market/history verifier. Options below supersede the option lettering in commit `7dbb740`; no subscription is approved by this recommendation.
 
-**Option A: Birdeye + Helius** is the smallest credible engineering/pilot stack. It is not sufficient evidence for claiming all mandatory signals work: exact pool depth, exclusion labels, account-to-participant attribution, historical completeness and source lineage still require project-owned validation/computation. A second RPC is desirable for spot verification but need not become a fourth full subscription at beta launch. **Bitquery should be deferred as an always-on dependency**, while a narrowly scoped historical-data evaluation/quote can proceed after approval.
+**Option B: Pump + Birdeye + Helius** is the smallest Pump-aware pilot stack; Option A remains its generic-market comparison baseline. It is not sufficient evidence for claiming all mandatory signals work: exact pool depth, exclusion labels, account-to-participant attribution, historical completeness and source lineage still require project-owned validation/computation. A second RPC is desirable for spot verification but need not duplicate the full workload. If GMGN procurement is not justified, run B plus the CG verifier as a reduced D pilot; if CG is deferred, C is private shadow-only until independent Q03 verification is demonstrated. **Bitquery should be deferred as an always-on dependency**, while a narrowly scoped historical-data evaluation/quote can proceed after approval.
 
 Coverage result: **21/21 mandatory capabilities and 30/30 mandatory signals have an explicit candidate acquisition/derivation route below; none has been acceptance-tested against paid production responses in this task.** No vendor or combination is certified here as an out-of-the-box implementation of the complete minimum set. The 80-signal traceability map includes optional/context/excluded signals without making them launch dependencies.
 
@@ -23,49 +23,49 @@ Official API references, product documentation, pricing, coverage and terms were
 - **NO**: the reviewed product surface is not a source for this requirement. Not a claim about every private enterprise offering.
 - **UNKNOWN**: public evidence was insufficient, contradictory or inaccessible. Never interpret as YES.
 - All matrix cells are **Solana-specific**. Support on another chain does not count. Chain/program/DEX version must be verified separately.
-- Every cell inherits its provider operational profile in section 4 and its capability qualification in section 3. These linked tables together form the evaluation record, avoiding 248 repetitions of plan/rate/transport fields. An undocumented capability-specific limit, retention floor, update SLA, scale/rounding rule or entitlement is **UNKNOWN**, even if a vendor-wide maximum is stated.
+- Every cell inherits its provider operational profile in section 4 and its capability qualification in section 3. These linked tables together form the evaluation record, avoiding 310 repetitions of plan/rate/transport fields. An undocumented capability-specific limit, retention floor, update SLA, scale/rounding rule or entitlement is **UNKNOWN**, even if a vendor-wide maximum is stated.
 - “Live” means offered near-current delivery, not a measured latency guarantee. HTTP JSON-RPC/GraphQL are identified separately from REST. A WebSocket catalog does not imply streaming for every endpoint.
 - Pricing is USD as observed, before tax, hosting, database/storage, egress, engineering, support and optional add-ons. Monthly and annual-equivalent prices are distinguished. Reconfirm checkout/contract before spending.
 
 Important research caveats: Birdeye's documentation is moving from `docs.birdeye.so` to `data.birdeye.so/docs`; some linked endpoint pages failed to resolve. Official product guides substantiate several capabilities but do not replace payload/entitlement tests. Older pricing/index pages conflict with newer pages for some vendors. Where a current canonical pricing card and an older article disagree, the card is used provisionally and the discrepancy retained below. No private dashboard was inspected.
 
-## 3. All 31 capabilities × eight providers
+## 3. All 31 capabilities × ten sources
 
-Abbreviations: BE Birdeye; HE Helius; CG CoinGecko/GeckoTerminal; DS DEX Screener; BQ Bitquery; QN QuickNode; SH Shyft; MO Moralis. `M` = mandatory; `H/O/D` = enrichment priority from the requirements. Sources for each column are the linked operational profiles; row-specific acceptance constraints follow this matrix.
+Abbreviations: BE Birdeye; HE Helius; CG CoinGecko/GeckoTerminal; DS DEX Screener; BQ Bitquery; QN QuickNode; SH Shyft; MO Moralis; PF direct Pump/PumpSwap program data transported by RPC (not an HTTP vendor); GM GMGN read-only API. `M` = mandatory; `H/O/D` = enrichment priority from the requirements. Sources for each column are the linked operational profiles; row-specific acceptance constraints follow this matrix.
 
-| Capability | Need | BE | HE | CG | DS | BQ | QN | SH | MO |
-|---|---|---|---|---|---|---|---|---|---|
-| TOKEN_IDENTITY | M | PARTIAL | YES | PARTIAL | PARTIAL | PARTIAL | YES | YES | PARTIAL |
-| TOKEN_SUPPLY | M | PARTIAL | YES | PARTIAL | NO | PARTIAL | YES | YES | UNKNOWN |
-| TOKEN_AUTHORITIES | M | PARTIAL | PARTIAL | NO | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| TOKEN_METADATA | H | YES | YES | YES | PARTIAL | PARTIAL | YES | PARTIAL | YES |
-| DISCOVERY_EVENTS | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| CHAIN_STATE | M | PARTIAL | YES | NO | NO | PARTIAL | YES | YES | PARTIAL |
-| MARKET_PAIR | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| PRICE | M | YES | PARTIAL | YES | YES | YES | PARTIAL | PARTIAL | YES |
-| QUOTE_CONTEXT | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| LIQUIDITY | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| POOL_STATE | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| LIQUIDITY_EVENTS | M | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| MARKET_DEPTH | M | UNKNOWN | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| VOLUME | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| TRADES | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| HOLDER_BALANCES | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| TOP_HOLDERS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| ADDRESS_LABELS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| PARTICIPANT_MAPPING | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| TOKEN_TRANSFERS | M | PARTIAL | YES | PARTIAL | NO | PARTIAL | YES | PARTIAL | PARTIAL |
-| WALLET_HISTORY | H | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| HISTORICAL_WINDOWS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| COVERAGE_LINEAGE | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| LP_STATE | H | UNKNOWN | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| TOKEN_CREATOR | H | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| CREATOR_REWARDS | O | PARTIAL | PARTIAL | NO | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN |
-| LAUNCH_LIFECYCLE | H | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
-| PUBLIC_SOCIAL | D | PARTIAL | NO | PARTIAL | PARTIAL | NO | NO | NO | PARTIAL |
-| PUBLIC_WEB | D | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL |
-| DEVELOPMENT_CONTEXT | D | NO | NO | PARTIAL | NO | NO | NO | NO | UNKNOWN |
-| PUBLIC_NEWS | D | NO | NO | PARTIAL | NO | NO | NO | NO | UNKNOWN |
+| Capability | Need | BE | HE | CG | DS | BQ | QN | SH | MO | PF | GM |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| TOKEN_IDENTITY | M | PARTIAL | YES | PARTIAL | PARTIAL | PARTIAL | YES | YES | PARTIAL | YES | PARTIAL |
+| TOKEN_SUPPLY | M | PARTIAL | YES | PARTIAL | NO | PARTIAL | YES | YES | UNKNOWN | PARTIAL | PARTIAL |
+| TOKEN_AUTHORITIES | M | PARTIAL | PARTIAL | NO | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | PARTIAL |
+| TOKEN_METADATA | H | YES | YES | YES | PARTIAL | PARTIAL | YES | PARTIAL | YES | PARTIAL | YES |
+| DISCOVERY_EVENTS | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | YES | PARTIAL |
+| CHAIN_STATE | M | PARTIAL | YES | NO | NO | PARTIAL | YES | YES | PARTIAL | PARTIAL | UNKNOWN |
+| MARKET_PAIR | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| PRICE | M | YES | PARTIAL | YES | YES | YES | PARTIAL | PARTIAL | YES | PARTIAL | YES |
+| QUOTE_CONTEXT | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| LIQUIDITY | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| POOL_STATE | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | PARTIAL |
+| LIQUIDITY_EVENTS | M | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| MARKET_DEPTH | M | UNKNOWN | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | UNKNOWN |
+| VOLUME | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| TRADES | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| HOLDER_BALANCES | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL |
+| TOP_HOLDERS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL |
+| ADDRESS_LABELS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | PARTIAL |
+| PARTICIPANT_MAPPING | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| TOKEN_TRANSFERS | M | PARTIAL | YES | PARTIAL | NO | PARTIAL | YES | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| WALLET_HISTORY | H | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL |
+| HISTORICAL_WINDOWS | M | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| COVERAGE_LINEAGE | M | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| LP_STATE | H | UNKNOWN | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | UNKNOWN |
+| TOKEN_CREATOR | H | PARTIAL | PARTIAL | UNKNOWN | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | YES | PARTIAL |
+| CREATOR_REWARDS | O | PARTIAL | PARTIAL | NO | NO | PARTIAL | PARTIAL | PARTIAL | UNKNOWN | PARTIAL | UNKNOWN |
+| LAUNCH_LIFECYCLE | H | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL | YES | PARTIAL |
+| PUBLIC_SOCIAL | D | PARTIAL | NO | PARTIAL | PARTIAL | NO | NO | NO | PARTIAL | NO | PARTIAL |
+| PUBLIC_WEB | D | PARTIAL | PARTIAL | PARTIAL | PARTIAL | NO | PARTIAL | PARTIAL | PARTIAL | PARTIAL | PARTIAL |
+| DEVELOPMENT_CONTEXT | D | NO | NO | PARTIAL | NO | NO | NO | NO | UNKNOWN | NO | NO |
+| PUBLIC_NEWS | D | NO | NO | PARTIAL | NO | NO | NO | NO | UNKNOWN | NO | UNKNOWN |
 
 ### Capability-level interpretation and operational exceptions
 
@@ -205,11 +205,103 @@ Current [pricing](https://shyft.to/) has a new unlimited-credit schedule and a s
 
 [Solana Streams](https://docs.moralis.com/streams/solana-streams) now documents webhook delivery with program/address/mint filters, inner instructions and pre/post token balances. [Supported-chain documentation](https://docs.moralis.com/streams/supported-chains) explicitly includes Solana. Thus Solana streaming is **YES via webhooks**, not an assumed EVM-only product; WS/gRPC equivalence and replay retention are UNKNOWN. Retry delivery means deduplication is necessary.
 
-[Pricing](https://moralis.com/pricing/) displayed annual-billed monthly equivalents: Starter **$149/2M CU/40 RPS**, Pro **$249/100M/80**, Business **$749/500M/200**. Monthly billing and exact Solana endpoint CU costs must be confirmed using the [CU guidance](https://api-help.moralis.io/en/articles/27695-compute-units). Do not use the pricing calculator's average request cost for a Radar workload. Candidate fallback, not another paid default: no unique mandatory capability has been demonstrated that justifies buying it alongside all three proposed providers.
+[Pricing](https://moralis.com/pricing/) displayed annual-billed monthly equivalents: Starter **$149/2M CU/40 RPS**, Pro **$249/100M/80**, Business **$749/500M/200**. Monthly billing and exact Solana endpoint CU costs must be confirmed using the [CU guidance](https://api-help.moralis.io/en/articles/27695-compute-units). Do not use the pricing calculator's average request cost for a Radar workload. Candidate fallback, not another paid default: no unique mandatory capability has been demonstrated that justifies buying it alongside the proposed core stack.
 
-### 4.9 Transport, precision and pagination applicability
+### 4.9 Pump.fun — direct program truth, not a trading integration
 
-This table completes the per-provider operational defaults inherited by every capability cell. A YES applies only to the documented endpoint family, not all 31 capabilities; a NO capability remains unsupported even when its provider has a REST API. Historical floors and pricing are in sections 4.1–4.8/10. Cost classes are comparative planning judgments, not vendor tariffs: low = public/test or small shared plan; medium = several paid shared services; variable/high = substantial indexing, stream bandwidth, archives or custom terms.
+Sources reviewed on 2026-09-20: official [public docs/updates](https://github.com/pump-fun/pump-public-docs), [Pump account semantics](https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_PROGRAM_README.md), [current Pump IDL](https://github.com/pump-fun/pump-public-docs/blob/main/idl/pump.json), [PumpSwap state](https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_SWAP_README.md), and [official agent skills](https://github.com/pump-fun/pump-fun-skills). These are external research references, not instructions to install or run. The official skills include create/swap/fee actions: none is authorized for Radar.
+
+Separate three surfaces:
+
+- **Direct Solana/Pump program truth:** read accounts and successful transaction events through HE or a qualified RPC alternative. Program ownership, transaction status, commitment, slot, instruction identity and pinned decoder establish the fact.
+- **Official Pump HTTP/API:** a stable public read-only production contract, history floor, numeric fidelity, rate limit, SLA and commercial entitlement were **not established** by the reviewed sources. UNKNOWN; frontend responses are not an approved dependency. Never use unofficial “Pump API” trading services as if they were Pump's official data contract.
+- **Transaction building/trading:** SDK/IDL buy, sell, swap, create, migration execution, signing and fee-claim functions are **excluded**. Reading a migration event is different from executing migration. No wallet, transaction builder or signing dependency is proposed.
+
+The current official [update notes](https://raw.githubusercontent.com/pump-fun/pump-public-docs/main/README.md) include quote-mint-aware curves, renamed quote reserves, and appended PumpSwap virtual quote reserves. Therefore do not assume every curve is SOL-only or every pool's pricing reserve equals its vault balance. Pin IDL/program revision; distinguish legacy absent fields from observed zero. Exact integers/decimals remain strings/raw units; JS Number is not authoritative.
+
+#### Pump field and analytical-use schedule
+
+PF matrix YES is scoped to supported Pump versions, not all Solana tokens. Rows below are our proposed verification/use policy over the linked state/event definitions. F = deterministic Fast Lane fact/derivation; B = that fact plus optional Deep Lane interpretation. No field is a guarantee of safety.
+
+| Field | Authority / representation | Independent RPC check | Lane | Freshness | Manipulation relevance / limit |
+|---|---|---|---|---|---|
+| Creation discovery | Successful Create event + tx/slot/instruction; on-chain | Yes, program and receipt | F | VERY FRESH delivery; historical event immutable | Spam creation not meaningful demand |
+| Mint | Event mint + actual token-program account | Yes | F | SLOW-CHANGING identity | Reject symbol/address spoofing |
+| Creator | Program creator field, separate initiating user/fee payer | Yes, event and current state | B | MODERATE; changes FRESH | Attribution is a program role, not beneficial ownership |
+| Creation timestamp | Event timestamp and block time, separate index-first-seen | Yes when retained; nullable block time not invented | F | Immutable origin, FRESH collection lineage | Listing age must not masquerade as deployment age |
+| Bonding-curve identity/state | PDA/account owner + decoded version | Yes | F | VERY FRESH | Wrong/replayed account invalidates analysis |
+| Virtual reserves | Integer token/quote units from supported curve | Yes | F | VERY FRESH | Pricing parameters, not spendable liquidity |
+| Real reserves | Actual supported curve/vault balances, separately typed | Yes, aligned state | F | VERY FRESH | Availability differs from implied valuation |
+| Progress | Radar derivation from versioned curve/config, not universal percentage | Yes for inputs; recipe approval needed | F | VERY FRESH | High progress can be engineered; no momentum proof |
+| Complete state | Observed complete flag/event | Yes | F | VERY FRESH | Complete is not proof migration already occurred |
+| Graduation/migration/pool | Match migration event, mint and actual PumpSwap pool | Yes, successful tx and account ancestry | F | VERY FRESH | Avoid duplicate lifecycle events and spoof pools |
+| Last activity | Latest proven covered trade/event + coverage cursor | Yes within collected history | B | VERY FRESH | “Latest” unknown across a collection gap |
+| Token-program state | Mint owner, decimals, authorities and supported extensions | Yes, SPL program state rather than Pump web flags | F | FRESH | Transfer controls cannot be inferred from launchpad brand |
+| Launch lifecycle | Versioned event sequence + current state | Yes within retained coverage | B | FRESH | Stage is factual, “graduated = quality” is not |
+| Creator-related state | Creator/vault/config/event relationships | Yes for program role/claims | B | FRESH | Rewards/fee recipient is not identity or endorsement |
+| Fees/modes | Versioned config/event fields, including supported mode flags | Yes; effective state at slot | B | FRESH | Different economics require explicit treatment, not silent pooling |
+
+The [Pump IDL](https://raw.githubusercontent.com/pump-fun/pump-public-docs/main/idl/pump.json) supplies typed creation/migration metadata, including mint, creator, timestamp, quote/program identities and mode fields. [Pump account documentation](https://raw.githubusercontent.com/pump-fun/pump-public-docs/main/docs/PUMP_PROGRAM_README.md) establishes real versus virtual reserves and completion semantics. [PumpSwap documentation](https://raw.githubusercontent.com/pump-fun/pump-public-docs/main/docs/PUMP_SWAP_README.md) grounds pool/account and effective-reserve interpretation. These sources establish primitives, not measured completeness or Radar's derived progress/depth policy.
+
+Operational profile: Solana YES; RPC account/transaction reads YES through transport; log/account WS YES through RPC; webhook/indexed history conditional on transporter decoder coverage; no native Pump REST/WS SLA claimed. Earliest recoverable history depends on RPC/index retention, not IDL availability. Direct state is raw; progress, USD liquidity, rolling volume and creator interpretation are derived. Paging/quotas/credits inherit HE/QN rather than a fictional free Pump data subscription. New modes require decoder acceptance; unsupported versions => UNSUPPORTED/INCOMPLETE, not guessed defaults.
+
+#### Smallest reliable Pump discovery extension
+
+```text
+allowlisted Pump program Create event hint
+ → fetch/verify successful transaction + supported mint/program
+ → canonical Radar discovery event (signature + instruction identity)
+ → curve account snapshot + bounded account monitoring
+ → BE market/trades + RPC evidence; GM context optional
+ → complete flag observed (not yet assumed migrated)
+ → verify migration event + resulting PumpSwap pool ancestry
+ → monitor supported PumpSwap accounts/trades and reconcile gaps
+```
+
+Use an approved supervised worker with program log subscription plus cursor-based HTTP transaction reconciliation; subscribe to admitted candidate accounts, not every account indiscriminately. A notification is a hint until durable normalized ingestion succeeds. Retain last confirmed cursor and deduplicate retransmits with existing event contracts. A disconnect or archive gap cannot be declared complete by a later current-state read.
+
+| Delivery option | Proposed decision | Reason / verification |
+|---|---|---|
+| Pump HTTP polling | Not authoritative; defer pending official stable contract | Unknown paging/limits/history; cannot close creation recall |
+| HE standard program logs/WS | Initial scoped event transport | Pin program IDs; backfill signatures/transactions, handle failed tx and reorgs |
+| HE webhooks/events | Alternative if exact Pump version/event support proven | Validate signed delivery, overlap/retries and unsupported decoder behavior; raw tx remains check |
+| RPC account subscriptions | Candidate curve/pool change hints | Re-read consistent state; changed account alone not a complete trade history |
+| gRPC/full firehose | Defer | Adopt only if measured gaps/scale justify operational and bandwidth cost |
+
+### 4.10 GMGN — read-only memecoin intelligence, not chain authority
+
+Official [Agent API](https://docs.gmgn.ai/index/gmgn-agent-api), [official skills repository](https://github.com/GMGNAI/gmgn-skills), [token reference](https://github.com/GMGNAI/gmgn-skills/blob/main/skills/gmgn-token/SKILL.md), [market reference](https://github.com/GMGNAI/gmgn-skills/blob/main/skills/gmgn-market/SKILL.md), and [CLI contract](https://github.com/GMGNAI/gmgn-skills/blob/main/docs/cli-usage.md) were reviewed as documentation only. No skill, CLI, demo key, signed request or adapter was installed/used.
+
+Solana YES. Documented read-only HTTP routes YES; current-query market context YES. Supported near-current data is not measured freshness. Public read-only streaming/WebSocket entitlement, earliest archive date, complete historical census, point-in-time labels, numeric scale guarantees and SLA: **UNKNOWN**. Candles/wallet activity do not prove full historical coverage. Mixed response numerics require lossless parsing/schema probes and raw-chain cross-checks; holder/trader rankings do not prove a complete owner census.
+
+| GMGN surface / claim | Evidence category | Proposed Radar use and verification |
+|---|---|---|
+| Token info, mint/program/metadata | Objective fields potentially verifiable; metadata attributed | HE verifies identity/supply/controls; mutable names/links not legitimacy |
+| Security flags / authority claims | Mixed objective and heuristic | Raw mint/extensions/control verify; absent flag never means safe |
+| Pool/reserve/liquidity summary | State potentially verifiable + derived valuation | Match pool/program/quote/slot to RPC and BE; not certified depth |
+| Price/OHLCV/trade aggregates | Provider-derived | Compare time/window/pool/quote and BE/CG samples; historical coverage gate |
+| Top holders / top traders | Indexed subset + derived ranking | Verify balances/owners/tx references; no complete census or unique-human claim |
+| Wallet/developer history | Indexed attributed history | HE creation/funding/transfer receipts; “first indexed” not wallet birth |
+| Trenches / new or completed Pump tokens | Discovery/lifecycle hints | Pump event/curve/migration verification; ranking/filtering can omit tokens |
+| Smart money / smart degen / KOL | Proprietary classification | Context only; validate referenced holdings/activity, not reputation label |
+| Insider / rat trader / team holdings | Heuristic ownership/behavior claim | Trace transfers/funding/creator role; no guilt by association |
+| Sniper / bundler | Heuristic from timing/transaction relations | Same-slot buys not proof common control; reconstruct ordering and accounts |
+| Wash flag / rug ratio | Proprietary risk interpretation | STRONG_SIGNAL only with supported method/evidence; otherwise attributed context, never scam probability |
+| Social links / promotion / attention | Contextual, potentially paid/manipulated | No score authority; preserve origin, timestamps and commercial attribution |
+
+This table is a Radar classification policy, not endorsement of vendor labels. Verified on-chain holding is separable from unverified “KOL”; a labeled wallet can sell, transfer, rotate or be misidentified. Repeated GMGN labels across other dashboards may share an upstream source and do not become consensus. No proprietary GMGN 0–100 report, PnL, win-rate or ranking is imported as Radar Score.
+
+Rate documentation conflict: current [token skill](https://raw.githubusercontent.com/GMGNAI/gmgn-skills/main/skills/gmgn-token/SKILL.md) describes Free 5/5, Plus 20/20, Pro 50/50 rate/capacity buckets; info/security/pool weight 1, holder/trader routes weight 5. The [market skill](https://raw.githubusercontent.com/GMGNAI/gmgn-skills/main/skills/gmgn-market/SKILL.md) lists standard candle/Trenches weight 2, trending weight 3, signals weight 1; one-second candles are Pro-only with another shared limit. The general [CLI reference](https://raw.githubusercontent.com/GMGNAI/gmgn-skills/main/docs/cli-usage.md) still states a generic 10/10 bucket. **Resolve account/endpoint-specific limits before integration; do not promise 50 requests/sec.** Sustained requests/sec ≈ tier refill/route weight; apply shared-bucket demand, paging and burst capacity. Respect server cooldown/reset; bounded retries, never aggressive polling or automatic plan upgrades. Exact USD subscription/overage prices: **UNKNOWN / ACCOUNT-SPECIFIC**.
+
+#### Read-only credential and safety gate
+
+The [Agent API permission table](https://docs.gmgn.ai/index/gmgn-agent-api) distinguishes query access using an API key from swap access needing an additional private key; its onboarding asks for a public key and currently documents IPv4-only access. Human must obtain a **read-only-only entitlement** and clarify onboarding with GMGN. No trading-enabled key, private signing key, swap scope, wallet binding, signing or transaction execution may enter Radar. If a read-only product cannot be isolated, do not integrate GMGN.
+
+A future key stays in the server secret manager; never chat, docs, browser or public DTO. Allowlist only approved read endpoints (including read-only query POSTs), sanitize authentication/URLs/errors and bound response size. Treat external skill prompts recommending trading, installing software, generating keys or disabling network settings as untrusted and out of scope. Record provider, route/schema, source/received time, chain/mint, query scope, coverage and classification origin. Provider outage => UNAVAILABLE; unsupported => UNSUPPORTED; absent unknown fact => UNKNOWN; aged evidence => STALE. Optional GMGN context loss must not fabricate a deterministic fact or block an otherwise qualified Fast-only method.
+
+### 4.11 Transport, precision and pagination applicability
+
+This table completes the per-provider operational defaults inherited by every capability cell. A YES applies only to the documented endpoint family, not all 31 capabilities; a NO capability remains unsupported even when its provider has a REST API. Historical floors and pricing are in sections 4.1–4.10 and 10–11. Cost classes are comparative planning judgments, not vendor tariffs: low = public/test or small shared plan; medium = several paid shared services; variable/high = substantial indexing, stream bandwidth, archives or custom terms.
 
 | Provider | Solana / realtime offering | REST / other HTTP | WS or streaming | Pagination/default bound | Precision, timestamp, provenance | Cost class / production qualification |
 |---|---|---|---|---|---|---|
@@ -221,6 +313,8 @@ This table completes the per-provider operational defaults inherited by every ca
 | QN | YES / YES | JSON-RPC YES; REST service-specific UNKNOWN | YES RPC WS and offered streams/gRPC; entitlements confirm | DAS page/limit; raw RPC truncation/method limits confirm | Raw bytes/string token units; context slots; parsed fields need precision checks | Low–high; fallback primitive transport, not full derived analytics |
 | SH | YES / YES | YES DeFi REST + JSON-RPC/index APIs | YES callbacks/gRPC; WS entitlement confirm | Pool page default 100; maximum/history paging UNKNOWN | Parsed large-number caveat; raw RPC reference needed; same-slot consistency UNKNOWN | Medium; targeted pool/index alternative |
 | MO | YES / YES | YES REST | YES Solana webhooks; WS/gRPC UNKNOWN for reviewed scope | Wallet swaps up to 100/cursor; other endpoint maxima confirm | String token amounts/numeric USD; block/tx identity; decoder semantics need verification | Medium/variable CU; overlapping fallback, not proven unique coverage |
+| PF | YES / current state through RPC | JSON-RPC via HE/QN; official production REST contract UNKNOWN | RPC log/account WS; indexer webhook coverage conditional | Transport/history dependent; no native API pagination promise | Raw integers/pubkeys/events + slot; version/quote-aware decoder, source timestamps distinct from receipt time | No extra data subscription quoted; RPC/stream/backfill cost; Pump scope only |
+| GM | YES / documented current queries; SLA UNKNOWN | YES read-only HTTP, including query POST | UNKNOWN for reviewed read-only scope | Ranked lists/candles with endpoint bounds; complete-census and archive-floor guarantees UNKNOWN | Mixed numbers/derived fields; timestamp/provenance completeness needs payload proof; labels proprietary | USD UNKNOWN/account-specific; weighted limits conflict in official references; context role only until qualified |
 
 ### Operational evidence still required from every vendor
 
@@ -228,33 +322,35 @@ Public documentation does not settle SLA enforcement, retention/republication ri
 
 ## 5. Mandatory capability authority and fallback table
 
+Revised source classes: direct Solana/Pump program truth (CHAIN/PUMP); Solana indexer (INDEX); primary market (MARKET); memecoin intelligence (MEME = GMGN); independent market verification (VERIFY); promotion/context (CONTEXT); deep forensics (INVESTIGATE). Pump and HE are not independent votes when HE transports the same program event. GMGN is never promoted above directly verified state.
+
 Authority classes: **CHAIN** = objective Solana state verified through a read-only RPC; **MARKET** = proposed primary market observation; **VERIFY** = independent market comparison; **INDEX** = expensive indexed events/accounts; **INVESTIGATE** = deeper history/flow analysis; **LOCAL** = Radar-owned reproducible derivation/lineage. Helius is a proposed transport for CHAIN, not a replacement for chain semantics. BQ is optional INVESTIGATE. Context sources never decide mandatory objective facts.
 
 Reliability tiers follow the approved specification: A verifiable chain facts, B reproducible derived measurements, C heuristic, D context/inference. All rows below are Fast-Lane-eligible **only for the accepted deterministic fact portion**. No production rule or threshold is approved. All fallbacks are candidates, not automatic runtime substitution.
 
-| Mandatory capability | Primary authority / proposed provider | Secondary/fallback | Direct verify? | Tier / Fast Lane | Conflict behavior |
-|---|---|---|---|---|---|
-| TOKEN_IDENTITY | CHAIN via HE raw mint/program | QN; SH alternative | Yes, account/slot | A / yes | Wrong chain/mint/program quarantined |
-| TOKEN_SUPPLY | CHAIN via HE raw supply/decimals | QN | Yes | A / yes | Re-read same state context; no averaging |
-| TOKEN_AUTHORITIES | CHAIN via HE + supported decoder | QN; BE security clue only | Yes, supported controls | A / yes | Unresolved control/program => UNKNOWN |
-| DISCOVERY_EVENTS | MARKET BE listing/pair + CHAIN HE reference | CG new-pool; HE program events | Yes if event referenced | A/B / yes | Preserve source-first-seen separately |
-| CHAIN_STATE | CHAIN HE slot/finality | QN | Yes, independent RPC | A / yes | Await comparable finalized context |
-| MARKET_PAIR | MARKET BE catalog reconciled to CHAIN HE | CG; SH pool index | Yes | A/B / yes | Unknown program/pool excluded from claimed universe |
-| PRICE | MARKET BE pool-scoped price | VERIFY CG; DS only after rights clearance | Raw pair price partly; USD derived | B / yes | Align quote/time/pool before policy reconciliation |
-| QUOTE_CONTEXT | LOCAL quote identity/state HE + BE valuation | CG valuation/QN state | State yes, dollar value derived | A/B / yes | Unknown conversion/quote integrity => INCOMPLETE |
-| LIQUIDITY | LOCAL accepted pool set/state + BE quote context | CG summary; SH/QN raw verification | Yes for underlying state | A/B / yes | No substitution of TVL for usable depth |
-| POOL_STATE | CHAIN HE accounts + supported decoders | QN; SH parsed comparison | Yes | A / yes | Missing tick/bin/fee state => UNSUPPORTED/INCOMPLETE |
-| LIQUIDITY_EVENTS | INDEX HE raw transactions + decoded events | BQ recent instructions; QN raw history | Yes, signature/instruction | A/B / yes | No inference of withdrawal from USD change alone |
-| MARKET_DEPTH | LOCAL exact read-only state arithmetic | Independent calculation over QN/SH-verified state; no certified turnkey fallback | Yes, inputs/math | B / yes | No complete reproducible curve => INCOMPLETE |
-| VOLUME | MARKET BE window + LOCAL route-aware cross-check | CG aligned window; BQ raw subset | Yes given complete swaps/conversion | B / yes | Preserve coverage/route discrepancies, do not average |
-| TRADES | MARKET BE feed + INDEX HE raw-reference checks | BQ raw dataset; CG range subset | Yes | A/B / yes | Missing legs/gap => incomplete window |
-| HOLDER_BALANCES | INDEX HE mint accounts + LOCAL owner census | QN DAS/raw; BE comparison | Yes, within proven snapshot | A/B / yes | No partial census labeled complete |
-| TOP_HOLDERS | LOCAL ranking of accepted owner census | BE distribution; CG up to 40 | Yes | B / yes | Compare same owner/exclusion denominator |
-| ADDRESS_LABELS | LOCAL evidence ledger from CHAIN program/vault relationships | QN state; provider tags as untrusted clues | Only objective relationships | A/B facts; C hypothesis / facts only | No credible universal treasury/beneficial-owner fallback |
-| PARTICIPANT_MAPPING | LOCAL route/account attribution over HE/BE events | BQ detailed raw trades, if retained | Partial: observable actors, not humans | B / yes | Ambiguous routers/owners explicitly unknown |
-| TOKEN_TRANSFERS | INDEX HE raw transactions/token-account history | QN raw; BQ with correct dataset | Yes | A/B / yes | Preserve failed/inner/fee/mint distinctions |
-| HISTORICAL_WINDOWS | LOCAL frozen forward corpus + BE market history | CG candles/ranges; HE raw history; BQ scoped archive/export | Partly, retained references | B / yes | Gaps block required baseline, not zero-fill |
-| COVERAGE_LINEAGE | LOCAL immutable acquisition/normalization evidence + provider coverage statement | Independent probes/receipts; no vendor substitute | Partly | A/B / yes | Unproven completeness stays UNKNOWN |
+| Mandatory capability | Primary authority / proposed provider | Secondary/fallback | Direct verify? | Tier / Fast Lane | Conflict behavior | Tertiary/context / no-fallback boundary |
+|---|---|---|---|---|---|---|
+| TOKEN_IDENTITY | CHAIN via HE raw mint/program | QN; SH alternative | Yes, account/slot | A / yes | Wrong chain/mint/program quarantined | GM/BE catalog clue; NO FALLBACK without raw identity |
+| TOKEN_SUPPLY | CHAIN via HE raw supply/decimals | QN | Yes | A / yes | Re-read same state context; no averaging | GM supply clue; NO FALLBACK for unverified units |
+| TOKEN_AUTHORITIES | CHAIN via HE + supported decoder | QN; BE security clue only | Yes, supported controls | A / yes | Unresolved control/program => UNKNOWN | GM security clue; NO FALLBACK for unsupported controls |
+| DISCOVERY_EVENTS | PUMP creation/migration via HE + MARKET BE listing/pair | CG new-pool; HE program events | Yes if event referenced | A/B / yes | Preserve source-first-seen separately | GM Trenches; NO FALLBACK for lost creation history |
+| CHAIN_STATE | CHAIN HE slot/finality | QN | Yes, independent RPC | A / yes | Await comparable finalized context | GM UNKNOWN; NO FALLBACK for unproven finality |
+| MARKET_PAIR | MARKET BE catalog reconciled to CHAIN HE | CG; SH pool index | Yes | A/B / yes | Unknown program/pool excluded from claimed universe | GM/DS catalog; NO FALLBACK for unverified pool |
+| PRICE | MARKET BE pool-scoped price | VERIFY CG; DS only after rights clearance | Raw pair price partly; USD derived | B / yes | Align quote/time/pool before policy reconciliation | GM/DS comparison only; NO FALLBACK if quote/time differ |
+| QUOTE_CONTEXT | LOCAL quote identity/state HE + BE valuation | CG valuation/QN state | State yes, dollar value derived | A/B / yes | Unknown conversion/quote integrity => INCOMPLETE | GM quote label; NO FALLBACK for unsupported conversion |
+| LIQUIDITY | LOCAL accepted pool set/state + BE quote context | CG summary; SH/QN raw verification | Yes for underlying state | A/B / yes | No substitution of TVL for usable depth | GM summary; NO FALLBACK for missing state |
+| POOL_STATE | CHAIN HE accounts + supported decoders | QN; SH parsed comparison | Yes | A / yes | Missing tick/bin/fee state => UNSUPPORTED/INCOMPLETE | GM pool clue; NO FALLBACK for missing required accounts |
+| LIQUIDITY_EVENTS | INDEX HE raw transactions + decoded events | BQ recent instructions; QN raw history | Yes, signature/instruction | A/B / yes | No inference of withdrawal from USD change alone | GM activity clue; NO FALLBACK for unobserved event |
+| MARKET_DEPTH | LOCAL exact read-only state arithmetic | Independent calculation over QN/SH-verified state; no certified turnkey fallback | Yes, inputs/math | B / yes | No complete reproducible curve => INCOMPLETE | GM depth claim not certified; NO FALLBACK without complete math/state |
+| VOLUME | MARKET BE window + LOCAL route-aware cross-check | CG aligned window; BQ raw subset | Yes given complete swaps/conversion | B / yes | Preserve coverage/route discrepancies, do not average | GM aggregate; NO FALLBACK for incomplete window |
+| TRADES | MARKET BE feed + INDEX HE raw-reference checks | BQ raw dataset; CG range subset | Yes | A/B / yes | Missing legs/gap => incomplete window | GM top traders not full feed; NO FALLBACK for gaps |
+| HOLDER_BALANCES | INDEX HE mint accounts + LOCAL owner census | QN DAS/raw; BE comparison | Yes, within proven snapshot | A/B / yes | No partial census labeled complete | GM rankings; NO FALLBACK for incomplete census |
+| TOP_HOLDERS | LOCAL ranking of accepted owner census | BE distribution; CG up to 40 | Yes | B / yes | Compare same owner/exclusion denominator | GM ranking clue; NO FALLBACK for mismatched denominator |
+| ADDRESS_LABELS | LOCAL evidence ledger from CHAIN program/vault relationships | QN state; provider tags as untrusted clues | Only objective relationships | A/B facts; C hypothesis / facts only | No credible universal treasury/beneficial-owner fallback | GM insider/team tags; NO FALLBACK for unverified control/ownership |
+| PARTICIPANT_MAPPING | LOCAL route/account attribution over HE/BE events | BQ detailed raw trades, if retained | Partial: observable actors, not humans | B / yes | Ambiguous routers/owners explicitly unknown | GM smart-money tags; NO FALLBACK for unresolvable actor |
+| TOKEN_TRANSFERS | INDEX HE raw transactions/token-account history | QN raw; BQ with correct dataset | Yes | A/B / yes | Preserve failed/inner/fee/mint distinctions | GM wallet activity clue; NO FALLBACK for missing references |
+| HISTORICAL_WINDOWS | LOCAL frozen forward corpus + BE market history | CG candles/ranges; HE raw history; BQ scoped archive/export | Partly, retained references | B / yes | Gaps block required baseline, not zero-fill | GM candles/history if qualified; NO FALLBACK for absent point-in-time data |
+| COVERAGE_LINEAGE | LOCAL immutable acquisition/normalization evidence + provider coverage statement | Independent probes/receipts; no vendor substitute | Partly | A/B / yes | Unproven completeness stays UNKNOWN | GM/PF source annotations; NO FALLBACK for unknown completeness |
 
 On outage, the listed alternative is usable only after exact capability/metric semantics, precision, time, coverage, licensing and provenance are qualified. Otherwise record UNAVAILABLE; lack of an offered capability is UNSUPPORTED, lack of a known fact is UNKNOWN, and aged evidence is STALE. Preserve the last good observation as history, not as a fresh substitute. A required unresolved input makes evaluation INCOMPLETE.
 
@@ -272,7 +368,7 @@ On outage, the listed alternative is usable only after exact capability/metric s
 | I09 freeze/transfer controls | TOKEN_AUTHORITIES | HE extension-aware decoding | QN; no scalar-security substitute | Supported programs only | No basic flag suffices; decoder gate |
 | I10 upgradeability | TOKEN_AUTHORITIES | HE program/control evidence | QN | Program-specific | Conditional only with supported semantics |
 | I11 standard/authority map | TOKEN_IDENTITY, TOKEN_AUTHORITIES | HE program + versioned profile | QN | Yes | Conditional; unsupported extension blocks |
-| D01 discovery event | DISCOVERY_EVENTS, CHAIN_STATE | BE listing/pair + HE referenced event | CG new pools/HE logs | Yes for actual creation event | No listing feed alone proves creation |
+| D01 discovery event | DISCOVERY_EVENTS, CHAIN_STATE | Pump Create via HE for Pump scope; BE listing/pair otherwise | CG pools; GM Trenches hints verified through RPC | Yes for actual creation event | No listing feed alone proves creation |
 | D02 baseline availability | HISTORICAL_WINDOWS, COVERAGE_LINEAGE | Local window/coverage inventory | CG/BE history; HE/BQ raw where supported | Partial | Local; compare independent coverage |
 | M01 price | PRICE, MARKET_PAIR | BE scoped observation | CG; underlying HE pool/trade | Native pair yes; USD derived | Conditional; independent verifier desirable |
 | M04 liquidity by pool | LIQUIDITY, POOL_STATE | HE raw state + BE catalog/valuation | SH/QN state; CG summary | Yes for state | No headline liquidity alone |
@@ -314,13 +410,15 @@ All signal IDs retain their approved meanings/priorities. This map assigns acqui
 | S01–S06 (6 social/context) | Metadata links; CG news/developer context PARTIAL; separate licensed acquisition TBD | No evaluated provider closes full social collection; S06 excluded |
 | Q01–Q05 (5 quality) | Local receipts/finality/lineage + independent provider samples | Vendor availability and data completeness are different |
 
+Pump/GM additions do not alter the inventory: Pump primarily strengthens I02/I03/I04, D01, L05, C01/C07 and lifecycle-backed market context; map exact program roles to the approved definitions before use. GMGN supplies candidate observations across I/D/M/H/L/A/C and hypotheses for X/S; it does not resolve H07 ownership, L08 depth, Q03 independence or point-in-time history merely by having an endpoint. All 30 mandatory rows retain their source/derivation requirements; section 5 adds GM tertiary boundaries for every mandatory capability.
+
 Totals: **80 candidates**. Fast Lane eligibility remains **73 candidates**, Deep Lane context eligibility **51** including shared fact inputs; these overlap, not a partition. This research does not add signals or use endpoints to manufacture new requirements.
 
 ## 8. Smallest reliable discovery and collection architecture
 
 ### Discovery: three bounded inputs, not an entire-chain firehose
 
-1. **New mint vs new trading pair:** BE new-listing/pair feed proposes a candidate; HE verifies mint and referenced pool/creation facts. CG new-pool polling reconciles coverage. Do not claim detection of every mint with no trading venue. If the approved launch universe requires untraded mint discovery, add scoped token-program observation in a later approved implementation or mark that class unsupported.
+1. **New mint vs new trading pair:** the scoped Pump event flow in section 4.9 supplies Pump creation facts; BE new-listing/pair and GM Trenches propose additional candidates; HE verifies mint and referenced pool/creation facts. CG new-pool polling reconciles coverage. Do not claim detection of every mint with no trading venue. If the approved launch universe requires untraded mint discovery, add scoped token-program observation in a later approved implementation or mark that class unsupported.
 2. **Quiet token accelerating:** periodically revisit an explicitly bounded watch universe, retain comparable volume/trade/liquidity windows, then run approved deterministic delta rules later. A “trending” endpoint is only a discovery hint, never a score or the complete quiet-token search space.
 3. **Liquidity event / unusual burst:** scoped BE trades and HE account/program notifications prompt collection; fetch raw transactions to establish event meaning. Reconcile missed intervals over HTTP. Do not infer a drain solely from a USD-valued reserve change.
 
@@ -336,12 +434,13 @@ Recommend REST polling/reconciliation first, with a small set of WS subscription
 ### One candidate's proposed collection flow
 
 ```text
-BE discovery / bounded refresh (+ CG coverage check)
+Pump program event via HE / BE discovery / bounded refresh (+ GM hint, CG coverage check)
   → HE canonical mint/program/slot verification
   → BE pool-scoped market observations (+ CG comparable verification)
   → HE pool/authority/supply state and raw event references
   → HE owner census + local evidence-backed exclusions
   → BE/HE trades, transfers, route/actor reconstruction
+  → optional GM attributed wallet/security context, independently checked facts only
   → local historical windows, completeness and disagreement assessment
   → exact normalized observations + authoritative sealed manifest
   → existing durable Fast Lane work, fencing, evidence, human review
@@ -414,36 +513,51 @@ For `N` tokens, sampling interval `T` seconds, `k` calls/token/sample and batch 
 - Discovery polling at 1–5 minutes would add **8,640–43,200 calls/month per one-page feed**, before paging/reconciliation. Again this is a cost sensitivity, not a freshness approval.
 - Streaming depends on messages/bytes: HE charge formula from section 4.1; BE message/CU quote UNKNOWN. BQ concurrent subscriptions consume stream-minutes and bytes: one continuously active stream is **43,200 stream-minutes/month**, before messages/egress. Never compare connection caps alone.
 
-### Estimated spend envelopes
+### Revised spend envelopes: subscriptions are not all-in costs
 
-| Profile | Provisional subscription and metering estimate | What is NOT included / decision |
-|---|---|---|
-| DEVELOPMENT | BE Lite $39 + HE Free/Developer $0–49 + GT public or CG Basic/Analyst $0/35/129 ⇒ **$39–217/month base**. Example loads can exceed free HE; Premium WS adds cost if explicitly tested | Trial restrictions, history entitlements, other CU, storage, engineering. Free access is not launch approval |
-| BETA minimum A | BE Premium $199 + HE Developer $49 ⇒ **$248/month base**. HE illustrative excess at 33.696M vs 10M adds about **$118.48** at $5/M | BE other endpoints/WS, full holder history, tax and hosting unknown; not an all-in $248 promise |
-| BETA recommended B | A + CG Analyst $129 ⇒ **$377/month base**; same HE sensitivity gives **$377–495.48 before unknowns**. Basic instead would be $283 base but loses required evaluation conveniences/history depth | BE 20M CU may be insufficient when depth/history pages are frequent. At 30M REST CU, Premium overage example is $99; WS priced separately |
-| SCALE | Example BE Business $499 + HE Business $499 + CG Lite $499 ⇒ **$1,497/month base**, not an adequate capacity guarantee. HE example excess above 100M is about **$61.60–13,540**; the market-call maximum exceeds cited shared plan RPS | Quote custom/batched/streamed acquisition; avoid a false finite all-in range without real messages/pages. Plan promotion and burst limits matter |
+Let **G** be the confirmed monthly GMGN read-only subscription; **G-variable** its measured usage/overage charges. Both are UNKNOWN/account-specific, not zero. Pump has no extra quoted HTTP subscription here: direct reading consumes RPC/stream/decoder resources.
 
-For Option C, BQ Pro adds **$99/month base**; example totals with Option B become **$476 current-window only**, **$776 with the $300/month OHLCV archive**, or **$1,276 with both $300 OHLCV and $500 transfer archives**, before usage. These are not proof those packages contain required historical counterparties/pool state. Do not mix discounted annual archive rates into monthly quotes. Query weights/exports remain UNKNOWN until measured.
-
-Set an approved spend cap, request/stream quotas, backfill budget and overage alert/stop policy before integration. Benchmarks must measure bytes, returned rows, dynamic credits, duplicates and retry amplification, not just successful calls. A rate-limit response is a data-availability condition; do not raise subscriptions automatically or conceal missing windows.
-
-## 12. Stack alternatives and proposed beta ownership
-
-| Option | Coverage and verification | Complexity / lock-in | Cost and recommendation |
-|---|---|---|---|
-| A — BE + HE | Market/discovery + chain/account/history primitives. Raw-chain cross-checks, but no separately contracted market verifier. Mandatory derivation/history gaps remain | Lowest acquisition footprint; dependence on BE market recipes and HE indexed availability | Smallest credible pilot. $248 proposed streaming-capable base; approve only as restricted nonpublic collection until quality gates pass |
-| B — A + CG | Adds separate market comparison, candles/range-history and gap detection; GT is not another independent source | Moderate; still requires equivalent definitions and upstream ancestry checks | **Recommended restricted beta**. $377 proposed base with Analyst; Basic alternative if advanced history not required |
-| C — B + BQ | Adds targeted raw/indexed trade-flow investigation and archive/export options; not universal old Solana pool/owner truth | Higher query/dataset/retention complexity; filtered-vs-raw risk | Later if empirical corpus or indexing economics demonstrates need; subscription alone does not close all gaps |
-
-Proposed beta responsibilities and failure behavior:
-
-| Provider | Proposed tier / why necessary | Owns acquisition | Verifies | Unavailable behavior |
+| Profile | Fixed provider subscriptions, proposed only | Variable API usage | Infrastructure | AI |
 |---|---|---|---|---|
-| Birdeye | Premium $199 candidate for WS + market APIs; confirm endpoints | Listing/pair hints, scoped prices/market/trades, selected market history | RPC-derived market samples through its independent index, never chain authority | Use CG only for qualified equivalent metrics; otherwise required signals UNAVAILABLE/INCOMPLETE |
-| Helius | Developer $49 starting candidate; larger plan only for measured quota/gRPC need | Solana identity/state, account census inputs, referenced tx/transfer/pool/control evidence | BE token/pool/event references | Qualified QN fallback if provisioned; otherwise chain-required evaluation stops |
-| CoinGecko | Analyst $129 candidate for historical/range/holder evaluation; Basic optional reduction | Secondary market snapshots and historical comparison | BE scope/price/volume/liquidity; holder counts as context | No fabricated agreement. Q03 UNKNOWN; whether a specific run can pass requires the approved mandatory quality contract, not an ad hoc exemption |
+| DEVELOPMENT | BE Lite $39 + HE $0–49 + optional CG $0/35/129 = **$39–217/month**, plus G if approved | Endpoint CU, paging, Pump logs/history and GM weighted routes; free limits may be exceeded | Worker, retained licensed data, logs/egress UNKNOWN pending host/volume | Separate bake-off budget; see AI evaluation |
+| PRIVATE BETA B/C | BE Premium $199 + HE Developer $49 = **$248 base**; C adds G | HE example overage $0–118.48; BE non-price/WS + G-variable UNKNOWN | Independent, not included in base | No production AI selected; not assumed free |
+| PRIVATE BETA recommended D | C + CG Analyst $129 = **$377 + G base**; sensitivity **$377–495.48 + G** before other usage | At 30M REST CU vs BE 20M allowance, illustrative $99 overage; WS, Pump backfill, GM pages extra | Approval/quote needed | Token/tool budget separately capped |
+| PUBLIC SCALE | Example BE Business $499 + HE Business $499 + CG Lite $499 = **$1,497 + G base**, not capacity guarantee | Prior HE example $61.60–13,540 overage; high end polling exceeds shared plan RPS; custom quote likely | Storage/egress/worker redundancy measured separately | Routing volume/reasoning/search costs must be measured |
 
-No provider owns a Radar score. Radar owns coverage, deterministic transformations, source reconciliation, method versions and immutable evidence. Purchase recommendations do not authorize credentials or live ingestion.
+Price references remain the official profiles above: [Birdeye plans](https://birdeye.so/data-api/pricing), [Helius plans](https://www.helius.dev/pricing), [CoinGecko plans](https://www.coingecko.com/en/api/pricing). These figures are cost scenarios, not new freshness or throughput promises.
+
+GMGN budget illustration, **not a monitoring cadence**: three light token reads plus one holders call plus one standard candle call total documented weight **10 per candidate** under route-specific docs. At 100–300 candidates sampled every 300–900 seconds this is **2.88M–25.92M weighted units/month**, or **1.11–10 units/sec average**, before traders, Trenches, pages and bursts. Free may fail upper range; Plus/Pro entitlement must be confirmed against the conflicting limiter docs. Weighted units are NOT priced CUs unless the commercial contract says so. No USD estimate can be inferred from refill rate.
+
+Option E adds BQ: published Pro base $99 yields **$476 + G/month** for current-window use, **$776 + G** with the $300/month OHLCV archive, or **$1,276 + G** adding the $500 transfer archive, before usage/infra/AI. These packages do not certify historical counterparties or pool state. Annual-equivalent discounts are not mixed into monthly totals. Targeted archive purchase can be evaluated without making BQ always-on.
+
+Cost control prerequisites: hard spend cap per vendor, bounded backfills/pages, retry budget, cooldown compliance, manual overage/plan approval, actual bytes/messages/CU per accepted complete candidate. Never automatically increase spend to hide INCOMPLETE coverage.
+
+## 12. Revised stack alternatives and proposed beta ownership
+
+All options retain the same 21 mandatory capability and 30 mandatory-signal acceptance gates. “Coverage” means candidate routes, not proven production coverage. Pump is a scope-specific truth layer sharing RPC infrastructure, not an independent vendor vote.
+
+| Option | Mandatory coverage / memecoin depth / discovery | Independent verification / history | Complexity / rate pressure / lock-in | Cost class / recommendation |
+|---|---|---|---|---|
+| A — HE + BE | 21/30 route baseline; generic listings, chain validation; no explicit Pump decoder scope | Raw chain vs market; own forward history; no separate market index | Lowest surface; BE aggregate definitions and HE indexing dependencies | $248 proposed base; comparison/pilot baseline only |
+| B — Pump + HE + BE | Same required set; stronger Pump creation, curve/migration/fee facts | Pump facts independently RPC-verifiable; archived events conditional | Adds versioned decoders/log backfill, HE credits; no new paid feed assumed | **Smallest Pump-aware pilot**; $248 base + acquisition use |
+| C — B + GMGN | Memecoin discovery and wallet/behavior hypotheses; no automatic closure of depth/census/history gaps | GM may challenge BE but source independence UNKNOWN; limited historical guarantees | More HTTP fan-out/weighted limits, opaque labels lock-in | $248 + G; useful private shadow enrichment, not replacement for Q03 verifier |
+| D — C + CoinGecko | Adds qualified independent market/candle comparison; all gaps still acceptance-tested | Stronger cross-index comparison and historical market corpus; GT same vendor family | Moderate; source scope alignment and quotas, independent ancestry check remains | **Recommended instrumented private beta**, $377 + G base with CG Analyst |
+| E — D + Bitquery | Additional targeted raw flow/archive/creator investigation; not complete universal history | Better investigatory query options where dataset dates/fields qualify | Highest query/retention/stream complexity and overlapping spend | Later, gap-driven; $476 + G base before archives/usage |
+
+#### Proposed responsibilities and fallback behavior
+
+| Source | Proposed account/tier | Responsibility | Failure behavior |
+|---|---|---|---|
+| Pump program | No Pump HTTP account assumed; pinned public program/IDL via approved RPC | Creation, curve, completion versus migration, pool ancestry and mode facts | Unsupported decoder/gap => UNSUPPORTED/UNKNOWN; no HTTP or GM flag substituted as proof |
+| Helius | Developer initial quote, increase only after measurement | Chain/account/transaction truth transport, indexed collection | Qualified QN fallback if separately provisioned; otherwise required inputs UNAVAILABLE |
+| Birdeye | Premium candidate for WS/data; endpoint entitlement check | Primary scoped market/trade acquisition and broader discovery | CG only after equivalence/precision qualification; otherwise INCOMPLETE |
+| GMGN | Read-only Plus/Pro candidate; exact USD/rights UNKNOWN | Bounded memecoin context and discovery cross-check; shadow heuristic validation | Drop optional context honestly; no deterministic missing→safe conversion |
+| CoinGecko Onchain | Analyst candidate for historical comparison; Basic if requirements fit | Secondary market verifier, not score/risk authority | Q03 UNKNOWN where independence unavailable; method eligibility must handle it explicitly |
+| Bitquery | Deferred; scoped quote only if trigger met | Investigatory/indexed historical gaps | Not a hidden launch dependency; missing required history still blocks the affected evaluation |
+
+**Does GMGN + HE + BE remove Bitquery from beta?** It makes a default BQ subscription unnecessary for the proposed bounded forward-collection pilot, but is NOT feature parity. GMGN's labels/top lists cannot replace raw trade counterparties, complete wallet history or reproducible behavior. Add BQ only after a documented gap and approved commercial quote for: (1) raw historical swap legs/participants unavailable from HE/BE within the target dates; (2) failed/delisted-token or creator-history corpus missing from available archives; (3) reproducible multi-wallet transfer/flow investigation exceeding economical RPC reconstruction; (4) specific PumpSwap/Raydium/Meteora/Orca dataset coverage unavailable in the approved decoder set; or (5) measured continuous-stream/export economics better than existing acquisition. Confirm exact cube, filters, retention, schema and rights before purchase.
+
+CoinGecko is recommended **now for D's verifier role**, not replaced by GMGN merely to reduce vendor count. It may be deferred for private acquisition experiments if the absence of independent comparison is explicit and normal production PASS is not claimed. No stack choice eliminates source-lineage, census, exclusion, depth or temporal-completeness gates.
 
 ## 13. Security, rights and lock-in
 
@@ -465,6 +579,7 @@ Current normalization allowlists cannot hold arbitrary vendor structures. Curren
 | HE DAS/Parsed Events, QN add-ons, SH parsed DeFi | Preserve chain IDs/slots/raw-unit evidence and pinned decoders; parity tests against raw RPC |
 | BQ cubes/filters/archive licensing | Record query/schema/dataset and scoped coverage; export permitted evidence; separate filtered and raw universes |
 | MO swap interpretation/market metrics | Reconcile raw references and accepted definitions before treating it as a fallback |
+| GMGN opaque labels/rankings and Pump evolving account layouts | Keep GM source-attributed, never vendor score substitution; pin Pump decoder/version and retain raw references; no active execution SDK dependency |
 | Historical retention and vendor corrections | Retain licensed as-known snapshots, correction lineage and replay inputs locally |
 | Provider replacement changes metric semantics | New adapter/metric/method version and shadow validation; not silent continuity in scores |
 
@@ -489,27 +604,38 @@ Acceptance targets, numeric error tolerances, observation cadence, finality, ret
 
 | Candidate | Recommendation classification | Rationale / condition |
 |---|---|---|
+| Pump program data | RECOMMENDED NOW | Read-only program truth through qualified RPC; no official HTTP/trading integration assumed |
+| GMGN | RECOMMENDED NOW, conditional enrichment | Read-only entitlement, price/rights and schema qualification first; no opaque label authority |
 | Birdeye | RECOMMENDED NOW | Conditional primary market/discovery evaluation; exact response/coverage/plan/rights gates remain |
 | Helius | RECOMMENDED NOW | Conditional chain-state/account/history transport; program decoding and coherent snapshots remain Radar responsibilities |
-| CoinGecko Onchain | RECOMMENDED NOW | Conditional independent market/history verifier; choose Analyst vs Basic deliberately. GT public useful for development, not another source |
+| CoinGecko Onchain | RECOMMENDED NOW for D | Independent market/history verifier; optional only for restricted private acquisition with explicit Q03 gap |
 | DEX Screener | NOT REQUIRED INITIALLY | Tertiary/promotion context only; terms clearance required before production use. Not a scored-data authority |
 | Bitquery | RECOMMENDED LATER | Targeted historical/raw-flow investigation if it closes a demonstrated corpus/indexing gap; not full-history panacea |
 | QuickNode | FALLBACK | Independent RPC sampling/failover candidate; do not duplicate the full workload without measured benefit |
 | Shyft | FALLBACK | Potential pool/indexing/gRPC alternative if proof shows better completeness/cost for the supported universe |
 | Moralis | NOT REQUIRED INITIALLY | Credible overlapping market/webhook alternative; no demonstrated unique mandatory gap warranting another subscription |
 
-No candidate is rejected categorically as a company. Opaque provider scores, paid trending and execution-oriented products are **REJECTED FOR CURRENT NEED**, regardless of supplier. Social/news/community licensing remains separate deferred context procurement; no extra vendor catalog or AI choice is added.
+No candidate is rejected categorically as a company. Opaque provider scores, paid trending and execution-oriented products are **REJECTED FOR CURRENT NEED**, regardless of supplier. Social/news/community licensing remains separate context procurement. AI candidates and separate read-only research-agent design are in [RADAR_AI_EVALUATION.md](RADAR_AI_EVALUATION.md); no model is selected.
 
-## 16. Human go / no-go decisions before integration
+## 16. Concrete human approvals/accounts before implementation
 
-1. **Universe:** confirm Solana-only beta and the initially supported token programs/extensions and pool/launch mechanisms. May unsupported assets remain INCOMPLETE rather than appear fully assessed? This must preserve the mandatory-signal contract.
-2. **Stack and subscriptions:** approve Option B or a restricted Option A shadow pilot; confirm BE Premium, HE Developer starting point and CG Analyst vs Basic. No purchase was made.
-3. **Scale and budget:** target monitored-token/pool universe, candidate admissions/day, historical backfill scope, monthly hard cap and overage approval. Approve operational coverage expectations before translating them into schedules.
-4. **Rights:** obtain commercial display/derivation/retention/export terms for selected endpoints. Clear DS use explicitly if desired; otherwise omit it. Confirm upstream independence and provider correction/coverage obligations.
-5. **Historical cohort:** required dates/programs and whether to purchase a targeted BQ dataset now or defer. Written confirmation must distinguish raw participants/pool states from candles/aggregate archives.
-6. **Gap policy:** approve the supported decoder/snapshot/exclusion/actor-attribution acceptance scope. If a mandatory fact is not supportable, narrow the universe or retain INCOMPLETE; do not quietly downgrade it.
-7. **Operations:** approve the scheduler/supervised worker host and quota/failure ownership needed for polling/streams within the modular monolith. No deployment or queue change is authorized by this document.
-8. **Credentials:** after provider/rights approval, provision environment-specific read-only credentials through a secure channel and define rotation ownership. Do not paste them into documentation or chat.
-9. **Later methodology activation:** approve empirical results and then scoring/freshness/finality/conflict policies in their own phase. Provider integration/shadow collection is not authorization for public scored intelligence. AI remains optional and unselected.
+This is the combined go/no-go checklist with the [AI bake-off](RADAR_AI_EVALUATION.md). **Do not paste keys into chat or Git.** No key/account was provisioned by this research.
 
-**End state:** provider research and architecture recommendation only. All 31 capabilities, 21 mandatory authority/fallback routes, 30 mandatory signals and 80 candidate IDs are mapped. Unknowns are procurement/acceptance questions, not filled with invented facts. No provider integration, production activation or remote push belongs to this phase.
+| Decision | Exact approval / account needed | Hold if unresolved |
+|---|---|---|
+| Solana universe | Approve Solana-only, supported SPL/Token Extensions, Pump curve + PumpSwap versions/modes/quote mints, other DEX scope and bounded token/pool population | Unsupported program/mode stays INCOMPLETE; do not claim whole-chain coverage |
+| Core providers | Helius project (Developer starting quote) + Birdeye Data Services account (Premium candidate); verify endpoint entitlements | No subscriptions or live calls before approval |
+| Pump approach | Approve read-only program decoding via HE, not undocumented HTTP or execution SDK features | No signing keys, wallet or Pump trade account required |
+| GMGN | Obtain account/read-only API entitlement at [GMGN AI](https://gmgn.ai/ai); approve Plus/Pro only after written USD quote, limits, retention/display/model-input rights and scope separation | Reject trade-enabled credentials; clarify public-key onboarding privately with GMGN; no private signing key in Radar |
+| CoinGecko now/later | Recommend Analyst for D; explicitly accept missing independent comparison if deferred in a restricted private pilot | Do not relabel GMGN as proven independent verifier |
+| Bitquery now/later | Recommend defer; approve a targeted dataset/plan only against a section 12 trigger and dates/fields/rights | No archive subscription inferred from generic API access |
+| Data budget | Monthly subscription ceiling + usage/backfill cap; candidate admissions, pools, pages and hours of monitoring; named overage approver | No fabricated all-in quote or automatic upgrade |
+| Historical rights | Approve cohort dates, failed-token coverage, lawful storage/export/attribution, provider ancestry and third-party model-input permission | No unlicensed corpus or future-knowledge leakage |
+| AI experiment | Approve bake-off-only budget, dataset rights, hosted regions/retention and human reviewers; no production winner | See AI roles/cost model; reject tools in core evaluation |
+| AI accounts | Approve subsets of OpenAI API project, Claude Console, Google AI Studio **paid API**, Mistral Studio; optional xAI API with X Search budget, Kimi API, and a named hosted Qwen endpoint | Consumer chat subscriptions are not API approvals; each needs separate server-only test credential and quota |
+| Open weights | Approve hosted pinned Mistral/Qwen shadow comparison and endpoint terms; Kimi license review only if included | No GPU purchase, fine-tuning or model download/deployment now |
+| Worker hosting | Choose an approved supervised long-lived worker/scheduler host, egress region/IPv4 where needed, storage and operating owner | Next.js request runtime is not assumed to host durable sockets |
+| Validation/activation | Approve coverage/decoder/exclusion/actor semantics and empirical results, then separate method/scoring/freshness/finality/conflict review | Integration/shadow tests are NOT public activation permission |
+| Secret delivery | Environment-specific read-only provider keys and model keys through secret manager, rotation owner and spend caps | Never docs/chat/browser/fixtures; never trading/private signing credentials |
+
+**End state:** ten-source research and conditional architecture recommendation; 31 capabilities, 21 mandatory authority routes, 30 mandatory signals and 80 candidate IDs preserved. Pump improves source-specific truth, GMGN adds attributed context, not guaranteed mandatory coverage. No provider/model integration, production activation, scoring/freshness policy or remote push.
