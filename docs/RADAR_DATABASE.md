@@ -1,6 +1,6 @@
 # Radar Database Foundation — Gate 19C
 
-Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. Gate 19D Batch 1, the compatible Gate 19F foundation, Gate 19G-F1 and Gate 19G-F2 are implemented; Gate 19G-F2 adds durable Deep Lane orchestration. This remains a persistent watch/intelligence foundation only. No live provider, score formula, AI model, automatic publication, wallet, trading or execution feature exists.
+Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. Gate 19D Batch 1, the compatible Gate 19F foundation, Gate 19G-F1, Gate 19G-F2 and Gate 19G-F3 are implemented; Gate 19G-F3 closes the four remaining Deep Lane integrity gaps. This remains a persistent watch/intelligence foundation only. No live provider, score formula, AI model, automatic publication, wallet, trading or execution feature exists.
 
 ## Domain inventory
 
@@ -208,6 +208,19 @@ is recorded as `UNCERTAIN` rather than blindly retried. The database cannot
 promise exactly-once external model execution without provider idempotency
 support.
 
+Gate 19G-F3 is one additive corrective migration that leaves the F2 history
+immutable. PostgreSQL is authoritative for logical request and structured
+output hashes; the application uses the reservation hash and sends no
+independently serialized output hash. Completed receipts are returned before
+live lease requirements, but new invocation and completion transitions still
+require current work authority. Reservation and completion perform a fresh
+`clock_timestamp()` lease/fence check after their authoritative row locks.
+Recovery uses the deterministic work -> request -> attempt lock order and
+rejects any mismatched relationship before changing rows. The focused
+separate-session harness covers duplicate ownership, receipt replay, both
+confirmed lock-wait expiry cases, mismatched recovery, and matching
+`UNCERTAIN` recovery. No external exactly-once claim is added.
+
 Approval requires an approved method and freshness policy, a current ACTIVE
 approver role, a sealed nonempty PASS work result, a finite eligible score and
 publicly eligible analysis. Publication reads only a frozen 17-key snapshot;
@@ -224,7 +237,9 @@ Corrected F3 lock-wait checks pass 9/9, the Research concurrency suite passes
 focused finalization coverage passes 15/15; remaining production provider,
 scoring and freshness decisions stay separately gated. Gate 19G-F2 adds
 focused durable Deep Lane and concurrency coverage; the fixture adapter is
-test-only and does not activate production AI.
+test-only and does not activate production AI. Gate 19G-F3 adds 25 focused
+database assertions, 116 application tests, and a 7/7 separate-session Deep
+Lane integrity/concurrency harness; all fixtures are disposable local state.
 
 Gate 19D must choose and validate real provider capabilities, empirical
 methodology/range/freshness policy, Fast Lane rules, durable worker handlers

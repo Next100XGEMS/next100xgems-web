@@ -7,8 +7,10 @@ claim, exposes only the fenced database manifest to the worker, and preserves
 explicit provider missingness and exact numeric transport. No production
 provider, scoring policy, trading or execution path is defined here. Gate
 19G-F2 adds durable Deep Lane request/attempt/completion orchestration using
-the same work, lease, fence and pause authority; it does not select or activate
-a production AI provider.
+the same work, lease, fence and pause authority; Gate 19G-F3 closes the
+application/database hash, replay, post-lock lease and recovery-identity gaps
+through one additive correction. No production AI provider is selected or
+activated.
 
 ## Purpose
 
@@ -51,3 +53,15 @@ supports safe reuse of the same external idempotency key. These guarantees
 prevent local duplicate invocation but do not claim exactly-once execution of
 an external provider that lacks idempotency support. Model output remains AI
 inference and cannot become verified data or directly change publication.
+
+Gate 19G-F3 makes PostgreSQL the authoritative source for both logical
+request and validated output hashes. The application receives the request hash
+from reservation and sends no independently serialized output hash to the
+completion RPC; the database canonicalizes the validated JSON once. Completed
+receipts are replayed before live lease checks, while new invocations still
+require current authority. Reservation and completion use advancing
+`clock_timestamp()` after their row locks, so a lease that expires while a
+caller waits is rejected. Recovery locks and validates the work/request/attempt
+relationship before mutation. These corrections preserve explicit
+`UNCERTAIN` handling when external execution cannot be proven and do not claim
+external exactly-once execution without provider idempotency support.

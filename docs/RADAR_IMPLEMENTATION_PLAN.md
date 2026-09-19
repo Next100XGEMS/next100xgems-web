@@ -144,6 +144,23 @@ durable local orchestration and truthful recovery behavior, not an exactly-once
 claim about an external model API. The only adapter currently used is a
 deterministic test fixture; no production AI vendor or model is selected.
 
+### Gate 19G-F3 Deep Lane integrity correction
+
+Gate 19G-F3 keeps the F2 durable model and corrects only four application/SQL
+boundaries. PostgreSQL now owns canonical logical-request and output hashing;
+the application consumes the reservation hash and leaves output hashing to
+the completion RPC. A completed receipt is replayed before live lease checks,
+while new work still requires active authority. Reservation and completion
+re-read advancing wall-clock time after row locks, so lock-wait expiry cannot
+be accepted. Recovery locks work, request and attempt in the shared order and
+validates every identity edge before mutation. The local separate-session
+harness proves one durable invocation owner, confirmed reservation and
+completion lock-wait rejection, receipt replay, strict mismatched recovery
+rejection and matching `UNCERTAIN` recovery. These semantics remain honest
+about the crash window where a provider may have executed without supporting
+idempotency; no production AI provider or exactly-once external execution is
+claimed.
+
 ## 7. Evidence model
 
 Each immutable evidence item carries a stable ID within its versioned analysis, type/label, discriminated value or bounded summary, unit/decimals if numeric, origin (`DETERMINISTIC` or `INFERENCE`), source authority class, provider/adapter/version, observation reference, observed/received/evaluated times as applicable, freshness policy/result, analysis/evidence versions, and supporting references. Store confidence only with a named interpretation/context and method; it is not a return probability.
@@ -465,6 +482,10 @@ manifest contract; production provider and scoring decisions remain deferred.
 Gate 19G-F2 adds only the durable Deep Lane request, attempt, completion and
 recovery contract described above; it does not activate production AI or
 change the approved Fast Lane, scoring, freshness or public Radar policy.
+Gate 19G-F3 adds only the authoritative hash, completed-replay, post-lock
+lease and strict recovery-identity corrections; it does not activate a model
+provider or alter the approved Fast Lane, scoring, freshness or public Radar
+policy.
 
 ## 30. Intentionally deferred decisions
 

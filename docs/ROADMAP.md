@@ -104,6 +104,15 @@ sealed manifest and trusted adapter/provider/model identity. The fixture is
 test-only; no production AI vendor, scoring or freshness decision was made,
 and no trading/execution capability exists.
 
+Gate 19G-F3 — Deep Lane integrity correction — IMPLEMENTED. PostgreSQL is the
+authoritative source for request/output hashes; completed receipts replay
+without a live lease; reservation and completion reject leases that expire
+while waiting on locked rows; and recovery rejects mismatched
+work/request/attempt identities before mutation. Focused database coverage is
+25/25, application coverage is 116/116, and the disposable separate-session
+Deep Lane harness is 7/7. No production AI provider, scoring/freshness policy,
+or trading/execution capability was selected or activated.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.

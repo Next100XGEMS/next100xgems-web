@@ -83,11 +83,21 @@ select * into temporary f2_completion from public.radar_system_complete_deep_lan
   (select pause_generation from f2_reservation), (select logical_request_hash from f2_reservation),
   (select attempt_number from f2_reservation),
   ('{"schemaVersion":"deep-lane-output-v1","provider":"fixture","model":"fixture-model","modelRevision":"fixture-v1","requestHash":"' || (select logical_request_hash from f2_reservation) || '","generatedAt":"2026-09-19T00:00:00.000Z","inferences":[]}')::jsonb,
-  private.radar_deep_lane_output_hash(('{"schemaVersion":"deep-lane-output-v1","provider":"fixture","model":"fixture-model","modelRevision":"fixture-v1","requestHash":"' || (select logical_request_hash from f2_reservation) || '","generatedAt":"2026-09-19T00:00:00.000Z","inferences":[]}')::jsonb)
+  null
 );
 select is((select state from f2_completion), 'SUCCEEDED', 'validated output produces a durable completion receipt');
 select is((select state from public.radar_deep_lane_requests), 'SUCCEEDED', 'logical request becomes durably successful');
 select is((select state from public.radar_work_items where id=(select work_item_id from f2_claim)), 'SUCCEEDED', 'work item completes through the Deep Lane receipt');
+select is(
+  private.radar_deep_lane_output_hash('{"outer":{"unicode":"café","decimal":"1.2300"},"items":[{"id":"a","value":2}]}'::jsonb),
+  private.radar_deep_lane_output_hash('{"items":[{"id":"a","value":2}],"outer":{"decimal":"1.2300","unicode":"café"}}'::jsonb),
+  'database output hashing is independent of object key order and preserves nested values'
+);
+select isnt(
+  private.radar_deep_lane_output_hash('{"outer":{"unicode":"café","decimal":"1.2300"},"items":[{"id":"a","value":2}]}'::jsonb),
+  private.radar_deep_lane_output_hash('{"outer":{"unicode":"café","decimal":"1.2301"},"items":[{"id":"a","value":2}]}'::jsonb),
+  'meaningful output changes produce a different database hash'
+);
 
 select * into temporary f2_replay from public.radar_system_complete_deep_lane_attempt(
   (select request_id from f2_reservation), (select attempt_id from f2_reservation),
@@ -123,6 +133,20 @@ select * into temporary f2_retry_reservation from public.radar_system_reserve_de
   (select work_item_id from f2_retry_claim), 'f2-retry-a', (select lease_token from f2_retry_claim), (select lease_generation from f2_retry_claim),
   'DEEP_ANALYSIS', 'fixture-method-v1', 'fixture-input-v1', 'deep-lane-request-v2', 'deep-lane-output-v1',
   (select input_manifest from f2_retry_manifest), '[]'::jsonb, 'fixture', 'fixture-model', 'fixture-v1', 'fixture-deep-lane-v1', 2, false);
+select public.radar_system_enqueue_work(
+  'g19f2-recovery-mismatch', 'DEEP_ANALYSIS', '7f000000-0000-4000-8000-000000000100',
+  '7f000000-0000-4000-8000-000000000110', null, 'fixture-method-v1', 'fixture-input-v1', now()
+) into temporary f2_mismatch_work;
+select public.radar_system_attach_observation((select * from f2_mismatch_work), '7f000000-0000-4000-8000-000000000101');
+select public.radar_system_finalize_work_inputs((select * from f2_mismatch_work), 'fixture-method-v1', 'fixture-input-v1');
+select * into temporary f2_mismatch_claim from public.radar_system_claim_work('f2-mismatch-worker', 300);
+select throws_ok($$select public.radar_system_recover_deep_lane_attempt(
+  (select request_id from f2_retry_reservation), (select attempt_id from f2_retry_reservation),
+  (select work_item_id from f2_mismatch_claim), 'NOT_INVOKED', 'RECOVERY_MISMATCH', 'mismatched work must be rejected')$$,
+  '23505', null, 'recovery rejects mismatched request/attempt/work identity');
+select is((select state from public.radar_deep_lane_requests where id=(select request_id from f2_retry_reservation)), 'IN_PROGRESS', 'mismatched recovery leaves the request unchanged');
+select is((select state from public.radar_deep_lane_attempts where id=(select attempt_id from f2_retry_reservation)), 'INVOKING', 'mismatched recovery leaves the attempt unchanged');
+select is((select state from public.radar_work_items where id=(select work_item_id from f2_mismatch_claim)), 'RUNNING', 'mismatched recovery leaves unrelated work unchanged');
 select is(public.radar_system_fail_deep_lane_attempt((select request_id from f2_retry_reservation), (select attempt_id from f2_retry_reservation), (select work_item_id from f2_retry_claim), 'f2-retry-a', (select lease_token from f2_retry_claim), (select lease_generation from f2_retry_claim), (select pause_generation from f2_retry_reservation), true, 'PROVIDER_TIMEOUT', 'Fixture did not invoke the provider.', 'NOT_INVOKED'), 'FAILED_RETRYABLE', 'retryable failure releases work for an explicit retry');
 select * into temporary f2_retry_claim_2 from public.radar_system_claim_work('f2-retry-b', 300);
 select * into temporary f2_retry_reservation_2 from public.radar_system_reserve_deep_lane_attempt(
