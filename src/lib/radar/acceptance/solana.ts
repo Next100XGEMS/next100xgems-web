@@ -44,7 +44,8 @@ export function derivePumpBondingCurveAddress(mint: string, programId = PUMP_PRO
 export type SolanaRpcResult = { result?: unknown; error?: { code?: number; message?: string } };
 export type SolanaRpcRequest = (method: string, params: readonly unknown[]) => Promise<SolanaRpcResult>;
 
-const READ_ONLY_METHODS = new Set(["getAccountInfo", "getTokenSupply", "getTokenLargestAccounts", "getSignaturesForAddress", "getTransaction", "getProgramAccounts", "getSlot", "getBlockTime"]);
+const READ_ONLY_METHODS = new Set(["getAccountInfo", "getTokenSupply", "getTokenLargestAccounts", "getSignaturesForAddress", "getTransaction", "getTransactionsForAddress", "getTransfersByAddress", "getProgramAccounts", "getSlot", "getBlockTime"]);
+export const HELIUS_HISTORICAL_CREDIT_ESTIMATES = { getTransactionsForAddress: 100, getTransfersByAddress: 10 } as const;
 
 export class HeliusSolanaAcceptanceClient {
   private readonly endpoint: string;

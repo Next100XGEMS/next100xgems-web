@@ -90,3 +90,37 @@ validation, holder snapshot export and bounded-study controls. The current
 available corpus remains the 108-token acceptance cohort and is not balanced
 enough for methodology design. Solana status is therefore
 `MORE_DATA_WORK_REQUIRED`. Current justified provider spend remains `$0/month`.
+
+## Provisional methodology input set
+
+This is a readiness input classification, not a score or production rule.
+It remains provisional until the 300+ case corpus and chronological holdout
+are populated.
+
+| Class | Signals currently suitable for the next methodology phase |
+|---|---|
+| `CORE_DETERMINISTIC` | Canonical chain/token identity; decimals and supply; directly observed token authorities; exact pool/pair identity and quote asset; explicitly scoped price/liquidity/activity observations; Pump lifecycle state when decoded from authoritative state; provenance, timestamp, freshness and completeness. |
+| `OPTIONAL_DETERMINISTIC` | Holder count and concentration when the owner set and exclusions are complete; pool age; multi-pool liquidity context; activity deltas; creator transfer facts when directly attributed; cross-provider conflict taxonomy. |
+| `PROSPECTIVE_ONLY` | H07 exclusion ledger, L05 liquidity-change history, C08 creator/deployer history and other signals requiring Radar-owned snapshots from launch forward. |
+| `DEEP_LANE_CONTEXT` | Provider-derived trader, smart-money, KOL, bundler/sniper/insider, wash/rug and creator-history interpretations; social or other contextual enrichment. These remain attributed and cannot become `VERIFIED_DATA` by assertion. |
+| `EXCLUDED` | Investment-intent labels, unsupported historical reconstruction, fabricated current-state substitutions for past checkpoints, and any trading/execution signal. |
+
+The seven unresolved signals retain these explicit decisions: H07
+`KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY`, L05
+`KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY`, L08 `MORE_EVIDENCE_REQUIRED`, C08
+`KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY`, and Q01/Q02/Q04
+`KEEP_MANDATORY_FAST_LANE`. These recommendations are not a claim that the
+signals are currently complete.
+
+## Historical backfill pilot
+
+The Helius Developer historical pilot used the read-only
+`getTransactionsForAddress` archive method and the paid-plan Parsed Events
+endpoint against the official Pump program. Three bounded structural pilot
+runs made three archive calls and three Parsed Events calls, with 25 parsed
+signatures inspected per run; no raw transaction dump was retained. The pilot
+confirmed reachable decoded-event structure, but did not close creator/event
+or PumpSwap migration attribution. Estimated archive credits are recorded as
+an estimate only; provider billing telemetry was not available in the local
+environment. No additional Birdeye, CoinGecko or GMGN historical study was
+claimed in this phase.

@@ -63,11 +63,13 @@ describe("Radar signal gap closure utilities", () => {
 
   it("keeps the Solana client and Pump collector read-only", async () => {
     const client = new HeliusSolanaAcceptanceClient("fixture-key", async (_input, init) => {
-      expect(JSON.parse(String(init?.body))).toMatchObject({ method: "getAccountInfo" });
+      const body = JSON.parse(String(init?.body));
+      if (body.method === "getAccountInfo") expect(body).toMatchObject({ method: "getAccountInfo" });
       return new Response(JSON.stringify({ result: { value: null } }), { status: 200 });
     });
     await expect(client.request("getAccountInfo", ["curve"])).resolves.toMatchObject({ result: { value: null } });
     await expect(client.request("sendTransaction", [])).rejects.toThrow(/read-only/);
+    await expect(client.request("getTransactionsForAddress", ["curve", { transactionDetails: "signatures" }])).resolves.toBeDefined();
     const lifecycle = await collectPumpLifecycle({ mint: "HPtntf37JUJyGtwoY6NBqhqo2TshsxVbNkg1iLSCpump", request: client.request.bind(client) });
     expect(lifecycle.rpcCalls).toBe(1);
     expect(lifecycle.decode.valid).toBe(false);

@@ -114,3 +114,14 @@ export function assessEvmContractSemantics(input: { bytecodeAvailable: boolean; 
   const standard = input.decimalsRead && input.supplyRead ? "STANDARD_ERC20" : "CUSTOM_CONTRACT_SEMANTICS";
   return { standard, owner: input.ownerRead ? "AUTHORITATIVE_ONCHAIN" : "UNKNOWN", proxy: input.proxyImplementationKnown ? "AUTHORITATIVE_ONCHAIN" : "UNKNOWN", reason: input.ownerRead ? "Owner behavior was directly read for this contract." : "Owner/proxy behavior is contract-specific and was not proven by the available calls." };
 }
+
+export type UnresolvedSignalDecision = "KEEP_MANDATORY_FAST_LANE" | "KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY" | "MOVE_TO_OPTIONAL" | "MOVE_TO_DEEP_LANE" | "REMOVE" | "MORE_EVIDENCE_REQUIRED";
+export const unresolvedSignalDecisions: Readonly<Record<"H07" | "L05" | "L08" | "C08" | "Q01" | "Q02" | "Q04", UnresolvedSignalDecision>> = {
+  H07: "KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY",
+  L05: "KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY",
+  L08: "MORE_EVIDENCE_REQUIRED",
+  C08: "KEEP_MANDATORY_BUT_PROSPECTIVE_ONLY",
+  Q01: "KEEP_MANDATORY_FAST_LANE",
+  Q02: "KEEP_MANDATORY_FAST_LANE",
+  Q04: "KEEP_MANDATORY_FAST_LANE",
+};

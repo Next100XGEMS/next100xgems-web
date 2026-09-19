@@ -28,3 +28,12 @@ export function corpusCategoryCounts(samples: readonly HistoricalCorpusEntry[]):
 }
 
 export function requiredHistoricalLabelVocabulary(): readonly HistoricalOutcomeLabel[] { return HISTORICAL_OUTCOME_LABELS; }
+
+export type CorpusCandidate = { mint: string; launchObservedAt: string; category: SolanaCorpusCategory; source: string; selectionReason: string };
+
+/** Selects a frozen stratum deterministically; it never ranks by future outcome. */
+export function selectFrozenSolanaCandidates(candidates: readonly CorpusCandidate[], targetSize: number, seed: string): readonly CorpusCandidate[] {
+  if (!Number.isInteger(targetSize) || targetSize <= 0) throw new Error("targetSize must be positive.");
+  const unique = [...new Map(candidates.map((candidate) => [candidate.mint, candidate])).values()];
+  return unique.map((candidate) => ({ candidate, order: sha256({ seed, mint: candidate.mint }) })).sort((left, right) => left.order.localeCompare(right.order)).slice(0, targetSize).map((item) => item.candidate);
+}

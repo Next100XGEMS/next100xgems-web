@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildHistoricalCorpus, corpusCategoryCounts, createSolanaHolderSnapshot, runBoundedStudy } from "@/lib/radar/acceptance";
+import { buildHistoricalCorpus, corpusCategoryCounts, createHistoricalCheckpoints, createSolanaHolderSnapshot, runBoundedStudy, selectFrozenSolanaCandidates, unresolvedSignalDecisions } from "@/lib/radar/acceptance";
 
 const baseSample = { sampleId: "solana-001", chain: "solana" as const, mint: "mint", category: "ACTIVE_CURVE" as const, launchObservedAt: "2026-09-20T00:00:00.000Z", cutoffs: [{ name: "T+5M" as const, cutoffAt: "2026-09-20T00:05:00.000Z", inputManifestHash: "hash-5m" }, { name: "T+15M" as const, cutoffAt: "2026-09-20T00:15:00.000Z", inputManifestHash: "hash-15m" }, { name: "T+1H" as const, cutoffAt: "2026-09-20T01:00:00.000Z", inputManifestHash: "hash-1h" }, { name: "T+24H" as const, cutoffAt: "2026-09-21T00:00:00.000Z", inputManifestHash: "hash-24h" }], labels: ["SURVIVED_24H" as const], labelEvidence: ["direct-event"], split: "TRAIN" as const, selectionReason: "bounded fixture selection" };
 
@@ -32,5 +32,25 @@ describe("Radar historical validation tooling", () => {
       expect.objectContaining({ item: "slow", success: false, errorCode: "TIMEOUT" }),
       expect.objectContaining({ item: "fail", success: false, errorCode: "STUDY_ERROR" }),
     ]));
+  });
+
+  it("prevents future observations from entering earlier checkpoints", () => {
+    const observations = [{ observedAt: "2026-09-20T00:04:00.000Z", source: "chain", value: "early" }, { observedAt: "2026-09-20T00:06:00.000Z", source: "chain", value: "future-for-five-minutes" }];
+    const checkpoints = createHistoricalCheckpoints({ launchObservedAt: "2026-09-20T00:00:00.000Z", observations });
+    const earlyOnly = createHistoricalCheckpoints({ launchObservedAt: "2026-09-20T00:00:00.000Z", observations: observations.slice(0, 1) });
+    expect(checkpoints.find((item) => item.cutoff === "T+5M")?.state).toBe("REPLAYABLE");
+    expect(checkpoints.find((item) => item.cutoff === "T+5M")?.inputManifestHash).toBe(earlyOnly.find((item) => item.cutoff === "T+5M")?.inputManifestHash);
+    expect(checkpoints.find((item) => item.cutoff === "T+15M")?.inputManifestHash).not.toBe(earlyOnly.find((item) => item.cutoff === "T+15M")?.inputManifestHash);
+  });
+
+  it("selects a frozen corpus deterministically without outcome ranking", () => {
+    const candidates = ["a", "b", "c"].map((mint) => ({ mint, launchObservedAt: "2026-09-20T00:00:00.000Z", category: "ACTIVE_CURVE" as const, source: "fixture", selectionReason: "stratum" }));
+    expect(selectFrozenSolanaCandidates(candidates, 2, "seed")).toEqual(selectFrozenSolanaCandidates([...candidates].reverse(), 2, "seed"));
+  });
+
+  it("records explicit recommendations for the seven unresolved signals", () => {
+    expect(Object.keys(unresolvedSignalDecisions)).toHaveLength(7);
+    expect(unresolvedSignalDecisions.Q01).toBe("KEEP_MANDATORY_FAST_LANE");
+    expect(unresolvedSignalDecisions.L08).toBe("MORE_EVIDENCE_REQUIRED");
   });
 });
