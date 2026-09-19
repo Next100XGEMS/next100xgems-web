@@ -370,3 +370,79 @@ These projections exclude historical and blocked endpoints and do not include
 AI. They are not a paid-plan recommendation. The cheapest justified monthly
 provider spend remains **$0**; all paid upgrades are either **PAID UPGRADE
 NOT JUSTIFIED** or **INSUFFICIENT EVIDENCE**.
+
+## Targeted access remediation — 2026-09-20
+
+This pass changed only acceptance-sandbox access paths and reran the three
+previously unresolved provider checks. Credentials were read from the ignored
+local environment only; no credential value was printed or persisted.
+
+### CoinGecko Demo — key/account blocker confirmed
+
+The sandbox now has an explicit development-only client using the official
+Demo contract: `https://api.coingecko.com/api/v3/` and the recommended
+`x-cg-demo-api-key` header ([official Demo authentication documentation](https://docs.coingecko.com/demo/reference/authentication)). The official documentation also permits a query
+parameter, but the sandbox deliberately does not use query parameters because
+they can leak keys through logs or referrers.
+
+The local key is present (length only was inspected). Harmless `/ping` probes
+returned:
+
+| Root | Header | Result |
+| --- | --- | --- |
+| Demo root | `x-cg-demo-api-key` | HTTP 401 / error 10002 |
+| Demo root | `x-cg-pro-api-key` | HTTP 400: use the Pro root |
+| Pro root | `x-cg-demo-api-key` | HTTP 401 / error 10002 |
+| Pro root | `x-cg-pro-api-key` | HTTP 401 / error 10002 |
+
+This rules out a sandbox root/header mix-up. The local credential is invalid,
+revoked, mistyped, or not authorized for the requested account; only the
+CoinGecko Developer Dashboard can distinguish those cases. No key was
+regenerated automatically. Status: **INSUFFICIENT EVIDENCE**. No paid upgrade
+is justified.
+
+### GMGN — official CLI read-only route verified
+
+The official CLI is available through `npx --yes gmgn-cli`; `gmgn-cli
+config --check` exited 0 without printing configuration values. The documented
+read-only route is described in the [official GMGN Agent API documentation](https://docs.gmgn.ai/index/gmgn-agent-api):
+
+`gmgn-cli token info --chain sol --address <address> --raw`
+
+One frozen Solana sample returned exit 0 and a structured token-information
+object. The acceptance client now permits only documented read-only commands
+and rejects execution-oriented commands. It does not read or use the local
+private key. GMGN fields remain **PROVIDER_DERIVED** or **CONTEXTUAL_PROPRIETARY**,
+not `VERIFIED_DATA`. Status: **LIVE READ-ONLY ROUTE VERIFIED**; a full value
+comparison remains a separate measurement.
+
+### Alchemy — Base and BNB access recovered
+
+The existing helper already constructed the official chain roots exactly,
+consistent with [Alchemy's supported-chain documentation](https://www.alchemy.com/docs/reference/node-supported-chains):
+
+- `eth-mainnet.g.alchemy.com/v2/<key>`
+- `base-mainnet.g.alchemy.com/v2/<key>`
+- `bnb-mainnet.g.alchemy.com/v2/<key>`
+
+Targeted read-only probes now return:
+
+| Chain | `eth_blockNumber` | `eth_chainId` | Frozen `eth_getCode` sample |
+| --- | ---: | ---: | ---: |
+| Ethereum | 200 | 200 | no frozen samples |
+| Base | 200 | 200 | 5/5 HTTP/RPC success |
+| BNB | 200 | 200 | 5/5 HTTP/RPC success |
+
+The earlier 403 was transient or account/network provisioning state; it was
+not caused by endpoint construction. No manual dashboard action is currently
+required. The acceptance client remains read-only and does not permit wallet,
+bundler, gas-manager, signing or transaction-submission methods.
+
+### Targeted rerun accounting
+
+Additional live requests in this remediation pass were four CoinGecko `/ping`
+matrix probes plus one blocked query-string probe that was not executed, one
+GMGN `token info` CLI request, six Alchemy health probes and ten Alchemy
+`eth_getCode` probes. The blocked query-string probe was rejected before
+execution because it would expose a credential in a URL. No expensive
+unaffected provider cohort was rerun.

@@ -95,6 +95,21 @@ Screener latest-profile feed and is intentionally frozen. It contains only
 new-launch discovery, not a balanced historical or outcome sample. The
 selection file is `tests/fixtures/radar-acceptance-live-20260920.json`.
 
+## Targeted authenticated access remediation — 2026-09-20
+
+The frozen cohort was not changed. Alchemy's official Ethereum, Base and BNB
+JSON-RPC roots were retested with `eth_blockNumber` and `eth_chainId`; all six
+health calls returned HTTP 200. Five Base and five BNB frozen token rows also
+returned successful read-only `eth_getCode` responses. The earlier Base/BNB
+403 condition did not reproduce and is recorded as transient/provisioning
+state rather than a chain-coverage limitation.
+
+This improves authenticated chain-state access, but does not promote a chain:
+the cohort still lacks balanced historical outcomes, full holder/creator
+coverage, and independent market reconciliation. BNB and Base therefore
+remain **SHADOW** for the next experiment. Ethereum remains **DEFER** because
+the frozen dataset contains no Ethereum token sample.
+
 The main measured gaps are missing direct RPC/provider credentials, no Pump
 program verification, no holder/distribution or creator-history measurements,
 no GMGN value test, no CoinGecko Demo test, and GeckoTerminal HTTP 429

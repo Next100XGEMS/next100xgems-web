@@ -6,3 +6,5 @@ export * from "@/lib/radar/acceptance/providers";
 export * from "@/lib/radar/acceptance/collectors";
 export * from "@/lib/radar/acceptance/summary";
 export * from "@/lib/radar/acceptance/alchemy";
+export * from "@/lib/radar/acceptance/coingecko";
+export * from "@/lib/radar/acceptance/gmgn";

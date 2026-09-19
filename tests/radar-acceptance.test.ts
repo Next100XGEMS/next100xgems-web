@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AlchemyReadOnlyAcceptanceClient, compareAcceptanceRecords, createAcceptanceDataset, createAcceptanceSample, createChainAcceptancePlan, collectAcceptanceProbe, FixtureAcceptanceProvider, AcceptanceTelemetryStore, summarizeChainActivity } from "@/lib/radar/acceptance";
+import { AlchemyReadOnlyAcceptanceClient, CoinGeckoDemoAcceptanceClient, compareAcceptanceRecords, createAcceptanceDataset, createAcceptanceSample, createChainAcceptancePlan, collectAcceptanceProbe, FixtureAcceptanceProvider, GmgnCliAcceptanceClient, AcceptanceTelemetryStore, summarizeChainActivity } from "@/lib/radar/acceptance";
 
 const observedAt = "2026-09-20T00:00:00.000Z";
 const sample = createAcceptanceSample({ sampleId: "solana-test-1", chain: "solana", tier: "A_DEEP", category: "ACTIVE_LAUNCH", tokenAddress: "fixture-token" });
@@ -57,5 +57,23 @@ describe("Radar provider acceptance sandbox", () => {
     await expect(client.request("base", "eth_blockNumber")).resolves.toMatchObject({ success: true, hasResult: true });
     await expect(client.request("sui", "eth_blockNumber")).resolves.toMatchObject({ errorCode: "UNSUPPORTED_CHAIN" });
     await expect(client.request("base", "eth_sendRawTransaction", [])).rejects.toThrow(/read-only/);
+  });
+
+  it("uses the official CoinGecko Demo header and relative API paths", async () => {
+    const client = new CoinGeckoDemoAcceptanceClient("fixture-key", async (input, init) => {
+      expect(input).toBe("https://api.coingecko.com/api/v3/ping");
+      expect(new Headers(init?.headers).get("x-cg-demo-api-key")).toBe("fixture-key");
+      return new Response(JSON.stringify({ gecko_says: "ok" }), { status: 200, headers: { "content-type": "application/json" } });
+    });
+    await expect(client.ping()).resolves.toMatchObject({ success: true, endpoint: "/ping" });
+    await expect(client.request("https://example.invalid/ping")).rejects.toThrow(/relative/);
+  });
+
+  it("uses the official GMGN CLI token-info route and rejects write commands", async () => {
+    const client = new GmgnCliAcceptanceClient(async (args) => {
+      expect(args).toEqual(["token", "info", "--chain", "sol", "--address", "fixture-token", "--raw"]);
+      return { stdout: JSON.stringify({ address: "fixture-token", price: "1" }), stderr: "", exitCode: 0 };
+    });
+    await expect(client.tokenInfo("solana", "fixture-token")).resolves.toMatchObject({ success: true, command: "token info" });
   });
 });
