@@ -94,6 +94,16 @@ Gate 19F compatible foundation — IMPLEMENTED. Added provider-neutral Deep Lane
 
 Gate 19G-F1 — Radar processing integration hardening — IMPLEMENTED. Added the additive database-authoritative input-finalization and fenced manifest contract, prevented claims before finalized input assembly, aligned ingestion with the sealed database fingerprint, preserved explicit provider failure/missingness and exact numeric transport, and bound Admin operation keys to actor/action/target/payload/intent. Existing RLS, grants, audit, lease, pause and no-execution boundaries remain unchanged. Production provider, scoring and freshness policy decisions remain deferred.
 
+Gate 19G-F2 — durable Deep Lane orchestration — IMPLEMENTED. Added durable
+logical requests, fenced invocation attempts, deterministic provider
+idempotency keys, immutable structured completion receipts, bounded explicit
+retry, and truthful `UNCERTAIN` recovery for the crash window after an
+external invocation but before local completion. Duplicate local delivery
+cannot invoke a second valid attempt, and completion is bound to the exact
+sealed manifest and trusted adapter/provider/model identity. The fixture is
+test-only; no production AI vendor, scoring or freshness decision was made,
+and no trading/execution capability exists.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.

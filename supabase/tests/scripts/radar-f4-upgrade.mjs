@@ -75,8 +75,14 @@ async function main() {
   created.add(db);
   await sql(db, dump.stdout);
 
-  // Apply only through F2. The two final files are F3 and F4.
-  for (const migration of migrations.slice(0, -3)) await sql(db, migration);
+  // Apply only through the established F2 migration. Later additive migrations
+  // must not shift this upgrade fixture's historical boundary.
+  const f2Migration = "20260913000002_radar_gate19c_f2_approval_authz_order.sql";
+  const f3Migration = "20260919000001_radar_gate19c_f3_hardening.sql";
+  const f4Migration = "20260919000002_radar_gate19c_f4_hardening.sql";
+  const f2Index = files.indexOf(f2Migration);
+  assert.ok(f2Index >= 0, "F2 migration must remain in the established baseline");
+  for (const migration of migrations.slice(0, f2Index + 1)) await sql(db, migration);
 
   const owner = "4f000000-0000-0000-0000-000000000001";
   const reviewer = "4f000000-0000-0000-0000-000000000002";
@@ -152,8 +158,8 @@ async function main() {
   await sql(db, authenticatedSql(reviewer, `select public.radar_approve_review('${uuid("4f000300",106)}',1,'note','disclosure','f4-race-approve-3')`));
   await sql(db, authenticatedSql(reviewer, `select public.radar_publish_review('${uuid("4f000300",104)}',2,'f4-race-baseline')`));
 
-  await sql(db, migrations[18]);
-  await sql(db, migrations[19]);
+  await sql(db, migrations[files.indexOf(f3Migration)]);
+  await sql(db, migrations[files.indexOf(f4Migration)]);
   assert.equal(await sql(db, `select count(*) from public.radar_reviews where id='${uuid("4f000300",103)}' and state='PUBLISHED';`), "1");
   assert.equal(await sql(db, `select count(*) from public.radar_reviews where id='${uuid("4f000300",102)}' and state='APPROVED';`), "1");
   assert.equal(await sql(db, `begin; set local role anon; select count(*) from public.get_public_radar_detail('${uuid("4f000000",102)}'); rollback;`), "0", "unsafe published detail must be hidden");

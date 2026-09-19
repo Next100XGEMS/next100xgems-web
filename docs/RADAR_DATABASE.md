@@ -1,6 +1,6 @@
 # Radar Database Foundation — Gate 19C
 
-Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. Gate 19D Batch 1 and the compatible Gate 19F foundation are implemented; Gate 19G-F1 adds the corrective processing contract. This remains a persistent watch/intelligence foundation only. No live provider, score formula, AI model, automatic publication, wallet, trading or execution feature exists.
+Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. Gate 19D Batch 1, the compatible Gate 19F foundation, Gate 19G-F1 and Gate 19G-F2 are implemented; Gate 19G-F2 adds durable Deep Lane orchestration. This remains a persistent watch/intelligence foundation only. No live provider, score formula, AI model, automatic publication, wallet, trading or execution feature exists.
 
 ## Domain inventory
 
@@ -194,6 +194,20 @@ include verified actor, action, target, payload and an explicit operation
 intent. No new browser grants, RLS bypass, production provider, scoring policy
 or execution capability was added.
 
+Gate 19G-F2 adds a private durable Deep Lane request/attempt ledger. A
+logical request is bound to the work item, token, reserved analysis version,
+task, method/schema, sealed input and evidence manifests, and trusted
+adapter/provider/model identity. Attempts reserve a deterministic provider
+idempotency key before adapter invocation and carry the existing lease, fence
+and emergency-pause generation. Successful structured output is stored as a
+completion receipt bound to the request, attempt, frozen input hash and
+output hash; exact replay reuses that receipt. Concurrent delivery cannot
+reserve a second valid invocation. Retryable failures require an explicit
+bounded retry, while an invocation whose external execution cannot be proven
+is recorded as `UNCERTAIN` rather than blindly retried. The database cannot
+promise exactly-once external model execution without provider idempotency
+support.
+
 Approval requires an approved method and freshness policy, a current ACTIVE
 approver role, a sealed nonempty PASS work result, a finite eligible score and
 publicly eligible analysis. Publication reads only a frozen 17-key snapshot;
@@ -208,7 +222,9 @@ covers 45, and F4 covers 21; the complete database suite covers 849 tests.
 Corrected F3 lock-wait checks pass 9/9, the Research concurrency suite passes
 13/13, and the disposable F4 upgrade/lease-race checks pass. Gate 19G-F1
 focused finalization coverage passes 15/15; remaining production provider,
-scoring and freshness decisions stay separately gated.
+scoring and freshness decisions stay separately gated. Gate 19G-F2 adds
+focused durable Deep Lane and concurrency coverage; the fixture adapter is
+test-only and does not activate production AI.
 
 Gate 19D must choose and validate real provider capabilities, empirical
 methodology/range/freshness policy, Fast Lane rules, durable worker handlers

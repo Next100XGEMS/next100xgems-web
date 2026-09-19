@@ -9,7 +9,8 @@ select tables_are('public', array[
   'articles', 'partners', 'sponsors', 'ad_placements', 'ad_campaigns',
   'ad_creatives', 'ad_campaign_placements', 'leads', 'tokens',
   'radar_analyses', 'radar_reviews', 'radar_events', 'radar_observations',
-  'radar_work_items', 'radar_work_inputs', 'radar_evidence', 'radar_methodology_versions',
+  'radar_work_items', 'radar_work_inputs', 'radar_deep_lane_requests', 'radar_deep_lane_attempts',
+  'radar_evidence', 'radar_methodology_versions',
   'radar_freshness_policies', 'radar_evidence_freezes', 'research_authors', 'article_sources',
   'article_related_research', 'article_tokens'
 ], 'Only the intended foundation/Research/Radar tables exist; no trading or analytics event tables');

@@ -1,6 +1,6 @@
 # Radar Implementation Architecture and Safety Plan — Gate 19A
 
-Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. Gate 19D Batch 1 and the compatible Gate 19F foundation are implemented; Gate 19G-F1 is the current corrective batch. This document records the approved architecture and remaining implementation boundary for Gates 19D–19G. Branch: `feat/radar`.
+Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. Gate 19D Batch 1, the compatible Gate 19F foundation, Gate 19G-F1 and Gate 19G-F2 are implemented; Gate 19G-F2 is the current corrective batch. This document records the approved architecture and remaining implementation boundary for Gates 19D–19G. Branch: `feat/radar`.
 
 Gate 19D Batch 1 is implemented as a provider-neutral foundation. Production
 provider selection, empirical thresholds, score methodology and deployment
@@ -123,6 +123,26 @@ Queued/running/retry/failure states belong to work items. Retry transient failur
 Retain provider/model identity and revision when supplied, adapter version, prompt-template version/hash, input evidence IDs/hashes, generation parameters where relevant, output-schema version, analyzed time and validation result. An opaque provider model version is explicitly recorded as such; do not claim deterministic replay of model generation. Preserve accepted outputs so their use remains explainable.
 
 Treat all model output as untrusted: closed structured schema, size/string limits, evidence-reference validation, unsupported factual assertions rejected or clearly labeled inference, safe text rendering and no HTML/code execution. Input text may contain prompt injection; it cannot grant tools, select system instructions or alter workflow. No model access to credentials, application mutations, arbitrary URLs, or publication decisions. Raw prompts/private context do not enter public DTOs or audit payloads. AI INFERENCE cannot become VERIFIED DATA or override an authoritative risk/UNKNOWN condition. The AI provider/model and any numerical Deep Lane contribution remain deferred.
+
+### Gate 19G-F2 durable orchestration
+
+Deep Lane requests are durable records rather than transport-only calls. The
+canonical request identity binds the work item, reserved analysis version,
+task, method/schema, exact sealed input/evidence manifests, output schema and
+trusted adapter/provider/model identity. Each invocation is a durable attempt
+with a bounded attempt number, lease/fence and pause-generation binding. A
+deterministic provider idempotency key is reserved before invoking the
+adapter; duplicate delivery while an attempt is valid does not invoke the
+adapter again, and a completed request replays its durable receipt.
+
+Completion revalidates current work authority, lease, fence, pause generation
+and immutable manifest before persisting structured output. A retryable failure
+can be retried only by an explicit bounded new attempt. A crash after an
+external call but before receipt persistence is represented as `UNCERTAIN`
+unless the adapter/provider can safely reuse the same idempotency key. This is
+durable local orchestration and truthful recovery behavior, not an exactly-once
+claim about an external model API. The only adapter currently used is a
+deterministic test fixture; no production AI vendor or model is selected.
 
 ## 7. Evidence model
 
@@ -442,6 +462,9 @@ publication wiring; it is not an empirically approved score formula. No real
 provider, Fast Lane evaluator, Deep Lane model, background worker or automatic
 publisher was started. Gate 19G-F1 adds only the trusted finalization and
 manifest contract; production provider and scoring decisions remain deferred.
+Gate 19G-F2 adds only the durable Deep Lane request, attempt, completion and
+recovery contract described above; it does not activate production AI or
+change the approved Fast Lane, scoring, freshness or public Radar policy.
 
 ## 30. Intentionally deferred decisions
 
