@@ -125,6 +125,8 @@ Gate 19G — software-foundation sign-off after `9ee3a1b` — APPROVED WITH NON-
 
 Production Radar Intelligence Design — requirements baseline COMPLETE, pending product/methodology review. [RADAR_PRODUCTION_INTELLIGENCE.md](RADAR_PRODUCTION_INTELLIGENCE.md) defines 80 candidate signals, a proposed 30-signal minimum set, 31 vendor-neutral capability requirements, evidence/freshness/conflict principles, a conditional Solana-first evaluation recommendation and a point-in-time empirical validation plan. Next: review these requirements and evaluate provider capabilities; providers, AI models, scoring weights/formulas/thresholds, freshness durations and production activation remain unapproved. No integration or implementation changed in this planning phase.
 
+Production Radar Provider Evaluation — research/architecture documentation COMPLETE (2026-09-20), using the approved requirements baseline at `41ef51a`. [RADAR_PROVIDER_EVALUATION.md](RADAR_PROVIDER_EVALUATION.md) evaluates eight providers across all 31 capabilities and maps all 30 mandatory signals and 21 mandatory authority/fallback routes. It conditionally recommends Birdeye + Helius + CoinGecko for a restricted Solana beta, defers default Bitquery procurement, and records coverage, precision, history, licensing and cost acceptance gates. Next: human approval of universe, subscriptions, budget, rights and acceptance scope, then separately authorized provider integration/shadow validation. No vendor was purchased/integrated, credential added, production methodology approved or runtime changed.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.
