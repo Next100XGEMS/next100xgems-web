@@ -202,3 +202,14 @@ methodology/range/freshness policy, Fast Lane rules, durable worker handlers
 and provider failure behavior. Deep Lane AI, automatic publication, Admin
 review UI, public reader integration and any execution capability remain
 outside Gate 19C.
+
+## Gate 19D Batch 1 — provider-neutral Fast Lane foundation
+
+Batch 1 adds typed provider capability and observation contracts, exact decimal
+normalization, explicit provider failure states, fixture adapters, canonical
+hashing, RPC-backed ingestion/work orchestration, deterministic versioned
+screening and retry-safe lease primitives. It does not choose a production
+provider, threshold policy or score formula. Screening returns only `PASS`,
+`REJECT` or `INCOMPLETE` with deterministic evidence; immutable analysis
+evidence remains gated by an approved scoring methodology. No browser path,
+scheduler, automatic publication or trading capability was added.

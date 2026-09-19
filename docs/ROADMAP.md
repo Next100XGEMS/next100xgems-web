@@ -86,6 +86,8 @@ Gate 19B — Public Radar UX — IMPLEMENTED. Added the truthful flag-aware `/ra
 
 Gate 19C — Radar database/event/evidence/security foundation — COMPLETE and approved after final Astra sign-off. The original, F1, F2 and F3 foundations remain additive and preserve canonical tokens, Research migrations, RLS/grants and Radar history. Gate 19C-F4 adds upgrade-safe authoritative-source validation, canonical post-lock publication authorization/time checks, and work-row lease revalidation; it also corrects the lock-wait fixtures. Validation covers the legacy contract **75/75**, F1 **54/54**, F2 **51/51**, F3 **45/45**, F4 **21/21**, corrected F3 lock-wait concurrency **9/9**, Radar worker concurrency **5/5**, F2 publication concurrency **6/6**, Research concurrency **13/13**, full database tests **849/849**, and the disposable F4 upgrade/lease-race checks. No provider, Fast Lane, Deep Lane, worker, automatic publisher, Admin Radar UI or execution capability was started. Gate 19D remains separately gated.
 
+Gate 19D Batch 1 — provider-neutral Fast Lane foundation — IMPLEMENTED. Added typed provider contracts, exact-decimal normalization, explicit UNKNOWN/UNAVAILABLE/UNSUPPORTED/STALE semantics, fixture adapters, canonical hashing, RPC-backed ingestion/work orchestration, deterministic screening, and lease-safe processing primitives. No production provider, threshold policy, score formula, scheduler, public integration, AI, Admin operations or execution capability was selected or added.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.

@@ -2,6 +2,10 @@
 
 Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. This document records the approved architecture and the implementation boundary for separately approved Gates 19D–19G. Branch: `feat/radar`.
 
+Gate 19D Batch 1 is implemented as a provider-neutral foundation. Production
+provider selection, empirical thresholds, score methodology and deployment
+remain unapproved and are not invented here.
+
 Source of truth reviewed: `AGENTS.md`, [RADAR_SPEC.md](RADAR_SPEC.md), [PROJECT_SPEC.md](PROJECT_SPEC.md), [ARCHITECTURE.md](ARCHITECTURE.md), [DATABASE.md](DATABASE.md), [AUTHORIZATION_PLAN.md](AUTHORIZATION_PLAN.md), [AUDIT_LOGGING.md](AUDIT_LOGGING.md), [FEATURE_FLAGS.md](FEATURE_FLAGS.md), [SECURITY.md](SECURITY.md), and [ROADMAP.md](ROADMAP.md). Schema statements below describe migration source, not an inspection of live database contents. Research is complete; only its established narrow-projection and atomic audited-mutation principles are relevant here. Its content architecture is not copied.
 
 ## 1. Product and safety boundary

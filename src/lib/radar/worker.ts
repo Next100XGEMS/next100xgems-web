@@ -1,0 +1,5 @@
+import { evaluateFastLane } from "@/lib/radar/fast-lane";
+import type { RadarFastLaneMethod, RadarNormalizedObservation } from "@/lib/radar/contracts";
+import type { RadarSystemGateway } from "@/lib/radar/system-gateway";
+export async function completeFastLaneWork(input: { workItemId: string; worker: string; leaseToken: string; leaseGeneration: number; observations: readonly RadarNormalizedObservation[] }, method: RadarFastLaneMethod, gateway: RadarSystemGateway, evaluatedAt = new Date().toISOString()) { const result = evaluateFastLane(method, input.observations, evaluatedAt); const receipt = await gateway.completeScreening({ workItemId: input.workItemId, worker: input.worker, leaseToken: input.leaseToken, leaseGeneration: input.leaseGeneration, result }); return { receipt, result }; }
+export function failFastLaneWork(input: { workItemId: string; worker: string; leaseToken: string; leaseGeneration: number }, gateway: RadarSystemGateway, error: unknown, retryable: boolean) { const summary = error instanceof Error ? error.message.slice(0, 1000) : "Fast Lane processing failed."; return gateway.failWork({ ...input, retryable, summary }); }

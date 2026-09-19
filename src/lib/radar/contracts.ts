@@ -1,0 +1,17 @@
+export const RADAR_DATA_STATES = ["AVAILABLE", "UNKNOWN", "UNAVAILABLE", "UNSUPPORTED", "STALE"] as const;
+export type RadarDataState = (typeof RADAR_DATA_STATES)[number];
+export type RadarProviderCapability = { capability: string; metrics: readonly string[]; supportsHistorical: boolean };
+export type RadarProviderRequest = { tokenId: string; chain: string; contractAddress: string; capability: string; metricKey: string; observedAt: string };
+export type RadarProviderObservation = { provider: string; adapterVersion: string; capability: string; metricKey: string; state: RadarDataState; value?: string; rawIntegerValue?: string; decimalPlaces?: number; unit?: string; context?: Record<string, string | number | boolean | null>; provenance?: Record<string, string | number | boolean | null>; traceReference?: string; observedAt: string; reason?: string };
+export type RadarNormalizedObservation = { provider: string; adapterVersion: string; capability: string; metricKey: string; state: RadarDataState; value: string | null; rawIntegerValue: string | null; decimalPlaces: number | null; unit: string | null; context: Record<string, string | number | boolean | null>; provenance: Record<string, string | number | boolean | null>; traceReference: string | null; observedAt: string; receivedAt: string; contentHash: string };
+export type RadarFrozenInputs = { schemaVersion: "frozen-input-v1"; observations: readonly RadarNormalizedObservation[]; sealedAt: string; inputHash: string };
+export type RadarProviderAdapter = { readonly provider: string; readonly adapterVersion: string; readonly capabilities: readonly RadarProviderCapability[]; observe(request: RadarProviderRequest): Promise<RadarProviderObservation> };
+export type RadarRuleOperator = "gt" | "gte" | "lt" | "lte";
+export type RadarFastLaneRule = { key: string; capability: string; metricKey: string; required: boolean; operator?: RadarRuleOperator; threshold?: string; rejectReason?: string };
+export type RadarFastLaneMethod = { version: string; inputVersion: string; rules: readonly RadarFastLaneRule[] };
+export type RadarScreeningReason = { code: string; ruleKey: string; detail: string };
+export type RadarDeterministicEvidence = { key: string; label: string; state: "VERIFIED_DATA" | "STRONG_SIGNAL" | "UNKNOWN"; origin: "DETERMINISTIC"; metricKey: string; value: string | null; reason?: string };
+export type RadarFastLaneResult = { result: "PASS" | "REJECT" | "INCOMPLETE"; methodVersion: string; inputVersion: string; inputHash: string; evaluatedAt: string; reasons: readonly RadarScreeningReason[]; evidence: readonly RadarDeterministicEvidence[] };
+export type RadarScoreInput = { methodVersion: string; inputHash: string; observations: readonly RadarNormalizedObservation[]; screening: RadarFastLaneResult };
+export type RadarScoreResult = { score: string; methodologyVersion: string; methodologyHash: string; components: Record<string, string> };
+export type RadarScoreCalculator = (input: RadarScoreInput) => RadarScoreResult;
