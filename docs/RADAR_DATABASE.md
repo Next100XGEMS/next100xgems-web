@@ -221,6 +221,15 @@ separate-session harness covers duplicate ownership, receipt replay, both
 confirmed lock-wait expiry cases, mismatched recovery, and matching
 `UNCERTAIN` recovery. No external exactly-once claim is added.
 
+Gate 19G-F4 closes the application replay-context boundary without adding a
+migration. The gateway preserves the caller's expected work identity and
+maps the complete authoritative request context returned by the existing
+reservation contract. The application reconciles work, token, analysis
+version, frozen input/evidence manifests, task/method/schema and trusted
+provider/model identity before replay or adapter invocation. A completed
+receipt remains lease-free to replay, but it is never identity-free; a
+conflict is rejected without a new attempt or adapter call.
+
 Approval requires an approved method and freshness policy, a current ACTIVE
 approver role, a sealed nonempty PASS work result, a finite eligible score and
 publicly eligible analysis. Publication reads only a frozen 17-key snapshot;
@@ -239,7 +248,8 @@ scoring and freshness decisions stay separately gated. Gate 19G-F2 adds
 focused durable Deep Lane and concurrency coverage; the fixture adapter is
 test-only and does not activate production AI. Gate 19G-F3 adds 25 focused
 database assertions, 116 application tests, and a 7/7 separate-session Deep
-Lane integrity/concurrency harness; all fixtures are disposable local state.
+Lane integrity/concurrency harness; Gate 19G-F4 adds application/RPC
+replay-context coverage. All fixtures are disposable local state.
 
 Gate 19D must choose and validate real provider capabilities, empirical
 methodology/range/freshness policy, Fast Lane rules, durable worker handlers

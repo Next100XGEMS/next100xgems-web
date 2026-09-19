@@ -113,6 +113,14 @@ work/request/attempt identities before mutation. Focused database coverage is
 Deep Lane harness is 7/7. No production AI provider, scoring/freshness policy,
 or trading/execution capability was selected or activated.
 
+Gate 19G-F4 — Deep Lane receipt replay context binding — IMPLEMENTED. The
+existing authoritative reservation response is reconciled against the full
+application request context before replay or adapter invocation. Completed
+receipts remain lease-free to replay, while conflicting work, token, version,
+manifest, task/method/schema or trusted provider/model context is rejected
+without a new attempt. No migration, production AI provider or
+trading/execution capability was added.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.

@@ -31,6 +31,7 @@ export type RadarDeepLaneFailure = { kind: "TRANSIENT" | "PERMANENT"; code: Rada
 export class RadarDeepLaneValidationError extends Error { constructor(message: string) { super(message); this.name = "RadarDeepLaneValidationError"; } }
 export class RadarDeepLaneProviderError extends Error { constructor(public readonly code: RadarProviderErrorCode, message: string, public readonly executionState: "NOT_INVOKED" | "UNKNOWN") { super(message); this.name = "RadarDeepLaneProviderError"; } }
 export class RadarDeepLaneInProgressError extends Error { constructor(message = "Deep Lane request is already owned by another durable attempt.") { super(message); this.name = "RadarDeepLaneInProgressError"; } }
+export class RadarDeepLaneContextConflictError extends Error { readonly code = "DEEP_LANE_CONTEXT_CONFLICT" as const; constructor() { super("Deep Lane request context conflicts with the durable request."); this.name = "RadarDeepLaneContextConflictError"; } }
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const HASH = /^[0-9a-f]{64}$/;
@@ -39,8 +40,18 @@ function safeHash(value: unknown, label: string) { const result = safeText(value
 function object(value: unknown): Record<string, unknown> { if (!value || typeof value !== "object" || Array.isArray(value)) throw new RadarDeepLaneValidationError("Deep Lane output must be an object."); return value as Record<string, unknown>; }
 function timestamp(value: unknown) { const result = safeText(value, "generatedAt", 64); if (!Number.isFinite(Date.parse(result))) throw new RadarDeepLaneValidationError("generatedAt must be an ISO timestamp."); return new Date(result).toISOString(); }
 function outputPayload(result: RadarDeepLaneResult) { const { outputHash, ...payload } = result; void outputHash; return payload; }
+function comparable(value: unknown): unknown { if (Array.isArray(value)) return value.map(comparable); if (value && typeof value === "object") return Object.fromEntries(Object.entries(value as Record<string, unknown>).sort(([left], [right]) => left.localeCompare(right)).map(([key, item]) => [key, comparable(item)])); return value; }
+function sameJson(left: unknown, right: unknown) { return JSON.stringify(comparable(left)) === JSON.stringify(comparable(right)); }
 
 export function deepLaneOutputPayload(result: RadarDeepLaneResult) { return outputPayload(result); }
+
+export function assertDeepLaneManifestContext(request: RadarDeepLaneRequest, manifest: RadarSealedManifest) {
+  if (request.workItemId !== manifest.workItemId || request.tokenId !== manifest.tokenId || request.reservedAnalysisVersion !== manifest.reservedAnalysisVersion || request.methodVersion !== manifest.methodVersion || request.inputVersion !== manifest.inputVersion || request.frozenInputHash !== manifest.sealedInputHash || !sameJson(request.inputManifest, manifest.inputManifest)) throw new RadarDeepLaneContextConflictError();
+}
+
+export function assertDeepLaneRequestContext(request: RadarDeepLaneRequest, reservation: import("@/lib/radar/system-gateway").RadarDeepLaneReservation) {
+  if (request.workItemId !== reservation.workItemId || request.tokenId !== reservation.tokenId || request.reservedAnalysisVersion !== reservation.reservedAnalysisVersion || request.taskType !== reservation.taskType || request.methodVersion !== reservation.methodVersion || request.inputVersion !== reservation.inputVersion || request.schemaVersion !== reservation.schemaVersion || request.outputSchemaVersion !== reservation.outputSchemaVersion || request.frozenInputHash !== reservation.inputHash || !sameJson(request.inputManifest, reservation.inputManifest) || !sameJson(request.evidence, reservation.evidenceManifest) || request.provider !== reservation.provider || request.model !== reservation.model || request.modelRevision !== reservation.modelRevision || request.adapterVersion !== reservation.adapterVersion) throw new RadarDeepLaneContextConflictError();
+}
 
 export function prepareDeepLaneRequest(input: { workItemId: string; tokenId: string; reservedAnalysisVersion: number; methodVersion: string; inputVersion: string; inputManifest: readonly RadarDeepLaneInputManifest[]; evidence: readonly RadarDeepLaneEvidenceInput[]; provider: string; model: string; modelRevision?: string; adapterVersion: string; frozenInputHash: string }): RadarDeepLaneRequest {
   const workItemId = safeText(input.workItemId, "workItemId", 128); const tokenId = safeText(input.tokenId, "tokenId", 128); const methodVersion = safeText(input.methodVersion, "methodVersion", 64); const inputVersion = safeText(input.inputVersion, "inputVersion", 64); const provider = safeText(input.provider, "provider", 64); const model = safeText(input.model, "model", 128); const adapterVersion = safeText(input.adapterVersion, "adapterVersion", 128); const frozenInputHash = safeHash(input.frozenInputHash, "frozenInputHash");
@@ -73,9 +84,14 @@ export function classifyDeepLaneFailure(input: { error: unknown; attempt: number
 export async function executeDeepLane(adapter: RadarDeepLaneAdapter, request: RadarDeepLaneRequest, invocation?: RadarDeepLaneInvocation): Promise<RadarDeepLaneResult> { if (!request.requestHash) throw new RadarDeepLaneValidationError("Deep Lane execution requires an authoritative database request hash."); const boundRequest = { ...request, requestHash: request.requestHash }; const raw = await adapter.request(boundRequest, invocation); return validateDeepLaneOutput(raw, boundRequest, { provider: adapter.provider, model: adapter.model, modelRevision: adapter.modelRevision, adapterVersion: adapter.adapterVersion }); }
 
 export async function executeDeepLaneWork(input: { claimed: RadarClaimedWork; request: RadarDeepLaneRequest; adapter: RadarDeepLaneAdapter; gateway: RadarDeepLaneGateway; maxAttempts?: number; explicitRetry?: boolean }): Promise<RadarDeepLaneResult> {
-  const reservation = await input.gateway.reserveDeepLaneAttempt({ claimed: input.claimed, request: input.request, maxAttempts: input.maxAttempts ?? 3, explicitRetry: input.explicitRetry ?? false });
-  const authoritativeRequest = { ...input.request, requestHash: reservation.requestHash };
   const trusted = { provider: input.adapter.provider, model: input.adapter.model, modelRevision: input.adapter.modelRevision, adapterVersion: input.adapter.adapterVersion };
+  if (input.request.workItemId !== input.claimed.workItemId || input.request.provider !== trusted.provider || input.request.model !== trusted.model || (input.request.modelRevision ?? null) !== (trusted.modelRevision ?? null) || input.request.adapterVersion !== trusted.adapterVersion) throw new RadarDeepLaneContextConflictError();
+  try { assertDeepLaneManifestContext(input.request, await input.gateway.getWorkManifest(input.claimed)); } catch (error) { if (error instanceof RadarDeepLaneContextConflictError) throw error; }
+  let reservation: import("@/lib/radar/system-gateway").RadarDeepLaneReservation;
+  try { reservation = await input.gateway.reserveDeepLaneAttempt({ claimed: input.claimed, request: input.request, maxAttempts: input.maxAttempts ?? 3, explicitRetry: input.explicitRetry ?? false }); }
+  catch (error) { if (error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "23505") throw new RadarDeepLaneContextConflictError(); throw error; }
+  assertDeepLaneRequestContext(input.request, reservation);
+  const authoritativeRequest = { ...input.request, requestHash: reservation.requestHash };
   if (reservation.requestState === "SUCCEEDED") {
     if (!reservation.completionOutput || !reservation.completionOutputHash) throw new RadarDeepLaneValidationError("Deep Lane completion receipt is incomplete.");
     const replay = validateDeepLaneOutput(reservation.completionOutput, authoritativeRequest, trusted);

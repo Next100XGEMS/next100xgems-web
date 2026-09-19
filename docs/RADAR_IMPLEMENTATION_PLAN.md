@@ -161,6 +161,20 @@ about the crash window where a provider may have executed without supporting
 idempotency; no production AI provider or exactly-once external execution is
 claimed.
 
+### Gate 19G-F4 completed-receipt context reconciliation
+
+Gate 19G-F4 keeps the approved durable request/attempt/receipt model and adds
+no database migration. The existing reservation response is mapped into a
+complete authoritative context in the system gateway. Before a new adapter
+invocation, the application checks the sealed work manifest and trusted
+adapter identity; after reservation, it reconciles every returned durable
+field, including work, token, analysis version, frozen input/evidence
+manifests, task/method/schema versions and provider/model identity. A
+completed receipt may be replayed after its lease is cleared only when this
+context matches exactly. Conflicts are rejected without a new attempt or
+adapter call. This is application identity binding, not a change to database
+authorization or lease architecture.
+
 ## 7. Evidence model
 
 Each immutable evidence item carries a stable ID within its versioned analysis, type/label, discriminated value or bounded summary, unit/decimals if numeric, origin (`DETERMINISTIC` or `INFERENCE`), source authority class, provider/adapter/version, observation reference, observed/received/evaluated times as applicable, freshness policy/result, analysis/evidence versions, and supporting references. Store confidence only with a named interpretation/context and method; it is not a return probability.

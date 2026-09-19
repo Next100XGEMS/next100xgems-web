@@ -65,3 +65,12 @@ caller waits is rejected. Recovery locks and validates the work/request/attempt
 relationship before mutation. These corrections preserve explicit
 `UNCERTAIN` handling when external execution cannot be proven and do not claim
 external exactly-once execution without provider idempotency support.
+
+Gate 19G-F4 adds the final application reconciliation boundary. The gateway
+returns the authoritative request context already exposed by the reservation
+contract, and the application compares it with the caller's work, token,
+analysis version, frozen manifest, task/method/schema, evidence and trusted
+provider/model context before either replaying a receipt or invoking an
+adapter. Completed replay does not require a live lease, but every meaningful
+identity field must match; conflicts are bounded application errors and do
+not create attempts or invoke the adapter.
