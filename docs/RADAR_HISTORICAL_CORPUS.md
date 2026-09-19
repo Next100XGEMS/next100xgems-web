@@ -8,8 +8,8 @@ methodology, score, threshold, AI provider or public activation is authorized.
 Build a reproducible Solana corpus of at least 300 tokens, preferably 500 when
 free/read-only access permits, for structural signal validation. The corpus is
 not a list of winners and must retain inconvenient, incomplete and conflicting
-cases. The current 108-token acceptance cohort is a discovery sample, not yet
-a balanced historical outcome corpus.
+cases. The first real acquisition is now frozen at 300 Pump tokens; it is a
+structural acquisition corpus, not yet a balanced historical outcome corpus.
 
 ## Selection rules
 
@@ -86,10 +86,40 @@ duplicated information without printing raw responses or credentials.
 ## Current status
 
 The repository contains corpus freeze/build tooling, historical label
-validation, holder snapshot export and bounded-study controls. The current
-available corpus remains the 108-token acceptance cohort and is not balanced
-enough for methodology design. Solana status is therefore
-`MORE_DATA_WORK_REQUIRED`. Current justified provider spend remains `$0/month`.
+validation, holder snapshot export and bounded-study controls. A real frozen
+manifest is now committed at
+`tests/data/radar-pump-historical-universe-20260919.json`:
+
+- 300 unique Pump mints from a 90-day window ending 2026-09-19;
+- deterministic oldest/newest, 13-bucket, outcome-independent sampling;
+- 299 `create_v2` and 1 `create` token; 308 decoded creation instructions;
+- 300/300 creation signatures, creators and bonding-curve PDAs decoded;
+- 300/300 current bonding-curve account reads valid, with 10 complete and 290
+  active at the observation time;
+- 1,800 identity-only checkpoint manifests across T+5M, T+15M, T+30M, T+1H,
+  T+6H and T+24H; market and historical holder values remain explicitly
+  `UNKNOWN`/not reconstructable rather than replaced with current values;
+- PumpSwap migration/pool linkage was not attempted and no pool was inferred;
+- chronological metadata is reserved as 180 TRAIN, 60 VALIDATION and 60 locked
+  HOLDOUT cases, with outcome labels still pending a future observation window.
+
+The Helius gTFA acquisition used 365 successful calls and 36,500 estimated
+credits at the documented 100-credit call rate. A creator-history pilot used
+20 `getTransfersByAddress` calls, returned 1,905 rows and consumed an
+estimated 200 credits. Current account enrichment used six batched RPC posts
+for 300 logical reads; exact batch billing was not exposed locally. The
+bounded 25-token market pilot made 3 authenticated CoinGecko Demo calls, 25
+Birdeye calls and 25 GeckoTerminal calls. It measured current market/pool
+availability only, not historical as-of values: CoinGecko calls succeeded but
+returned no usable values for the sample, Birdeye returned 1 success and 24
+errors, and GeckoTerminal returned 4 successes, 1 missing response and 20
+errors. No raw provider payloads were retained.
+
+Solana status remains `MORE_DATA_WORK_REQUIRED`: the corpus-size gate is met,
+but point-in-time market/holder history, PumpSwap linkage, balanced future
+labels and sufficient LP/creator-history evidence are not yet closed. Current
+justified provider spend remains `$0/month`; no Birdeye upgrade is justified by
+this bounded pilot.
 
 ## Provisional methodology input set
 
@@ -114,13 +144,30 @@ signals are currently complete.
 
 ## Historical backfill pilot
 
-The Helius Developer historical pilot used the read-only
-`getTransactionsForAddress` archive method and the paid-plan Parsed Events
-endpoint against the official Pump program. Three bounded structural pilot
-runs made three archive calls and three Parsed Events calls, with 25 parsed
-signatures inspected per run; no raw transaction dump was retained. The pilot
-confirmed reachable decoded-event structure, but did not close creator/event
-or PumpSwap migration attribution. Estimated archive credits are recorded as
-an estimate only; provider billing telemetry was not available in the local
-environment. No additional Birdeye, CoinGecko or GMGN historical study was
-claimed in this phase.
+The Helius Developer historical acquisition used the read-only
+`getTransactionsForAddress` archive method against the official Pump program.
+The final run made 365 successful calls, inspected 36,500 transaction rows and
+selected 300 unique mints. Anchor discriminators for the official `create` and
+`create_v2` instructions, raw account keys and Borsh creation data were used
+to derive the mint, creation signature/slot/time, creator and bonding-curve
+PDA. No raw transaction dump was retained.
+
+A bounded Parsed Events pilot confirmed the endpoint and decoded-event shape,
+but its creation-event density was too sparse to replace the direct gTFA
+acquisition. It was not used as a second full-corpus pass. A separate 20-creator
+`getTransfersByAddress` pilot succeeded for all 20 creators and returned 1,905
+rows; its transfer history is evidence for a future creator-history study, not
+an automatic exit or intent label.
+
+Current lifecycle enrichment read the 300 derived bonding-curve accounts and
+recorded exact integer reserves/supply/progress where the account was valid.
+This is current state observed after acquisition, not a historical checkpoint.
+PumpSwap migration linkage remains `NOT_ATTEMPTED` because a separate official
+migration-event decoder is required; no pool identity was inferred from names,
+symbols or current market listings.
+
+The market pilot was intentionally bounded and current-state only. CoinGecko
+Demo returned successful batch responses but no usable values for this sample;
+Birdeye and GeckoTerminal showed substantial error/missingness. Historical
+OHLCV, liquidity, pool and holder values therefore remain
+`NOT_RECONSTRUCTABLE` in this backfill. No Birdeye Lite purchase is justified.

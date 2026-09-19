@@ -509,6 +509,17 @@ Deliverables A–J are defined above: minimum set (section 6), full inventory (3
 
 Gate 19G software foundation remains approved. Production intelligence remains unconfigured pending requirements review, capability/provider evaluation, empirical method/freshness decisions and separately authorized implementation/activation. No live provider/model, API key, schema change, Fast Lane change, score weight, final threshold, deployment, feature-flag mutation or trading/execution capability is introduced by this document.
 
+## Historical corpus acquisition status — 2026-09-20
+
+A real 300-token Solana Pump corpus is now frozen for empirical preparation.
+The manifest uses a 90-day, 13-bucket, outcome-independent selection process
+and preserves creation provenance, current lifecycle reads and explicit
+identity-only T+5M/T+15M/T+30M/T+1H/T+6H/T+24H checkpoint manifests. It does
+not claim reconstructed historical market, liquidity or holder values. PumpSwap
+pool linkage and future structural outcome labels remain open. This corpus is
+an input to later methodology review, not a score, production threshold or
+public Radar activation.
+
 ## Gap-closure status — 2026-09-20
 
 The development acceptance layer now supports exact Pump bonding-curve

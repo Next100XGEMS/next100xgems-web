@@ -221,7 +221,15 @@ runtime, or to proceed with the documented missingness and keep Solana out of
 
 `docs/RADAR_HISTORICAL_CORPUS.md` is the source of truth for corpus selection,
 point-in-time cutoffs, structural labels and chronological splits. The
-repository includes a corpus manifest builder, hashed Solana holder snapshot
-export and bounded provider-study queue. No 300-token balanced corpus was
-fabricated or committed: the available 108-token acceptance cohort remains a
-discovery sample and Solana remains `MORE_DATA_WORK_REQUIRED`.
+repository now includes a real frozen 300-token Pump acquisition manifest at
+`tests/data/radar-pump-historical-universe-20260919.json`, together with
+current lifecycle enrichment and 1,800 identity-only checkpoint manifests.
+The corpus-size gate is met, but market/holder as-of history, PumpSwap
+migration linkage and future outcome labels remain explicitly incomplete.
+Solana therefore remains `MORE_DATA_WORK_REQUIRED`; Fast Lane methodology and
+score design have not started.
+
+The bounded current-market pilot made 3 CoinGecko Demo, 25 Birdeye and 25
+GeckoTerminal requests for 25 corpus tokens. Results are recorded as
+availability measurements only: no provider response was substituted into a
+historical checkpoint, and no Birdeye Lite upgrade is justified.
