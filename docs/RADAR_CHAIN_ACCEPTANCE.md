@@ -173,3 +173,18 @@ holder/distribution and creator-history coverage, BNB/Base owner/proxy
 semantics, Ethereum discovery coverage, and insufficient overlap for all
 deferred chains. These classifications are experimental outputs for the next
 acceptance run, not production chain-support decisions.
+
+The gap-closure collector's bounded first-10 Solana probe made 10 additional
+Helius reads: 7 valid curve accounts, 1 complete, 6 active and 3
+unavailable/error responses. This improves lifecycle decoding evidence for the
+sample only; creator/event and PumpSwap migration linkage remain UNKNOWN.
+
+## Gap-closure decision — 2026-09-20
+
+Solana remains `MORE_DATA_WORK_REQUIRED`: Pump account decoding is now
+reproducible for the observed curve layout, but creator/event attribution,
+PumpSwap migration linkage, holder history, LP history and balanced outcomes
+remain incomplete. BNB and Base remain `CONTINUE_SHADOW`; direct Alchemy token
+state works on representative samples, while owner/proxy and LP semantics are
+contract-specific. Ethereum and Robinhood remain `WATCH`. No chain is
+promoted, and no public Radar activation occurred.

@@ -508,3 +508,18 @@ Follow-on planning: [RADAR_PROVIDER_EVALUATION.md](RADAR_PROVIDER_EVALUATION.md)
 Deliverables A–J are defined above: minimum set (section 6), full inventory (3/6), provider matrix (9), Fast/Deep Lane eligibility (6), exclusions (6), chain recommendation (8), unresolved decisions/provider criteria (14), empirical validation (12). This document is complete as a **requirements baseline**, not as an approved production methodology.
 
 Gate 19G software foundation remains approved. Production intelligence remains unconfigured pending requirements review, capability/provider evaluation, empirical method/freshness decisions and separately authorized implementation/activation. No live provider/model, API key, schema change, Fast Lane change, score weight, final threshold, deployment, feature-flag mutation or trading/execution capability is introduced by this document.
+
+## Gap-closure status — 2026-09-20
+
+The development acceptance layer now supports exact Pump bonding-curve
+decoding, explicit holder/distribution derivation, provider conflict taxonomy,
+conservative EVM semantic assessment and a structural historical-outcome label
+contract. These utilities do not alter the 80-signal inventory, 30 proposed
+mandatory signals, evidence tiers, scoring boundary or freshness policy.
+
+The current measured coverage remains 23/30 any-source, 6/30
+authoritative/direct, 8/30 objective-provider and 7/30 provider-derived-only;
+seven signals remain missing or history-limited. Solana is not yet ready for
+methodology design. Missing Pump event/migration, holder history, LP history,
+creator history and balanced outcome data must be collected or explicitly
+removed from mandatory status through a later approved decision.

@@ -577,3 +577,30 @@ market-scope conflict policy. The next human decision is the initial beta
 scope: whether to continue Solana-only, Solana+BNB+Base shadow testing, and
 whether optional GMGN enrichment merits a larger value study. No production
 provider, scoring weight, threshold, AI model or chain was activated.
+
+The gap-closure Pump collector then ran a bounded first-10 Solana sample with
+10 additional Helius account reads: 7 valid curve accounts, 1 complete, 6
+active and 3 unavailable/error responses. This measured result is limited to
+the sample and does not establish creator, event or PumpSwap migration
+coverage.
+
+## Gap-closure pass — 2026-09-20
+
+The development-only gap-closure implementation adds exact Pump account/PDA
+decoding, explicit holder concentration, conflict taxonomy and conservative
+EVM semantic assessment. It does not change the frozen 108-token acceptance
+cohort, production provider architecture or public Radar.
+
+The Pump baseline remains 4/10 bonding-curve accounts decoded. The decoder
+now records exact reserves, supply, completion and ratio-form progress while
+leaving creator, creation event and PumpSwap migration UNKNOWN unless separate
+event/pool evidence is supplied. A bounded attempt to expand GMGN beyond the
+previous six-row/30-command study was stopped after repeated CLI hangs and is
+not counted as successful evidence. GMGN remains optional enrichment and paid
+access is not justified.
+
+The conservative mandatory-signal result therefore remains 23/30 any-source,
+6/30 authoritative/direct, 8/30 objective-provider, 7/30 provider-derived and
+7/30 missing or insufficient-history. Gap closure improved the reusable
+collection and analysis contracts, not the evidence count. Incremental paid
+usage is $0; no upgrade was justified.
