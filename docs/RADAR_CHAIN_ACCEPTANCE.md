@@ -144,3 +144,32 @@ classification remains unchanged: Solana, BNB and Base are `SHADOW`,
 Robinhood Chain is `WATCH ONLY`, and all other requested chains remain
 `DEFER`. This is an environment blocker, not evidence that those chains lack
 coverage.
+
+## Completed authenticated chain acceptance — 2026-09-20
+
+The original 108-address cohort was preserved. The only added file is the
+separate Ethereum supplement
+`tests/fixtures/radar-acceptance-supplemental-ethereum-20260920.json`, which
+contains three known public contracts for direct read-only checks and is not a
+replacement for the frozen discovery cohort.
+
+| Chain | Frozen samples | Direct/provider evidence | Experimental status |
+| --- | ---: | --- | --- |
+| Solana | 40 | Helius baseline plus 10 official Pump PDA/account probes; 4 curve accounts decoded, lifecycle migration/creator linkage incomplete. | SHADOW |
+| BNB Chain | 40 | DEX 37/40 baseline; Alchemy code/decimals/supply/metadata/transfers 3/3 on a representative subset; owner selector 2/3. | SHADOW |
+| Base | 20 | DEX 20/20 baseline; Alchemy code/decimals/supply/metadata/transfers 3/3 on a representative subset; owner selector 0/3. | SHADOW |
+| Ethereum | 0 | Separate three-contract Alchemy supplement: code/decimals/supply/metadata/transfers 3/3; owner selector 2/3. | WATCH ONLY |
+| Robinhood Chain | 8 | DEX 4/8 baseline; no equivalent authenticated direct-chain sample. | WATCH ONLY |
+| Monad, Sui, HyperEVM and Tier-C chains | 0 | No completed authenticated acceptance sample in this pass. | DEFER |
+
+No chain is **PROMOTE**. Solana, BNB and Base have enough evidence for
+continued shadow acceptance, but not for production activation. Ethereum is
+watch-only because its evidence is a small supplemental contract sample rather
+than frozen discovery. Robinhood remains watch-only because only half of its
+frozen rows matched public market discovery.
+
+Measured gaps are Solana Pump creator/event and PumpSwap linkage, complete
+holder/distribution and creator-history coverage, BNB/Base owner/proxy
+semantics, Ethereum discovery coverage, and insufficient overlap for all
+deferred chains. These classifications are experimental outputs for the next
+acceptance run, not production chain-support decisions.

@@ -446,3 +446,134 @@ GMGN `token info` CLI request, six Alchemy health probes and ten Alchemy
 `eth_getCode` probes. The blocked query-string probe was rejected before
 execution because it would expose a credential in a URL. No expensive
 unaffected provider cohort was rerun.
+
+## Completed authenticated acceptance — 2026-09-20
+
+This records the completed empirical pass against the unchanged frozen cohort
+in `tests/fixtures/radar-acceptance-live-20260920.json`: Solana 40, BNB Chain
+40, Base 20 and Robinhood Chain 8 (108 total). It is acceptance evidence only;
+it does not activate a production provider or certify production readiness.
+Values below are **MEASURED** unless explicitly marked **PROJECTED** or
+**UNKNOWN**.
+
+### Supplemental sample
+
+Ethereum had no address in the frozen cohort. A separate, non-frozen read-only
+supplement was used for direct Alchemy checks:
+`tests/fixtures/radar-acceptance-supplemental-ethereum-20260920.json` (three
+known public contracts). It must not be merged into the 108-token cohort.
+
+### Provider results
+
+| Provider | Measured result | Acceptance value | Status |
+| --- | --- | --- | --- |
+| Helius / Solana RPC | Prior authenticated baseline: 120 requests; this pass added 10 Pump PDA/account reads. | Core direct Solana state where returned; holder/history coverage remains selective and rate-sensitive. | CORE for development/shadow |
+| Pump program | 10 relevant rows probed; 4 curve accounts found, all 4 program-owned and decoded, 0 complete and 4 incomplete. | Creator/event attribution and PumpSwap migration linkage remain unresolved. | CORE, scoped lifecycle only |
+| Birdeye | Prior baseline 95 requests; 6 additional comparison calls. | Useful market/holder enrichment, but price differences show pool/aggregation semantics must remain explicit. | CORE candidate / primary-market source |
+| GMGN | 30 expanded official CLI read-only commands across two Solana, two BNB and two Base rows; token info, security, holders, traders and 1h kline were 30/30 structured successes. | Provider-derived security/context and trader labels; unique objective value not independently demonstrated. | Optional enrichment / valuable secondary |
+| CoinGecko Demo | 34 successful completion-pass requests and 34 known credits: `/ping`, 9 token-price, 9 token-data, 3 pool, 3 hourly-OHLCV and 6 comparisons. | Candidate-only independent market verification and pool/history context worked after Demo authentication was corrected. | Valuable secondary; no paid upgrade justified |
+| Alchemy | 54 calls in this pass: 36 BNB/Base capability calls and 18 Ethereum supplement calls. | BNB/Base code, decimals, supply, metadata and transfers were 3/3 per chain; owner selector BNB 2/3 and Base 0/3. Ethereum supplement was 3/3 for those fields and owner 2/3. | CORE direct EVM verification |
+| DEX Screener | Existing baseline retained: 101/108 rows matched; six additional comparison lookups only. | Broad low-cost discovery and market cross-check; not direct chain truth. | Valuable secondary |
+| GeckoTerminal | Existing baseline retained: five discovery pages succeeded before eight HTTP 429 responses; no broad rerun. | Useful discovery context, with measured public rate pressure. | Valuable secondary with rate caution |
+
+GMGN used the official read-only `gmgn-cli` contract described in the [official
+GMGN Agent API documentation](https://docs.gmgn.ai/index/gmgn-agent-api). No
+swap, order, wallet, signing or execution command was called. CoinGecko uses
+the Demo root and `x-cg-demo-api-key` header described by the [official Demo
+authentication documentation](https://docs.coingecko.com/demo/reference/authentication).
+Alchemy follows the [official supported-chain documentation](https://www.alchemy.com/docs/reference/node-supported-chains).
+Pump interpretation follows the [official Pump program documentation](https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_PROGRAM_README.md)
+and [official Pump IDL](https://github.com/pump-fun/pump-public-docs/blob/main/idl/pump.ts).
+
+### GMGN value classification
+
+| Field family | Classification | Result |
+| --- | --- | --- |
+| Basic token/market overlap | DUPLICATED_VALUE / OBJECTIVE_PROVIDER_DATA | Overlaps other tested market and token sources. |
+| Security tags, smart-money/KOL, sniper, bundler, insider and wash/rug labels | UNIQUE_PROVIDER_DERIVED_VALUE / CONTEXTUAL_PROPRIETARY | Useful attributed enrichment, not verified chain facts. |
+| Independently reproducible objective fact not already available elsewhere | Not demonstrated | No UNIQUE_OBJECTIVE_VALUE established by this sample. |
+| Unsupported enrichment | UNAVAILABLE | Remains missingness, never a safe/negative substitute. |
+
+### Cross-provider comparison
+
+Three candidate rows were compared across CoinGecko, Birdeye, DEX Screener and
+GMGN where comparable prices were returned. Relative differences were recorded,
+not averaged:
+
+| Pair | Row 1 | Row 2 | Row 3 |
+| --- | ---: | ---: | ---: |
+| CoinGecko / Birdeye | 43.1830% | 0.4006% | 49.1464% |
+| CoinGecko / DEX Screener | 0.0190% | 1.0984% | 0.0144% |
+| CoinGecko / GMGN | 0.0272% | 0.0659% | 0.0630% |
+| Birdeye / DEX Screener | 43.1722% | 0.7006% | 49.1391% |
+| Birdeye / GMGN | 43.1675% | 0.4662% | 49.1144% |
+| DEX Screener / GMGN | 0.0082% | 1.1635% | 0.0486% |
+
+The large Birdeye divergences likely reflect pool selection, aggregation,
+freshness or liquidity-definition differences, but no final production
+disagreement threshold is selected. These are **MEASURED** differences from
+three rows only.
+
+### Mandatory signal coverage
+
+Against the 30 mandatory signals in `docs/RADAR_PRODUCTION_INTELLIGENCE.md`:
+
+| Classification | Count | Interpretation |
+| --- | ---: | --- |
+| Any-source evidence | 23/30 | At least one tested source exposed usable sample evidence. |
+| AUTHORITATIVE_DIRECT | 6/30 | Established Helius/direct Solana facts; not all chains. |
+| OBJECTIVE_PROVIDER | 8/30 | I10, I11, D01, M01, M04, M05, H01 and L01. |
+| PROVIDER_DERIVED_ONLY | 7/30 | D02, M06, M07, M08, H03, A02 and A03. |
+| Missing/not reconstructible | 7/30 | H07, L05, L08, C08, Q01, Q02 and Q04. |
+
+This is not a production certification. Holder history, creator/deployer
+history, LP state, contract-risk interpretation and cross-chain comparability
+remain incomplete.
+
+### Usage and projections
+
+Known cumulative acceptance-call counts, including earlier runs, are:
+
+| Provider | Known requests | Credits/CUs |
+| --- | ---: | --- |
+| Helius | 130 | UNKNOWN |
+| Birdeye | 101 | UNKNOWN |
+| GMGN | 37 | UNKNOWN |
+| CoinGecko | 40 known; 34 successful completion-pass credits | 34 known successful credits in completion pass |
+| Alchemy | 81 | UNKNOWN |
+| DEX Screener | 107 known | UNKNOWN |
+| GeckoTerminal | Prior successful pages retained; later 429 pressure | UNKNOWN |
+
+The following are **PROJECTED**, not invoices. They assume cheap discovery,
+10% candidate enrichment, caching, deduplication and selective verification:
+
+| Workload | Helius | Birdeye | GMGN | CoinGecko | Alchemy | DEX Screener |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 100 discovered/day | ~300 | ~125 | ~50 | ~40 | ~30 | 1 + ~4 batches |
+| 1,000 discovered/day | ~3,000 | ~1,250 | ~500 | ~400 | ~300 | 1 + ~34 |
+| 10,000 discovered/day | ~30,000 | ~12,500 | ~5,000 | ~4,000 | ~3,000 | 1 + ~334 |
+
+These projections exclude AI, historical backfills and blocked endpoints. No
+paid upgrade is justified by measured evidence; cheapest justified monthly
+provider spend remains **$0**.
+
+### Value, upgrade decisions and next human decision
+
+| Provider | Value classification | Upgrade decision |
+| --- | --- | --- |
+| Helius/direct Solana RPC | CORE | FREE TIER SUFFICIENT for development/shadow; production scale UNKNOWN |
+| Pump program | CORE scoped lifecycle | FREE/direct reads sufficient for current acceptance; decoder gap remains |
+| Birdeye | CORE candidate market source | PAID UPGRADE NOT JUSTIFIED |
+| Alchemy | CORE EVM verification | FREE TIER SUFFICIENT for this acceptance; scale UNKNOWN |
+| CoinGecko Demo | VALUABLE SECONDARY | FREE TIER SUFFICIENT for candidate-only verification |
+| DEX Screener | VALUABLE SECONDARY | PROVIDER NOT REQUIRED for authoritative truth |
+| GeckoTerminal | VALUABLE SECONDARY | PAID UPGRADE NOT JUSTIFIED |
+| GMGN | OPTIONAL ENRICHMENT | PAID UPGRADE NOT JUSTIFIED |
+
+Remaining gaps are a balanced historical/outcome dataset, Pump creator/event
+and PumpSwap decoding, complete holder and creator history, EVM owner/proxy
+semantics, LP state, long-term retention, provider CU dashboards and a formal
+market-scope conflict policy. The next human decision is the initial beta
+scope: whether to continue Solana-only, Solana+BNB+Base shadow testing, and
+whether optional GMGN enrichment merits a larger value study. No production
+provider, scoring weight, threshold, AI model or chain was activated.
