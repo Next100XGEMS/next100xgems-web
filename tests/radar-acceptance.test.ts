@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareAcceptanceRecords, createAcceptanceDataset, createAcceptanceSample, createChainAcceptancePlan, collectAcceptanceProbe, FixtureAcceptanceProvider, AcceptanceTelemetryStore, summarizeChainActivity } from "@/lib/radar/acceptance";
+import { AlchemyReadOnlyAcceptanceClient, compareAcceptanceRecords, createAcceptanceDataset, createAcceptanceSample, createChainAcceptancePlan, collectAcceptanceProbe, FixtureAcceptanceProvider, AcceptanceTelemetryStore, summarizeChainActivity } from "@/lib/radar/acceptance";
 
 const observedAt = "2026-09-20T00:00:00.000Z";
 const sample = createAcceptanceSample({ sampleId: "solana-test-1", chain: "solana", tier: "A_DEEP", category: "ACTIVE_LAUNCH", tokenAddress: "fixture-token" });
@@ -46,5 +46,16 @@ describe("Radar provider acceptance sandbox", () => {
   it("summarizes development activity without producing a production ranking", async () => {
     const record = await collectAcceptanceProbe({ sample, provider: new FixtureAcceptanceProvider("birdeye", [{ chain: "solana", capability: "PRICE", metricKey: "usd", state: "STALE", reason: "fixture is old" }]), capability: "PRICE", metricKey: "usd", observedAt });
     expect(summarizeChainActivity("solana", [record])).toMatchObject({ staleRecords: 1, status: "DEFER" });
+  });
+
+  it("routes Alchemy acceptance reads by EVM chain and rejects execution methods", async () => {
+    const client = new AlchemyReadOnlyAcceptanceClient("fixture-key", async (input, init) => {
+      expect(input).toContain("base-mainnet");
+      expect(JSON.parse(String(init?.body))).toMatchObject({ method: "eth_blockNumber" });
+      return new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: "0x1" }), { status: 200 });
+    });
+    await expect(client.request("base", "eth_blockNumber")).resolves.toMatchObject({ success: true, hasResult: true });
+    await expect(client.request("sui", "eth_blockNumber")).resolves.toMatchObject({ errorCode: "UNSUPPORTED_CHAIN" });
+    await expect(client.request("base", "eth_sendRawTransaction", [])).rejects.toThrow(/read-only/);
   });
 });

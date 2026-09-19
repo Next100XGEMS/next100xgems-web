@@ -100,3 +100,32 @@ program verification, no holder/distribution or creator-history measurements,
 no GMGN value test, no CoinGecko Demo test, and GeckoTerminal HTTP 429
 pressure after five successful discovery pages. These gaps block any
 production chain-support conclusion.
+
+## Authenticated chain-state pass — 2026-09-19
+
+The existing classification was not promoted by the authenticated pass:
+
+| Chain | Authenticated evidence | Experimental status |
+| --- | --- | --- |
+| Solana | Helius account 36/40, supply 34/40, holders 16/20, history 14/20; Birdeye price 40/40 and holders 10/10 | SHADOW |
+| BNB Chain | Alchemy endpoint probes HTTP 403; DEX public baseline only | SHADOW |
+| Base | Alchemy endpoint probes HTTP 403; DEX public baseline only | SHADOW |
+| Ethereum | Alchemy health 200, but no frozen Ethereum token sample | DEFER |
+| Robinhood Chain | DEX public match 4/8; no authenticated chain state | WATCH ONLY |
+| Monad, Sui, HyperEVM and Tier-C chains | No authenticated chain-state sample | DEFER |
+
+No chain is `PROMOTE`. Solana has the strongest measured evidence but still
+has rate-limited RPC methods, no Pump decoder validation and incomplete holder/
+history coverage. BNB/Base remain shadow-only because the configured Alchemy
+key did not authorize those endpoints. This is an account/entitlement result,
+not a permanent statement about chain support.
+
+## Authenticated pass attempt — 2026-09-19
+
+The existing 108-sample frozen cohort was preserved. No authenticated
+provider/RPC variables were available, so no direct Solana, Pump, BNB, Base
+or Ethereum chain-state verification was performed. The prior provisional
+classification remains unchanged: Solana, BNB and Base are `SHADOW`,
+Robinhood Chain is `WATCH ONLY`, and all other requested chains remain
+`DEFER`. This is an environment blocker, not evidence that those chains lack
+coverage.

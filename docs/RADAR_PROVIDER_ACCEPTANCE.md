@@ -203,3 +203,170 @@ chain verification, cross-check and historical costs are otherwise
   from public pool discovery, not direct Pump program/RPC verification.
 - Birdeye and Helius free-tier sufficiency is **INSUFFICIENT_EVIDENCE**.
 - No provider upgrade is justified from this run.
+
+## Authenticated acceptance pass attempt — 2026-09-19T19:50:34Z
+
+The requested authenticated rerun used the existing frozen 108-sample
+fixture and first checked the ignored local environment without displaying
+values. All requested credentials were **MISSING**:
+`HELIUS_API_KEY`, `BIRDEYE_API_KEY`, `GMGN_API_KEY`, `COINGECKO_API_KEY` and
+`EVM_RPC_URL`. `.env.local` was present and gitignored.
+
+Because no authenticated credential was available, the pass made **0**
+authenticated provider requests. Helius, Pump/direct Solana RPC, Birdeye,
+GMGN, CoinGecko Demo and EVM RPC remain **UNKNOWN / INSUFFICIENT EVIDENCE**;
+no success rate, CU/credit usage, holder coverage, authority coverage,
+creator history, Pump lifecycle result or cross-provider authenticated
+comparison is claimed. The public DEX Screener/GeckoTerminal measurements in
+the preceding section remain the baseline and the frozen dataset was not
+replaced.
+
+No paid plan is justified. The next run requires server-only read-only
+credentials or endpoints for the missing providers; adding them to the
+ignored local environment is a human prerequisite, not an automatic upgrade.
+
+## Authenticated acceptance pass — 2026-09-19
+
+The exact frozen 108-sample fixture was reused. The credential-bearing
+`.env.local` file remained present and gitignored. Credential presence was
+checked without displaying values:
+
+| Credential | Status |
+| --- | --- |
+| `GMGN_API_KEY` | AVAILABLE |
+| `HELIUS_API_KEY` | AVAILABLE |
+| `SOLANA_RPC_URL` | AVAILABLE |
+| `COINGECKO_API_KEY` | AVAILABLE |
+| `BIRDEYE_API_KEY` | AVAILABLE |
+| `ALCHEMY_API_KEY` | AVAILABLE |
+
+### Helius / Solana RPC — MEASURED
+
+The Solana sample contains 40 addresses. A bounded individual-call recipe
+made 120 sample-scoped RPC calls: 40 `getAccountInfo`, 40 `getTokenSupply`,
+20 `getTokenLargestAccounts` and 20 `getSignaturesForAddress` calls. The
+follow-up used three concurrent workers after a ten-token JSON-RPC batch shape
+returned HTTP 429; no response exposed credit headers.
+
+| Method | Available | HTTP 429 | P50/P95 latency |
+| --- | ---: | ---: | --- |
+| Account/mint state | 36/40 | 4 | 269/332 ms |
+| Supply/decimals | 34/40 | 6 | 280/300 ms |
+| Largest accounts | 16/20 | 4 | 312/880 ms |
+| Recent signatures | 14/20 | 6 | 270/777 ms |
+
+Successful account responses exposed decimals and current mint/freeze
+authority fields for 36 samples; supply/decimals were available for 34;
+largest-account derivation worked for 16; recent signature history worked for
+14. This is direct chain evidence for the returned records, not proof of
+complete historical coverage. Helius Free is **FREE TIER SUFFICIENT** for
+development/shadow use with low concurrency, caching and candidate-only
+holder/history calls. It is not sufficient for an unbounded burst recipe.
+The exact measured 429 behavior is an optimization boundary; no paid upgrade
+is justified.
+
+### Pump lifecycle — UNKNOWN / INSUFFICIENT EVIDENCE
+
+Mint/account/signature visibility was measured through Solana RPC, but the
+acceptance sandbox does not yet contain a pinned Pump IDL/program decoder or a
+safe curve-PDA/migration reconciler. Creation, creator, bonding-curve
+reserves/progress, completion and PumpSwap migration were therefore not
+claimed. No swap, buy, sell, transaction-building or signing route was used.
+
+### Birdeye — MEASURED PARTIAL
+
+With 1.1-second pacing, 40/40 free read-only price probes and 10/10 holder
+probes succeeded with no HTTP 429. Price responses included a liquidity field;
+holder responses included holder/top-ten fields. A single overview probe and a
+single OHLCV probe both returned HTTP 429. Birdeye response numeric fields
+were JSON `number` values (`value`, `priceInNative`, `liquidity`, and price
+change), so lossless decimal fidelity remains a qualification issue even
+when HTTP success is 200. Rate/credit headers were present, but no CU value
+was exposed in the sanitized record.
+
+The measured decision is **PAID UPGRADE NOT JUSTIFIED**. Keep price/holder
+collection slow and selective, cache slow-changing fields, and defer
+overview/OHLCV until entitlement/rate behavior is clarified. Lite/Starter/
+Premium is not justified for headroom.
+
+### GMGN — INSUFFICIENT EVIDENCE
+
+The key was present, but no safe official read-only data route was invoked.
+Current official documentation describes Agent/skills access and separately
+states that a general data API is not open; its trading routes require
+additional permissions and are out of scope. No key was sent to a guessed or
+execution-oriented endpoint. Token, security, holder, trader, developer,
+smart-money, KOL, sniper, bundler, insider and wash/rug fields are therefore
+all **UNAVAILABLE** in this pass. Unique objective value and unique
+provider-derived value are both **INSUFFICIENT EVIDENCE**.
+
+### CoinGecko Demo — INSUFFICIENT EVIDENCE
+
+The authenticated Demo key was present, but both a Demo ping and one
+candidate Onchain token probe returned HTTP 401 with provider error code
+10002. No market/history comparison was accepted. The earlier public
+GeckoTerminal discovery baseline remains separate and is not a CoinGecko Demo
+measurement. Basic/paid upgrade is not justified until the account/key scope
+is corrected and a candidate-only run succeeds.
+
+### Alchemy / EVM RPC — MEASURED PARTIAL
+
+The acceptance sandbox now has a development-only chain endpoint helper with
+an allowlist of read-only JSON-RPC methods and chain-specific endpoints for
+Ethereum, Base, BNB, Arbitrum, Avalanche, Polygon and OP Mainnet. It never
+permits transaction submission or signing methods.
+
+`eth_blockNumber` returned HTTP 200 for Ethereum. Base and BNB token/state
+probes returned HTTP 403, and their block probes also returned HTTP 403. The
+frozen dataset contains no Ethereum sample, so no per-token Ethereum
+verification was claimed. Alchemy's one available health result is not enough
+to establish multi-chain free-tier suitability; the decision is
+**INSUFFICIENT EVIDENCE** and no upgrade is justified.
+
+### Current comparison and signal coverage
+
+A synchronized 40-token Solana price comparison produced 40/40 Birdeye
+responses and 24 unique DEX token-address matches (40 sample rows, including
+repeated pool/token rows). Every overlapping price row differed as an exact
+provider value. Diagnostic relative differences had P50 **0.3937%** and P95
+**46.1937%**; these are observations, not production thresholds. Time,
+pool-selection, quote and numeric-serialization differences must be resolved
+before calling this a quality failure or choosing an authority. No averaging
+was performed.
+
+Against the approved 30 mandatory signals, this pass has:
+
+- **15/30** with at least one tested-source observation: I01, I02, I05, I06,
+  I08, I09, D01, M01, M04, M05, M07, M08, H01, H03 and L01;
+- **6/30** with partial direct-source observations from Helius: I01, I02, I05,
+  I06, I08 and I09;
+- **9/30** provider-derived-only or provider-discovery observations: D01, M01,
+  M04, M05, M07, M08, H01, H03 and L01;
+- **15/30** not observed in this run: I10, I11, D02, M06, H07, L05, L08,
+  A02, A03, C08, Q01, Q02, Q03, Q04 and Q05.
+
+No signal is declared production-ready. No signal was conclusively declared
+unsupported; the unobserved group is missing/free-tier-blocked or requires a
+decoder/authority contract that was not available.
+
+### Measured request and usage envelope
+
+The authenticated pass made 120 sample-scoped Helius calls, 95 Birdeye calls
+(90 sample/comparison calls plus five route/precision probes), two CoinGecko
+probes, and 11 Alchemy probes. No GMGN request was made. No provider exposed a
+usable CU/credit total in the sanitized responses. The public DEX baseline
+remains four token batches plus one profile call; the synchronized comparison
+used two additional DEX token batches.
+
+Measured recipe projections, not prices:
+
+| Daily discovery | Helius observed recipe | Birdeye optimized recipe | DEX Screener batch recipe |
+| ---: | ---: | ---: | ---: |
+| 100 | ~300 RPC calls | ~125 calls (price all + holders for 25%) | 1 discovery + 4 token batches |
+| 1,000 | ~3,000 RPC calls | ~1,250 calls | 1 discovery + 34 token batches |
+| 10,000 | ~30,000 RPC calls | ~12,500 calls | 1 discovery + 334 token batches |
+
+These projections exclude historical and blocked endpoints and do not include
+AI. They are not a paid-plan recommendation. The cheapest justified monthly
+provider spend remains **$0**; all paid upgrades are either **PAID UPGRADE
+NOT JUSTIFIED** or **INSUFFICIENT EVIDENCE**.
