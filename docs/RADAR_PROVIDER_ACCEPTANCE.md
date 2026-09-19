@@ -126,7 +126,80 @@ explicit rather than estimated.
 6. Produce a development summary. Do not alter production chain flags or
    publish records.
 
-The current repository has no live keys configured and no live provider calls
-were performed. Therefore no capability is certified, no paid upgrade is
-currently justified, and current development/beta spend attributable to this
-sandbox is **$0**.
+Before the live run, the repository had no live keys configured and no live
+provider calls had been performed. The run below used only public routes, so
+no authenticated capability is certified, no paid upgrade is currently
+justified, and current development/beta spend attributable to this sandbox is
+**$0**.
+
+## Live acceptance run — 2026-09-20
+
+The first live run used only public, read-only discovery and market routes.
+The frozen sample is committed at
+`tests/fixtures/radar-acceptance-live-20260920.json`; its selection timestamp
+is `2026-09-19T19:42:42.607Z` UTC. Selection used GeckoTerminal `new_pools`
+pages and the DEX Screener latest token-profile feed. It did not call trade,
+swap, wallet-signing or transaction-building endpoints.
+
+| Provider/source | Requests | Successful | Measured result |
+| --- | ---: | ---: | --- |
+| GeckoTerminal public discovery | 13 pages | 5 HTTP 200 / 8 HTTP 429 | 108-sample construction; rate limiting began during the run |
+| DEX Screener latest profiles | 1 | 1 HTTP 200 | 8 Robinhood Chain discovery samples |
+| DEX Screener token lookup | 4 batches | 4 HTTP 200 | 101/108 samples had a matching market pair; 7 were unknown |
+
+DEX Screener token coverage was **101/108 (93.52%)**. By chain: Solana
+40/40, BNB 37/40, Base 20/20 and Robinhood Chain 4/8. For matching pairs,
+price, 24-hour volume, transaction counts and pair timestamps were present
+for 101/101. Liquidity USD was present for 62/101 and missing for 39/101;
+missing liquidity was preserved as missing. Batched lookup latency was
+approximately P50 **461 ms** and P95 **485 ms** in this run. The public
+endpoint exposed no billable credit/CU counter.
+
+The 108 samples were all selected as `NEW_LAUNCH`/new-pool or latest-profile
+discovery records. This is a frozen discovery cohort, not a balanced quality
+or outcome cohort. It does not establish successful, failed, concentrated,
+risky or organic-growth coverage.
+
+### Credential and capability status
+
+The ignored `.env.local` file was present and ignored, but these values were
+absent: `HELIUS_API_KEY`, `BIRDEYE_API_KEY`, `GMGN_API_KEY`,
+`COINGECKO_API_KEY`, `SOLANA_RPC_URL` and `EVM_RPC_URL`. Consequently Helius,
+Birdeye, GMGN, CoinGecko Demo, direct Pump program reads, Solana RPC and EVM
+RPC had **0 live requests**. Their live success, precision, holder,
+authority, history, CU and provider-derived classification behavior is
+**UNKNOWN**, not successful by inference.
+
+The GeckoTerminal results are public Onchain API observations and must not be
+described as a CoinGecko Demo-account test. CoinGecko Demo value, monthly
+credits and historical acceptance remain **INSUFFICIENT_EVIDENCE**.
+
+### Measured free-tier pressure and decision
+
+The only observed rate block was GeckoTerminal HTTP 429 on 8/13 discovery
+page requests. It degraded Tier B/C discovery during this run. No paid plan
+was purchased or recommended. Before any upgrade, the next experiment should
+test slower collection, cached cursors, candidate-only enrichment and a
+smaller discovery schedule. The result is **PAID UPGRADE NOT YET JUSTIFIED**;
+the exact entitlement and sustainable request window need account-level
+measurement.
+
+For the observed DEX Screener batching policy, request-count projections are
+approximately one discovery call plus 4, 34 or 334 token batches for 100,
+1,000 or 10,000 discovered tokens/day respectively (30 addresses per batch).
+These are request projections, not a price estimate. Discovery, enrichment,
+chain verification, cross-check and historical costs are otherwise
+**UNKNOWN** because the corresponding credentials were missing.
+
+### Live conclusions
+
+- `DEX_SCREENER` is useful for cheap discovery and market-pair coverage, but
+  liquidity missingness and provider-derived values require independent
+  verification.
+- GMGN unique-value testing is **INSUFFICIENT_EVIDENCE**; no GMGN request was
+  made. Smart-money, KOL, bundler, sniper, insider and wash/rug fields remain
+  unverified provider classifications.
+- Pump lifecycle acceptance is **INSUFFICIENT_EVIDENCE**; Solana samples came
+  from public pool discovery, not direct Pump program/RPC verification.
+- Birdeye and Helius free-tier sufficiency is **INSUFFICIENT_EVIDENCE**.
+- No provider upgrade is justified from this run.
