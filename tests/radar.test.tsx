@@ -9,22 +9,22 @@ afterEach(() => cleanup());
 
 describe("Gate 19B public Radar page", () => {
   it("positions Radar as watch-only intelligence with an honest inactive state", () => {
-    render(<RadarPageContent radarEnabled={false} />);
+    render(<RadarPageContent feed={{ state: "UNAVAILABLE", records: [] }} />);
 
     expect(screen.getByRole("heading", { name: /market intelligence before the noise/i, level: 1 })).toBeTruthy();
-    expect(screen.getByText(/Radar public feed is currently not active/i)).toBeTruthy();
+    expect(screen.getByText(/Radar public data is temporarily unavailable/i)).toBeTruthy();
     expect(screen.getByText(/human review remains required/i)).toBeTruthy();
     expect(screen.getByText("VERIFIED DATA")).toBeTruthy();
     expect(screen.getAllByText("UNKNOWN").length).toBeGreaterThan(0);
     expect(screen.getByText("Sponsored ≠ Radar ranking.")).toBeTruthy();
     expect(screen.queryByText("TOKEN A")).toBeNull();
-    expect(screen.queryByText(/live records/i)).toBeTruthy();
+    expect(screen.getByText(/Private analysis rows and development fixtures are never used/i)).toBeTruthy();
   });
 
   it("keeps enabled state truthful without fabricating a feed", () => {
-    render(<RadarPageContent radarEnabled />);
+    render(<RadarPageContent feed={{ state: "EMPTY", records: [] }} />);
 
-    expect(screen.getByText(/availability is staged; no live records are published yet/i)).toBeTruthy();
+    expect(screen.getByText(/No approved Radar records are published yet/i)).toBeTruthy();
     expect(screen.queryByRole("article")).toBeNull();
     expect(screen.queryByText(/sample data/i)).toBeNull();
   });

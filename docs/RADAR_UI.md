@@ -10,7 +10,7 @@ The page describes Radar as watch-only intelligence: it discovers, filters, anal
 
 ## 2. Public empty-state behavior
 
-The route reads the existing server-side `radar_enabled` flag. When false it says the public feed is currently inactive. When true it says availability is staged and no live records are published yet. Both states explain that publication waits for real data infrastructure, review controls, and validation. Neither state queries Radar tables or uses fixture records.
+The production `/radar` route now reads the published-only `get_public_radar_list` projection with the publishable Supabase client. The database projection remains responsible for feature flags, maintenance mode, emergency pause, approved methodology/freshness policy, expiry, publication state, and privacy boundaries. Empty and unavailable states are explicit; private analysis rows and development fixtures are never used as a public fallback.
 
 The route is dynamic and does not claim live or universal real-time coverage. A flag value does not create a publication or bypass future database/publication gates.
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import RadarPageContent from "@/components/radar/radar-page";
-import { getFeatureFlags } from "@/lib/feature-flags/server";
+import { getPublicRadarList } from "@/lib/radar/public";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RadarPage() {
-  const flags = await getFeatureFlags(["radar_enabled"]);
-  return <RadarPageContent radarEnabled={flags.radar_enabled ?? false} />;
+  const feed = await getPublicRadarList();
+  return <RadarPageContent feed={feed} />;
 }
