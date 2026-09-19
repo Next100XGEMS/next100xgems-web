@@ -121,6 +121,10 @@ manifest, task/method/schema or trusted provider/model context is rejected
 without a new attempt. No migration, production AI provider or
 trading/execution capability was added.
 
+Gate 19G — software-foundation sign-off after `9ee3a1b` — APPROVED WITH NON-BLOCKING FINDINGS. The final focused audit closed Deep Lane receipt/context misbinding, verified real local application/RPC replay and conflicting identities, confirmed concurrent completed replay without extra invocations, and independently passed the clean database suite (891/891 across 38 files after 23 migrations) and Deep Lane concurrency (7/7). This is software approval, not production intelligence or launch approval. The committed RPC test's feature-flag/audit cleanup remains a non-blocking test-isolation note; the sign-off used disposable databases.
+
+Production Radar Intelligence Design — requirements baseline COMPLETE, pending product/methodology review. [RADAR_PRODUCTION_INTELLIGENCE.md](RADAR_PRODUCTION_INTELLIGENCE.md) defines 80 candidate signals, a proposed 30-signal minimum set, 31 vendor-neutral capability requirements, evidence/freshness/conflict principles, a conditional Solana-first evaluation recommendation and a point-in-time empirical validation plan. Next: review these requirements and evaluate provider capabilities; providers, AI models, scoring weights/formulas/thresholds, freshness durations and production activation remain unapproved. No integration or implementation changed in this planning phase.
+
 ## Phase 8 — Production Readiness
 
 Security and authorization review, rate limiting, monitoring, backups, access controls, performance, SEO, accessibility, and deployment review.
