@@ -6,6 +6,13 @@ Gate 19D Batch 1 is implemented as a provider-neutral foundation. Production
 provider selection, empirical thresholds, score methodology and deployment
 remain unapproved and are not invented here.
 
+The compatible Deep Lane foundation is provider-neutral as well: it seals an
+evidence manifest, validates bounded structured inference output against that
+manifest, records provider/model/schema identity when supplied, preserves
+`AI_INFERENCE`/`INFERENCE` origin, and classifies bounded retryable failures.
+The fixture adapter is test-only. No AI provider, model, production Deep Lane
+method, score contribution, or publication authority is configured.
+
 Source of truth reviewed: `AGENTS.md`, [RADAR_SPEC.md](RADAR_SPEC.md), [PROJECT_SPEC.md](PROJECT_SPEC.md), [ARCHITECTURE.md](ARCHITECTURE.md), [DATABASE.md](DATABASE.md), [AUTHORIZATION_PLAN.md](AUTHORIZATION_PLAN.md), [AUDIT_LOGGING.md](AUDIT_LOGGING.md), [FEATURE_FLAGS.md](FEATURE_FLAGS.md), [SECURITY.md](SECURITY.md), and [ROADMAP.md](ROADMAP.md). Schema statements below describe migration source, not an inspection of live database contents. Research is complete; only its established narrow-projection and atomic audited-mutation principles are relevant here. Its content architecture is not copied.
 
 ## 1. Product and safety boundary

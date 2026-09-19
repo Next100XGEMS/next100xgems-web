@@ -213,3 +213,9 @@ provider, threshold policy or score formula. Screening returns only `PASS`,
 `REJECT` or `INCOMPLETE` with deterministic evidence; immutable analysis
 evidence remains gated by an approved scoring methodology. No browser path,
 scheduler, automatic publication or trading capability was added.
+
+The provider-independent Deep Lane contract validates untrusted structured
+inference against the sealed Fast Lane evidence manifest and retains explicit
+provider/model/schema identity. It cannot create `VERIFIED_DATA`, scores,
+publication decisions, or database mutations. Provider selection and any
+production Deep Lane method remain deferred.
