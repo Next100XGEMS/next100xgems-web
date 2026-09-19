@@ -1,12 +1,12 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const { mockGetFeatureFlags, mockNotFound } = vi.hoisted(() => ({
-  mockGetFeatureFlags: vi.fn(),
+const { mockGetPublicRadarList, mockNotFound } = vi.hoisted(() => ({
+  mockGetPublicRadarList: vi.fn(),
   mockNotFound: vi.fn(() => { throw new Error("NEXT_NOT_FOUND"); }),
 }));
 
-vi.mock("@/lib/feature-flags/server", () => ({ getFeatureFlags: mockGetFeatureFlags }));
+vi.mock("@/lib/radar/public", () => ({ getPublicRadarList: mockGetPublicRadarList }));
 vi.mock("next/navigation", () => ({ notFound: mockNotFound }));
 
 import RadarPage from "@/app/(public)/radar/page";
@@ -20,13 +20,13 @@ afterEach(() => {
 });
 
 describe("Gate 19B Radar routes", () => {
-  it("uses radar_enabled for the public state without querying Radar records", async () => {
-    mockGetFeatureFlags.mockResolvedValue({ radar_enabled: false });
+  it("uses the published public reader for the public state", async () => {
+    mockGetPublicRadarList.mockResolvedValue({ state: "UNAVAILABLE", records: [] });
 
     render(await RadarPage());
 
-    expect(screen.getByText(/Radar public feed is currently not active/i)).toBeTruthy();
-    expect(mockGetFeatureFlags).toHaveBeenCalledWith(["radar_enabled"]);
+    expect(screen.getByText(/Radar public data is temporarily unavailable/i)).toBeTruthy();
+    expect(mockGetPublicRadarList).toHaveBeenCalledOnce();
   });
 
   it("keeps the preview route development-only", () => {
