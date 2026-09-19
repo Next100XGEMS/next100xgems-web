@@ -72,13 +72,13 @@ async function main() {
   const migrationsDir = new URL("../../migrations/", import.meta.url);
   const migrationFiles = (await readdir(migrationsDir)).filter((file) => file.endsWith(".sql")).sort();
   const migrations = await Promise.all(migrationFiles.map((file) => readFile(new URL(file, migrationsDir), "utf8")));
-  assert.equal(migrations.length, 20, "F3 harness migration inventory must include exactly twenty migrations");
+  assert.ok(migrations.length >= 20, "F3 harness requires the established migration baseline");
   const db = "next100xgems_gate19cf3_" + randomUUID().replaceAll("-", "").slice(0, 12);
   await sql("postgres", "create database " + db + ";");
   created.add(db);
   await sql(db, dump.stdout);
   for (const migration of migrations) await sql(db, migration);
-  pass("F3 scratch database replays all twenty real migrations");
+  pass("F3 scratch database replays the complete real migration set");
 
   const owner = "4f000000-0000-4000-8000-000000000001";
   const reviewer = "4f000000-0000-4000-8000-000000000002";

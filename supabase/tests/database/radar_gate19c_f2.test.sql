@@ -43,6 +43,7 @@ select public.radar_system_enqueue_work('f2-work', 'SCREENING',
   '39000000-0000-4000-8000-000000000100', (select * from f2_event), null,
   'contract-v1', 'f2-input-v1', now()) into temporary f2_work;
 select public.radar_system_attach_observation((select * from f2_work), (select * from f2_observation));
+select public.radar_system_finalize_work_inputs((select * from f2_work), 'contract-v1', 'f2-input-v1');
 select * into temporary f2_claim from public.radar_system_claim_work('f2-worker', 300);
 select public.radar_system_complete_screening((select * from f2_work), 'f2-worker',
   (select lease_token from f2_claim), (select lease_generation from f2_claim), 'PASS', '["fixture"]',

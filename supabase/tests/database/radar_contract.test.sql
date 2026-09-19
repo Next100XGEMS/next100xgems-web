@@ -121,6 +121,7 @@ select public.radar_system_attach_observation((select * from radar_screen_work),
   (select id from public.radar_observations where metric_key='liquidity'));
 select is((select count(*)::integer from public.radar_work_inputs where work_item_id=(select * from radar_screen_work)), 1,
   'work input association is recorded');
+select public.radar_system_finalize_work_inputs((select * from radar_screen_work), 'contract-v1', 'input-v1');
 select * into temporary radar_claim_a from public.radar_system_claim_work('worker-a', 300);
 select is((select count(*)::integer from radar_claim_a), 1, 'due work can be claimed');
 select lives_ok($$select public.radar_system_complete_screening(
@@ -288,6 +289,7 @@ select public.radar_system_enqueue_work('analysis-2-request', 'REANALYSIS',
   (select * from radar_analysis), 'contract-v1', 'input-v2', now()) into temporary radar_analysis_work_2;
 select public.radar_system_attach_observation((select * from radar_analysis_work_2),
   (select id from public.radar_observations where metric_key='holders'));
+select public.radar_system_finalize_work_inputs((select * from radar_analysis_work_2), 'contract-v1', 'input-v2');
 select * into temporary radar_claim_b from public.radar_system_claim_work('worker-b', 300);
 select public.radar_system_complete_screening((select work_item_id from radar_claim_b), 'worker-b',
   (select lease_token from radar_claim_b), (select lease_generation from radar_claim_b), 'PASS',

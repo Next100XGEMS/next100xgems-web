@@ -1,9 +1,6 @@
 # Radar Database Foundation — Gate 19C
 
-Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. This is the persistent
-watch/intelligence foundation only. Gate 19D remains responsible for selected
-providers, Fast Lane evaluation and workers. No live provider, score formula,
-AI model, automatic publication, wallet, trading or execution feature exists.
+Status: Gate 19C and Gate 19C-F1 through F4 are complete and approved on `feat/radar`, 2026-09-19. Gate 19D Batch 1 and the compatible Gate 19F foundation are implemented; Gate 19G-F1 adds the corrective processing contract. This remains a persistent watch/intelligence foundation only. No live provider, score formula, AI model, automatic publication, wallet, trading or execution feature exists.
 
 ## Domain inventory
 
@@ -61,12 +58,16 @@ Request keys are unique. Analysis-producing work reserves a token analysis
 version under a token row lock, so concurrent enqueue operations cannot use an
 unlocked `MAX(version)+1`.
 
-Named system functions create/claim/renew/fail work, attach observations and
-complete screening. Claims carry worker, lease token, lease generation and
-pause generation. Claiming seals the exact input membership before evaluation;
-expired leases are recoverable and an old fence cannot renew, complete, fail or
-overwrite a recovered attempt. Downstream analysis/evidence results must carry
-the accepted fence and exact sealed input hash.
+Named system functions create/attach/finalize/claim/renew/fail work and
+complete screening. Input-bearing work is assembled while `OPEN`, then the
+service-role-only finalization RPC locks the work row, computes the existing
+database fingerprint and returns the ordered observation manifest. Such work
+cannot be claimed until `FINALIZED`; the fenced worker reads the same
+authoritative manifest before evaluation. Claims carry worker, lease token,
+lease generation and pause generation. Expired leases are recoverable and an
+old fence cannot renew, complete, fail or overwrite a recovered attempt.
+Downstream analysis/evidence results must carry the accepted fence and exact
+sealed input hash.
 
 System completion/failure receipts append narrow `SYSTEM` audit records in the
 same transaction. No worker, scheduler or provider call is implemented.
@@ -182,6 +183,17 @@ rows before the final actor/approver/eligibility/time checks, using a fresh
 `clock_timestamp()` after the lock phase. Renewal and failure lock the work
 row before checking the wall clock and pause/lease fences.
 
+Gate 19G-F1 adds `input_assembly_state`, the service-role-only
+`radar_system_finalize_work_inputs` and `radar_system_get_work_manifest` RPCs,
+and the claim predicate that requires finalized input-bearing work. The
+application ingestion path now uses the database-returned sealed hash and
+manifest rather than a parallel client fingerprint. Provider normalization
+preserves explicit missingness, bounded provenance and exact decimal strings;
+receipt time is metadata rather than content identity. Admin operation keys
+include verified actor, action, target, payload and an explicit operation
+intent. No new browser grants, RLS bypass, production provider, scoring policy
+or execution capability was added.
+
 Approval requires an approved method and freshness policy, a current ACTIVE
 approver role, a sealed nonempty PASS work result, a finite eligible score and
 publicly eligible analysis. Publication reads only a frozen 17-key snapshot;
@@ -194,8 +206,9 @@ The original Gate 19C migration and F1/F2/F3 migrations remain unchanged. The
 legacy Radar contract covers 75 assertions, F1 covers 54, F2 covers 51, F3
 covers 45, and F4 covers 21; the complete database suite covers 849 tests.
 Corrected F3 lock-wait checks pass 9/9, the Research concurrency suite passes
-13/13, and the disposable F4 upgrade/lease-race checks pass. Gate 19D remains
-separately gated.
+13/13, and the disposable F4 upgrade/lease-race checks pass. Gate 19G-F1
+focused finalization coverage passes 15/15; remaining production provider,
+scoring and freshness decisions stay separately gated.
 
 Gate 19D must choose and validate real provider capabilities, empirical
 methodology/range/freshness policy, Fast Lane rules, durable worker handlers

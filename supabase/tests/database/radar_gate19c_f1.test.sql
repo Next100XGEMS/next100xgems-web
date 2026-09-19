@@ -59,14 +59,15 @@ select throws_ok($$select public.radar_system_record_observation((select * from 
   'f1_provider', 'adapter-v1', 'market', 'credential-provenance', 'UNKNOWN', null, null, null, null, '{}', '{"api_key":"secret"}', null, repeat('5',64), now())$$,
   '23514', null, 'credential-shaped provenance is rejected');
 
--- Claiming seals the exact input set before evaluation and establishes the
--- fence retained by downstream result operations.
+-- Finalization seals the exact input set before claim and establishes the
+-- DB-authoritative manifest retained by downstream result operations.
 select public.radar_system_enqueue_work('f1-screen', 'SCREENING', '29000000-0000-4000-8000-000000000100',
   (select * from f1_event), null, 'contract-v1', 'input-v1', now()) into temporary f1_work;
 select public.radar_system_attach_observation((select * from f1_work), (select * from f1_observation));
+select public.radar_system_finalize_work_inputs((select * from f1_work), 'contract-v1', 'input-v1');
 select * into temporary f1_claim_a from public.radar_system_claim_work('f1-worker-a', 300);
 select ok((select sealed_at is not null and input_hash is not null from public.radar_work_items where id=(select * from f1_work)),
-  'claim seals input membership before evaluation');
+  'finalization seals input membership before claim');
 select public.radar_system_record_observation((select * from f1_event), '29000000-0000-4000-8000-000000000100',
   'f1_provider', 'adapter-v1', 'market', 'unfrozen', 'AVAILABLE', 7, 7, 0, 'USD', '{}',
   '{"authority":"f1"}', null, repeat('6',64), clock_timestamp()-interval '1 hour') into temporary f1_unfrozen_observation;
@@ -205,6 +206,8 @@ select is(public.radar_set_emergency_pause(false, 3, 'f1-resume'), 4::bigint, 'r
 reset role;
 select public.radar_system_enqueue_work('f1-generation-work', 'SCREENING', '29000000-0000-4000-8000-000000000100',
   (select * from f1_event), null, 'contract-v1', 'input-v1', now()) into temporary f1_generation_work;
+select public.radar_system_attach_observation((select * from f1_generation_work), (select * from f1_observation));
+select public.radar_system_finalize_work_inputs((select * from f1_generation_work), 'contract-v1', 'input-v1');
 select * into temporary f1_generation_claim from public.radar_system_claim_work('generation-worker',300);
 select set_config('request.jwt.claims', '{"sub":"29000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
 set local role authenticated;

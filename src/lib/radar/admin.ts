@@ -11,7 +11,7 @@ function row(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new RadarAdminReadError();
   return value as Record<string, unknown>;
 }
-function stringValue(value: unknown): string | null { return typeof value === "string" && value.length > 0 ? value : null; }
+function stringValue(value: unknown): string | null { return (typeof value === "string" || typeof value === "number") && String(value).length > 0 ? String(value) : null; }
 function requiredString(value: unknown): string { const result = stringValue(value); if (!result) throw new RadarAdminReadError(); return result; }
 function integerValue(value: unknown, fallback = 0): number { return typeof value === "number" && Number.isInteger(value) ? value : fallback; }
 function oneOf<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T { return typeof value === "string" && allowed.includes(value as T) ? value as T : fallback; }

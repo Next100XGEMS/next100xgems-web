@@ -1,6 +1,6 @@
 # Radar Implementation Architecture and Safety Plan — Gate 19A
 
-Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. This document records the approved architecture and the implementation boundary for separately approved Gates 19D–19G. Branch: `feat/radar`.
+Status: Gate 19C and Gate 19C-F4 corrective hardening complete and approved, 2026-09-19. Gate 19D Batch 1 and the compatible Gate 19F foundation are implemented; Gate 19G-F1 is the current corrective batch. This document records the approved architecture and remaining implementation boundary for Gates 19D–19G. Branch: `feat/radar`.
 
 Gate 19D Batch 1 is implemented as a provider-neutral foundation. Production
 provider selection, empirical thresholds, score methodology and deployment
@@ -376,7 +376,7 @@ Test both clean replay and legacy-data upgrade in approved disposable local data
 | 19F — optional Deep Lane | First confirm model/provider/data-use decision, then asynchronous validated inference if approved. Revalidate any combined score method empirically. If provider remains TBD, deliver contracts/mocks only and record integration as deferred; do not claim a live AI feature. Fast-only capability does not depend on this integration. |
 | 19G — end-to-end security/readiness | Full database, concurrency, provider-failure, publication/public-reader, commercial isolation and application audit; confirm empirical methodology, fixture exclusion, freshness/pause/recovery and source transparency. Human acceptance before any launch. Unresolved provider/scoring prerequisites block public launch, not a reason to fabricate inputs. |
 
-Keep each gate independently reviewable and stop after its requested scope. The user's Gate 19 sequence is a scoped Radar workstream; this document does not rewrite the broader historical phase taxonomy in ROADMAP.md. No later gate has started here.
+Keep each gate independently reviewable and stop after its requested scope. The user's Gate 19 sequence is a scoped Radar workstream; this document does not rewrite the broader historical phase taxonomy in ROADMAP.md. Gate 19G-F1 does not select a production provider, scoring policy or freshness threshold, and does not add execution capability.
 
 ## 29. Risks, assumptions and final adversarial review
 
@@ -422,10 +422,26 @@ lease revalidation. It also corrects the lock-wait fixtures so tests begin
 with valid authority and cross deadlines only while blocked. No provider,
 worker, automatic publisher or Gate 19D capability is included.
 
+Gate 19G-F1 is a narrowly scoped additive processing correction. Input-bearing
+work is assembled in an explicit OPEN state and finalized through a
+service-role-only transaction that locks the work row, computes the existing
+database fingerprint, and returns the ordered sealed observation manifest.
+Claims require finalized inputs; a fenced worker can retrieve only the
+DB-authoritative manifest for its active lease and pause generation. The
+application ingestion path consumes that manifest instead of maintaining a
+second fingerprint algorithm. Provider failures are sanitized into bounded
+codes, receipt time is excluded from observation identity, provider scope and
+provenance are reconciled before persistence, and exact decimal values remain
+string/database-numeric data. Admin operation request keys bind verified actor,
+action, target, payload and explicit operation intent. The migration is
+additive; existing RLS, grants, audit, lease and emergency-pause boundaries
+remain in force.
+
 `contract-v1` is a schema-contract identifier used to validate persistence and
 publication wiring; it is not an empirically approved score formula. No real
 provider, Fast Lane evaluator, Deep Lane model, background worker or automatic
-publisher was started. Gate 19D remains separately gated.
+publisher was started. Gate 19G-F1 adds only the trusted finalization and
+manifest contract; production provider and scoring decisions remain deferred.
 
 ## 30. Intentionally deferred decisions
 

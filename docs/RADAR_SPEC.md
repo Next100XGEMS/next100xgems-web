@@ -1,5 +1,12 @@
 # Next100XGems Radar Specification
 
+Current implementation note: Gate 19D Batch 1 provides provider-neutral
+normalization and deterministic Fast Lane plumbing. Gate 19G-F1 requires
+input-bearing work to be finalized by a trusted server transaction before
+claim, exposes only the fenced database manifest to the worker, and preserves
+explicit provider missingness and exact numeric transport. No production
+provider, scoring policy, trading or execution path is defined here.
+
 ## Purpose
 
 Next100XGems Radar discovers, filters, analyzes, and presents crypto market activity, opportunities, signals, and risks. It is an intelligence and publishing workflow, not a trading system.
