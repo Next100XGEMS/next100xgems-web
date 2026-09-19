@@ -604,3 +604,8 @@ The conservative mandatory-signal result therefore remains 23/30 any-source,
 7/30 missing or insufficient-history. Gap closure improved the reusable
 collection and analysis contracts, not the evidence count. Incremental paid
 usage is $0; no upgrade was justified.
+
+The historical-corpus phase adds no reliable new GMGN total: the previous
+100-token CLI attempt hung and the controlled retry must begin at 20 tokens
+under the bounded queue. The repository therefore records GMGN runtime as an
+operational gap rather than converting timeouts into provider failure or value.

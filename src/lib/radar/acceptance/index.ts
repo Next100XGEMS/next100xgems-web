@@ -11,3 +11,6 @@ export * from "@/lib/radar/acceptance/gmgn";
 export * from "@/lib/radar/acceptance/signal-gaps";
 export * from "@/lib/radar/acceptance/solana";
 export * from "@/lib/radar/acceptance/historical";
+export * from "@/lib/radar/acceptance/bounded-study";
+export * from "@/lib/radar/acceptance/corpus";
+export * from "@/lib/radar/acceptance/snapshots";

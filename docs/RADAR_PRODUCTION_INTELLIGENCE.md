@@ -523,3 +523,9 @@ seven signals remain missing or history-limited. Solana is not yet ready for
 methodology design. Missing Pump event/migration, holder history, LP history,
 creator history and balanced outcome data must be collected or explicitly
 removed from mandatory status through a later approved decision.
+
+The final corpus-phase tooling is documented in
+[RADAR_HISTORICAL_CORPUS.md](RADAR_HISTORICAL_CORPUS.md). It supports frozen
+cutoff manifests, structural labels, holder snapshots and bounded provider
+studies, but does not claim that the current 108-token acceptance sample is a
+balanced 300-token historical corpus. Solana remains MORE_DATA_WORK_REQUIRED.

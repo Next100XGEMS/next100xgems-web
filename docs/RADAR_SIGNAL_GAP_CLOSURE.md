@@ -216,3 +216,12 @@ Before methodology design, the human decision is whether to approve a larger
 licensed/history corpus and a bounded GMGN value study under a controlled CLI
 runtime, or to proceed with the documented missingness and keep Solana out of
 `READY_FOR_METHODOLOGY_DESIGN`.
+
+## Final corpus-phase tooling status
+
+`docs/RADAR_HISTORICAL_CORPUS.md` is the source of truth for corpus selection,
+point-in-time cutoffs, structural labels and chronological splits. The
+repository includes a corpus manifest builder, hashed Solana holder snapshot
+export and bounded provider-study queue. No 300-token balanced corpus was
+fabricated or committed: the available 108-token acceptance cohort remains a
+discovery sample and Solana remains `MORE_DATA_WORK_REQUIRED`.

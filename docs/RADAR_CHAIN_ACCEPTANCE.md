@@ -188,3 +188,7 @@ remain incomplete. BNB and Base remain `CONTINUE_SHADOW`; direct Alchemy token
 state works on representative samples, while owner/proxy and LP semantics are
 contract-specific. Ethereum and Robinhood remain `WATCH`. No chain is
 promoted, and no public Radar activation occurred.
+
+The historical corpus is not yet balanced enough to promote Solana to
+methodology design. Snapshot and bounded-study tooling is available, but no
+production scheduler or additional chain budget was enabled.
