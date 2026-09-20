@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createHash, randomUUID } from "node:crypto";
 import { getAuthorizationContext, type AuthorizationContext } from "@/lib/auth/authorization";
 import { analyzeEvidence, stableAnalyzerRequestFingerprint } from "./analysis";
 import { createEvidenceManifest, verifyEvidenceManifestHash } from "./evidence";
@@ -8,7 +9,7 @@ import type { AnalyzerInput, AnalyzerResult } from "./contracts";
 
 const REPLAY_FRESHNESS_MS = 5 * 60 * 1000;
 export type AnalyzerRunOperation = "DELIVERY_RETRY" | "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
-export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string };
+export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; deliveryId?: string };
 export class AnalyzerOperationError extends Error { constructor(public readonly code: "FEATURE_DISABLED" | "INVALID_INPUT" | "UNAUTHORIZED" | "PROVIDER_FAILURE" | "PERSISTENCE_FAILURE" | "CONFLICT", message: string) { super(message); this.name = "AnalyzerOperationError"; } }
 function requireOperator(context: AuthorizationContext) { if (!context.roles.some((role) => role === "owner" || role === "admin")) throw new AnalyzerOperationError("UNAUTHORIZED", "Only Owner or Admin can operate the Token Analyzer."); }
 function stateFrom(data: unknown) { if (!data || typeof data !== "object" || Array.isArray(data)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer state is unavailable."); return data as Record<string, unknown>; }
@@ -27,14 +28,22 @@ export async function setAnalyzerEnabled(enabled: boolean) {
 }
 
 export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOptions = {}): Promise<AnalyzerResult> {
-  const context = await getAuthorizationContext(); requireOperator(context); const state = await readState(context);
+  const context = await getAuthorizationContext(); requireOperator(context);
+  const operation = options.operation ?? "DELIVERY_RETRY";
+  if (operation === "DELIVERY_RETRY" && options.deliveryId) {
+    const { data, error } = await context.supabase.rpc("analyzer_get_delivery_receipt", { p_delivery_key: options.deliveryId });
+    if (error) throw new AnalyzerOperationError(error.code === "42501" ? "UNAUTHORIZED" : "CONFLICT", "The sealed Analyzer delivery could not be replayed.");
+    const response = stateFrom(data); return { ...safeResult(response.result), deliveryId: typeof response.delivery_key === "string" ? response.delivery_key : options.deliveryId };
+  }
+  const state = await readState(context);
   if (!safeBoolean(state.enabled)) throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled. Enable it from its Admin control before running a new analysis.");
   if (!input || typeof input.raw !== "string" || input.raw.trim().length === 0 || input.raw.length > 4096) throw new AnalyzerOperationError("INVALID_INPUT", "Enter a supported contract, mint, or URL.");
-  const operation = options.operation ?? "DELIVERY_RETRY"; if (operation === "EXPLICIT_REANALYSIS" && !options.reanalysisReason?.trim()) throw new AnalyzerOperationError("INVALID_INPUT", "An explicit reanalysis requires a reason.");
+  if (operation === "EXPLICIT_REANALYSIS" && !options.reanalysisReason?.trim()) throw new AnalyzerOperationError("INVALID_INPUT", "An explicit reanalysis requires a reason.");
   const safeInput: AnalyzerInput = { raw: input.raw.trim(), hintChain: input.hintChain }; const resolution = resolveAnalyzerInput(safeInput); const manifest = createEvidenceManifest(safeInput, resolution); if (!verifyEvidenceManifestHash(manifest)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer evidence could not be verified locally.");
   const fingerprint = stableAnalyzerRequestFingerprint(safeInput, resolution); const result = analyzeEvidence("00000000-0000-4000-8000-000000000000", safeInput, manifest); const identity = { chain: resolution.chain, canonicalTokenId: resolution.canonicalTokenId, inputType: resolution.inputType, pairAddress: resolution.pairAddress, poolAddress: resolution.poolAddress, schemaVersion: manifest.schemaVersion, methodologyVersion: manifest.methodologyVersion, scoreEngineVersion: null, analysisMode: "DETERMINISTIC" };
   const expires = manifest.freshness.state === "FRESH" ? new Date(Date.now() + REPLAY_FRESHNESS_MS).toISOString() : new Date().toISOString();
-  const { data, error } = await context.supabase.rpc("analyzer_submit_run", { p_payload: { fingerprint, raw_input: safeInput.raw, input_type: resolution.inputType, requested_chain: resolution.chain, resolution, manifest, result, status: result.status, schema_version: manifest.schemaVersion, score_engine_version: null, analysis_mode: "DETERMINISTIC", freshness_class: manifest.freshness.state, freshness_expires_at: expires, methodology_version: null, identity, operation, reanalysis_reason: options.reanalysisReason?.trim() ?? null } });
+  const deliveryId = options.deliveryId ?? (operation === "DELIVERY_RETRY" ? undefined : createHash("sha256").update(randomUUID()).digest("hex"));
+  const { data, error } = await context.supabase.rpc("analyzer_submit_run", { p_payload: { fingerprint, raw_input: safeInput.raw, input_type: resolution.inputType, requested_chain: resolution.chain, resolution, manifest, result, status: result.status, schema_version: manifest.schemaVersion, score_engine_version: null, analysis_mode: "DETERMINISTIC", freshness_class: manifest.freshness.state, freshness_expires_at: expires, methodology_version: null, identity, operation, delivery_id: deliveryId, reanalysis_reason: options.reanalysisReason?.trim() ?? null } });
   if (error) { if (error.code === "42501") throw new AnalyzerOperationError("UNAUTHORIZED", "Analyzer operation is not authorized."); if (error.code === "55000") throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled."); if (error.code === "23P01") throw new AnalyzerOperationError("CONFLICT", "Analyzer request context conflicts with an existing result."); throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer result could not be persisted."); }
-  const response = stateFrom(data); return safeResult(response.result);
+  const response = stateFrom(data); const persisted = safeResult(response.result); return { ...persisted, deliveryId: typeof response.delivery_key === "string" ? response.delivery_key : deliveryId };
 }

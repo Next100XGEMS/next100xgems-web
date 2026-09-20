@@ -46,6 +46,11 @@ describe("Universal Token Analyzer evidence safety", () => {
     expect(validateAnalyzerClaims([{ ...valid, value: "999" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, evidenceType: "AI_INFERENCE" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, source: "invented" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, identity: "pool-1", evidenceType: "VERIFIED_DATA", value: "100" }], { ...manifest, observations: [{ ...observations[0], provenance: [{ ...observations[0].provenance[0], reference: "pool-2" }] }] })).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, evidenceType: "VERIFIED_DATA" }], { ...manifest, observations: [{ ...observations[0], provenance: [{ ...observations[0].provenance[0], kind: "CONTEXTUAL_PROPRIETARY" as const }] }] })).toBe(false);
+    const omittedIdentity = { ...valid } as { identity?: string | null } & Omit<typeof valid, "identity">;
+    delete omittedIdentity.identity;
+    expect(validateAnalyzerClaims([omittedIdentity as typeof valid], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", field: "score", identity: "pool-1" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", value: "100", evidenceType: "VERIFIED_DATA" }], { ...manifest, observations: [{ ...observations[0], state: "UNAVAILABLE" }] })).toBe(false);
   });

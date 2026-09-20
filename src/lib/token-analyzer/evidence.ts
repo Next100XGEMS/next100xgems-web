@@ -35,7 +35,7 @@ export function createEvidenceManifest(input: AnalyzerInput, resolution: Analyze
   const copiedObservations = clone(observations); const copiedClaims = clone(claims); const copiedResolution = clone(resolution);
   const available = new Set(copiedObservations.filter((item) => item.state === "AVAILABLE").map((item) => item.key));
   const freshness = deriveFreshness(copiedObservations, freshnessPolicy);
-  const manifest = { schemaVersion: "token-analyzer-v1" as const, manifestVersion: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: [], missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
+  const manifest = { schemaVersion: "token-analyzer-v1" as const, manifestFormatVersion: 1 as const, evidenceRevision: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: [], missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
   if (!validateAnalyzerClaims(copiedClaims, manifest as unknown as AnalyzerEvidenceManifest)) throw new Error("Analyzer claim grounding is invalid.");
   const result = { ...manifest, manifestHash: sha256(manifest) };
   return freeze(result);

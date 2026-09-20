@@ -1,6 +1,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
+grant usage on schema extensions to authenticated;
+grant execute on all functions in schema extensions to authenticated;
 select no_plan();
 
 insert into auth.users(id) values
@@ -18,9 +20,9 @@ insert into analyzer_fixture_payload values ('{
   "raw_input":"fixture",
   "input_type":"UNKNOWN",
   "requested_chain":"unknown",
-  "resolution":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null},
-  "manifest":{"schemaVersion":"token-analyzer-v1","resolvedToken":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null},"observations":[],"freshness":{"state":"UNKNOWN"}},
-  "result":{"status":"INSUFFICIENT_DATA","resolvedToken":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null},"chain":"unknown","score":{"status":"METHODOLOGY_NOT_ACTIVE","value":null},"aiInterpretation":{"status":"DISABLED","provider":null,"model":null,"content":null}},
+  "resolution":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null,"provenance":[]},
+  "manifest":{"schemaVersion":"token-analyzer-v1","manifestFormatVersion":1,"evidenceRevision":1,"resolvedToken":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null,"provenance":[]},"observations":[],"claims":[],"providerConflicts":[],"missing":[],"freshness":{"state":"UNKNOWN"},"methodologyVersion":null},
+  "result":{"status":"INSUFFICIENT_DATA","resolvedToken":{"chain":"unknown","canonicalTokenId":null,"inputType":"UNKNOWN","pairAddress":null,"poolAddress":null,"provenance":[]},"chain":"unknown","pair":{"address":null,"pool":null},"score":{"status":"METHODOLOGY_NOT_ACTIVE","value":null,"methodologyVersion":null,"components":{"marketStructure":null}},"aiInterpretation":{"status":"DISABLED","provider":null,"model":null,"content":null},"market":{},"liquidity":{},"holders":{},"creator":{},"activity":{},"topTrades":[],"whyMoving":[],"claimVerification":[],"riskFactors":[],"unknowns":[],"citations":[],"providerConflicts":[],"schemaVersion":"token-analyzer-v1","methodologyVersion":null},
   "status":"INSUFFICIENT_DATA",
   "schema_version":"token-analyzer-v1",
   "analysis_mode":"DETERMINISTIC",
@@ -34,6 +36,7 @@ grant select, update on analyzer_fixture_payload to authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-000000987701","role":"authenticated"}', true);
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000987701', true);
 set local role authenticated;
+set local search_path = public, extensions;
 
 select ok((analyzer_read_state()->>'enabled') = 'false', 'Analyzer state RPC reads the default-off flag');
 select ok(has_table_privilege('authenticated', 'public.analyzer_requests', 'SELECT, INSERT, UPDATE, DELETE') = false, 'Browser role still has no raw Analyzer table access');
@@ -60,6 +63,7 @@ select is((select count(*) from public.analyzer_evidence_manifests), 1::bigint, 
 select is((select analysis_operation from public.analyzer_analyses limit 1), 'DELIVERY_RETRY', 'Initial operation is durable');
 
 set local role authenticated;
+set local search_path = public, extensions;
 update analyzer_fixture_payload set payload = jsonb_set(payload, '{operation}', '"EXPLICIT_REANALYSIS"'::jsonb, true);
 update analyzer_fixture_payload set payload = jsonb_set(payload, '{reanalysis_reason}', '"audit replay"'::jsonb, true);
 select is((select public.analyzer_submit_run((select payload from analyzer_fixture_payload))->>'analysis_version'), '2', 'Explicit reanalysis appends a new version');
@@ -67,6 +71,7 @@ reset role;
 select is((select count(*) from public.analyzer_analyses), 2::bigint, 'Prior analysis version is preserved');
 
 set local role authenticated;
+set local search_path = public, extensions;
 select public.set_token_analyzer_enabled(false);
 update analyzer_fixture_payload set payload = jsonb_set(payload, '{fingerprint}', to_jsonb(repeat('c', 64)), true);
 update analyzer_fixture_payload set payload = jsonb_set(payload, '{operation}', '"DELIVERY_RETRY"'::jsonb, true);

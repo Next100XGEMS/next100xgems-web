@@ -58,7 +58,8 @@ export type AnalyzerObservation = {
 
 export type AnalyzerEvidenceManifest = {
   schemaVersion: typeof ANALYZER_SCHEMA_VERSION;
-  manifestVersion: number;
+  manifestFormatVersion: 1;
+  evidenceRevision: number;
   capturedAt: string;
   input: { type: AnalyzerInputType; rawHash: string };
   resolvedToken: AnalyzerResolution;
@@ -101,6 +102,9 @@ export type AnalyzerScore = {
 export type AnalyzerResult = {
   requestId: string;
   analysisVersion?: number;
+  deliveryId?: string;
+  evidenceManifestHash?: string;
+  evidenceRevision?: number;
   status: AnalyzerStatus;
   input: AnalyzerInput;
   resolvedToken: AnalyzerResolution;

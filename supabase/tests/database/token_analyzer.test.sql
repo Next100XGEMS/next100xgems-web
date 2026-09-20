@@ -3,6 +3,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
+grant usage on schema extensions to authenticated;
+grant execute on all functions in schema extensions to authenticated;
 select no_plan();
 
 select has_table('public', 'analyzer_requests', 'Analyzer requests table exists');
@@ -16,6 +18,7 @@ select ok(has_function_privilege('authenticated', 'public.set_token_analyzer_ena
 select ok(not has_function_privilege('anon', 'public.set_token_analyzer_enabled(boolean)', 'EXECUTE'), 'Anonymous cannot toggle Analyzer');
 select ok(not has_function_privilege('anon', 'public.set_token_analyzer_enabled(boolean)', 'EXECUTE'), 'Anonymous cannot toggle Analyzer');
 set local role authenticated;
+set local search_path = public, extensions;
 select throws_ok($$insert into public.analyzer_requests(requester_id, raw_input, input_type, request_fingerprint)
   values ('00000000-0000-4000-8000-000000000001', 'x', 'UNKNOWN', repeat('a', 64))$$,
   '42501', null, 'Direct browser-style insert is denied');
