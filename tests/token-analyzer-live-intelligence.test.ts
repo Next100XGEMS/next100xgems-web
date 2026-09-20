@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { collectLiveAnalyzerEvidence, prepareLiveAnalyzerResolution } from "@/lib/token-analyzer/live-intelligence";
+import { TOKEN_PROGRAM } from "@/lib/token-analyzer/provider-integrity";
 
 vi.mock("server-only", () => ({}));
 
@@ -26,7 +27,10 @@ describe("deterministic live provider routing", () => {
         calls.push(body.method ?? "unknown");
         if (body.method === "getTokenSupply") return new Response(JSON.stringify({ result: { value: { amount: "1000000", decimals: 6 } } }), { status: 200 });
         if (body.method === "getTokenLargestAccounts") return new Response(JSON.stringify({ result: { value: [{ address: mint, amount: "1000000" }] } }), { status: 200 });
-        if (body.method === "getAccountInfo") return new Response(JSON.stringify({ result: { value: null } }), { status: 200 });
+        if (body.method === "getAccountInfo") {
+          const bytes = Buffer.alloc(82); bytes[45] = 1; bytes[44] = 6; bytes.writeBigUInt64LE(BigInt(1000000), 36);
+          return new Response(JSON.stringify({ result: { value: { owner: TOKEN_PROGRAM, executable: false, data: [bytes.toString("base64"), "base64"] } } }), { status: 200 });
+        }
         return new Response(JSON.stringify({ result: null }), { status: 200 });
       }
       return new Response("{}", { status: 404 });
@@ -36,8 +40,8 @@ describe("deterministic live provider routing", () => {
     expect(collected.manifest.resolvedToken.canonicalTokenId).toBe("solana:" + mint);
     expect(collected.manifest.observations.some((item) => item.key === "supply")).toBe(true);
     expect(collected.manifest.observations.some((item) => item.key === "price")).toBe(true);
-    expect(collected.manifest.providerConflicts[0]?.state).toBe("DISAGREEMENT");
-    expect(calls).toContain("getTokenSupply");
+    expect(collected.manifest.providerConflicts[0]?.explanation).toContain("AGGREGATED_VS_SINGLE_POOL");
+    expect(calls).not.toContain("getTokenSupply"); // Supply is decoded from the verified Mint itself.
     expect(collected.usage.some((item) => item.provider === "birdeye" && item.status === "SUCCESS")).toBe(true);
     expect(collected.usage.some((item) => item.provider === "dex-screener" && item.status === "SUCCESS")).toBe(true);
   });

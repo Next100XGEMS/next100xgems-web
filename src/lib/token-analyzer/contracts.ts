@@ -17,6 +17,7 @@ export type AnalyzerClaimVerification = "SUPPORTED" | "PARTIALLY_SUPPORTED" | "U
 
 export type AnalyzerInput = { raw: string; hintChain?: AnalyzerChain };
 export type AnalyzerResolution = {
+  pairProof?: { provider: "dex-screener"; chain: string; pair: string; baseToken: string; quoteToken: string; selection: "BASE_TOKEN" };
   inputType: AnalyzerInputType;
   source: string;
   chain: AnalyzerChain;
@@ -45,6 +46,7 @@ export type AnalyzerProvenance = {
 };
 
 export type AnalyzerObservation = {
+  context?: AnalyzerObservationContext;
   key: string;
   label: string;
   value: string | number | boolean | null;
@@ -102,6 +104,8 @@ export type AnalyzerProviderConflict = {
 };
 
 export type AnalyzerProviderUsage = {
+  requestOutcome?: "SUCCESS" | "HTTP_ERROR" | "TIMEOUT" | "RATE_LIMIT" | "INVALID_RESPONSE" | "CANCELLED";
+  capabilityStatus?: "AVAILABLE" | "UNAVAILABLE" | "UNSUPPORTED" | "DEGRADED" | "UNKNOWN";
   provider: string;
   capability: string;
   status: "SUCCESS" | "FAILED" | "RATE_LIMITED" | "NOT_CONFIGURED" | "UNSUPPORTED" | "CACHE_HIT";
@@ -109,6 +113,21 @@ export type AnalyzerProviderUsage = {
   attempts: number;
   cache: "HIT" | "MISS" | "STALE" | "NONE";
   error: string | null;
+};
+
+export type AnalyzerObservationContext = {
+  scope: "TOKEN_AGGREGATE" | "PAIR" | "POOL" | "BONDING_CURVE" | "CHAIN_MARKET" | "UNKNOWN_SCOPE";
+  chain: string; token: string; poolId: string | null; quoteAsset: string | null;
+  timeWindow: string | null; retrievedAt: string;
+  completeness: "PARTIAL" | "COMPLETE" | "UNKNOWN";
+  classification: "DIRECT" | "OBJECTIVE_DERIVED" | "PROVIDER_DERIVED";
+  methodology: string | null;
+  denominatorType?: "TOTAL_SUPPLY"; denominatorValue?: string;
+  returnedAccountCount?: number; requestedTopN?: number; metricTopN?: number; exclusions?: string[];
+  rawBalances?: { address: string; balance: string }[];
+  tokenProgram?: string; decoderVersion?: string; curveAddress?: string;
+  virtualTokenReserves?: string; virtualSolReserves?: string;
+  realTokenReserves?: string; realSolReserves?: string; complete?: boolean;
 };
 
 export type AnalyzerCapabilityStatus = {
@@ -126,6 +145,10 @@ export type AnalyzerScore = {
 };
 
 export type AnalyzerResult = {
+  analysisId?: string;
+  evidenceManifestId?: string;
+  completedAt?: string;
+  resultHash?: string;
   requestId: string;
   analysisVersion?: number;
   deliveryId?: string;

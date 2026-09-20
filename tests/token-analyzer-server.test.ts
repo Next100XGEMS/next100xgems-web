@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 const rpc = vi.hoisted(() => vi.fn());
@@ -10,7 +10,8 @@ import { getAnalyzerSnapshot, runAnalyzer } from "@/lib/token-analyzer/server";
 import fixture from "./fixtures/token-analyzer-contract.json";
 
 describe("Analyzer server gateway", () => {
-  beforeEach(() => rpc.mockReset());
+  beforeEach(() => { rpc.mockReset(); vi.stubGlobal("fetch", vi.fn(async () => new Response('{"pairs":[]}'))); });
+  afterEach(() => vi.unstubAllGlobals());
 
   it("reads state through the trusted RPC and fails closed when disabled", async () => {
     rpc.mockResolvedValue({ data: { enabled: false, public_enabled: false, ai_enabled: false, analysis_count: 0 }, error: null });

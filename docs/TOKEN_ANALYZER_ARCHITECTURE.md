@@ -50,15 +50,13 @@ chains are Solana, Ethereum, Base, and BNB.
 
 Solana authority is ordered as Helius/Solana RPC and Pump/PumpSwap state for
 chain facts, Birdeye for primary market observations, DEX Screener for fallback
-and comparison, and optional GMGN context that remains provider-derived. EVM
-chain facts use Alchemy read-only calls, with DEX Screener as market context.
-CoinGecko is capability-advertised for selective verification but is not called
-on every routine analysis. Unsupported or unconfigured capabilities are
+and comparison. EVM chain facts use Alchemy read-only calls, with DEX Screener
+as market context. GMGN and CoinGecko routine enrichment are not connected. Unsupported or unconfigured capabilities are
 reported explicitly rather than silently substituted.
 
 Provider requests are server-only, time-bounded, sanitized, and recorded as
-bounded usage telemetry. A 429 or transient 5xx is retried at most once with
-backoff; non-retryable failures are recorded and do not become verified facts.
+bounded usage telemetry, separate from immutable receipts. A transient 5xx is
+retried at most once with backoff; 429 falls back without retry; non-retryable failures are recorded and do not become verified facts.
 No live connector calls AI, writes credentials, changes Radar authority,
 publishes a record, or calculates a score.
 
@@ -71,15 +69,13 @@ chains are Solana, Ethereum, Base, and BNB.
 
 Solana authority is ordered as Helius/Solana RPC and Pump/PumpSwap state for
 chain facts, Birdeye for primary market observations, DEX Screener for fallback
-and comparison, and optional GMGN context that remains provider-derived. EVM
-chain facts use Alchemy read-only calls, with DEX Screener as market context.
-CoinGecko is capability-advertised for selective verification but is not called
-on every routine analysis. Unsupported or unconfigured capabilities are
+and comparison. EVM chain facts use Alchemy read-only calls, with DEX Screener
+as market context. GMGN and CoinGecko routine enrichment are not connected. Unsupported or unconfigured capabilities are
 reported explicitly rather than silently substituted.
 
 Provider requests are server-only, time-bounded, sanitized, and recorded as
-bounded usage telemetry. A 429 or transient 5xx is retried at most once with
-backoff; non-retryable failures are recorded and do not become verified facts.
+bounded usage telemetry, separate from immutable receipts. A transient 5xx is
+retried at most once with backoff; 429 falls back without retry; non-retryable failures are recorded and do not become verified facts.
 No live connector calls AI, writes credentials, changes Radar authority,
 publishes a record, or calculates a score.
 
@@ -157,3 +153,12 @@ or internal headers.
 
 No wallet custody, private key, signing, transaction construction, submission,
 swap, buy, sell, order routing, or automated execution is present.
+
+## Provider-integrity remediation
+
+See [provider routing](TOKEN_ANALYZER_PROVIDER_ROUTING.md) for the authoritative
+scope, mint, denominator, URL identity, receipt and telemetry contracts.
+Migration 000006 is additive. Existing sealed records are not rewritten; the
+new collector and validators apply to new captures. No local or remote live
+Analyzer is enabled by this remediation. Controlled regression tests use only
+loopback HTTP and disposable local databases.

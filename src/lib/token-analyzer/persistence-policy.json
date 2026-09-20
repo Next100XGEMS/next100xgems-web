@@ -115,6 +115,11 @@
       "identityType": "POOL",
       "referenceType": "POOL",
       "value": "decimal"
+    },
+    "owner": {
+      "identityType": "WALLET",
+      "referenceType": "WALLET",
+      "value": "address"
     }
   },
   "verifiedProvenance": [
@@ -301,9 +306,46 @@
             "ref": "provenance"
           },
           "maxItems": 1000
+        },
+        "pairProof": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "const": "dex-screener"
+            },
+            "chain": {
+              "type": "string",
+              "enum": [
+                "solana",
+                "ethereum",
+                "base",
+                "bnb"
+              ]
+            },
+            "pair": {
+              "type": "string",
+              "minLength": 1
+            },
+            "baseToken": {
+              "type": "string",
+              "minLength": 1
+            },
+            "quoteToken": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selection": {
+              "type": "string",
+              "const": "BASE_TOKEN"
+            }
+          },
+          "optional": []
         }
       },
-      "optional": []
+      "optional": [
+        "pairProof"
+      ]
     },
     "observation": {
       "type": "object",
@@ -323,15 +365,16 @@
             "supply",
             "decimals",
             "mintAuthority",
-            "freezeAuthority"
-            ,"marketCap"
-            ,"fdv"
-            ,"pool"
-            ,"poolAge"
-            ,"lifecycle"
-            ,"migration"
-            ,"creatorBehavior"
-            ,"activityChange"
+            "freezeAuthority",
+            "marketCap",
+            "fdv",
+            "pool",
+            "poolAge",
+            "lifecycle",
+            "migration",
+            "creatorBehavior",
+            "activityChange",
+            "owner"
           ]
         },
         "label": {
@@ -403,10 +446,167 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 88
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "enum": [
+                "TOKEN_AGGREGATE",
+                "PAIR",
+                "POOL",
+                "BONDING_CURVE",
+                "CHAIN_MARKET",
+                "UNKNOWN_SCOPE"
+              ]
+            },
+            "chain": {
+              "type": "string",
+              "enum": [
+                "solana",
+                "ethereum",
+                "base",
+                "bnb"
+              ]
+            },
+            "token": {
+              "type": "string",
+              "minLength": 1
+            },
+            "poolId": {
+              "type": "string",
+              "nullable": true
+            },
+            "quoteAsset": {
+              "type": "string",
+              "nullable": true
+            },
+            "timeWindow": {
+              "type": "string",
+              "nullable": true
+            },
+            "retrievedAt": {
+              "type": "string",
+              "format": "timestamp"
+            },
+            "completeness": {
+              "type": "string",
+              "enum": [
+                "PARTIAL",
+                "COMPLETE",
+                "UNKNOWN"
+              ]
+            },
+            "classification": {
+              "type": "string",
+              "enum": [
+                "DIRECT",
+                "OBJECTIVE_DERIVED",
+                "PROVIDER_DERIVED"
+              ]
+            },
+            "methodology": {
+              "type": "string",
+              "nullable": true
+            },
+            "denominatorType": {
+              "type": "string",
+              "const": "TOTAL_SUPPLY"
+            },
+            "denominatorValue": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "returnedAccountCount": {
+              "type": "number"
+            },
+            "requestedTopN": {
+              "type": "number"
+            },
+            "exclusions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "maxItems": 100
+            },
+            "tokenProgram": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decoderVersion": {
+              "type": "string",
+              "minLength": 1
+            },
+            "curveAddress": {
+              "type": "string",
+              "minLength": 1
+            },
+            "virtualTokenReserves": {
+              "type": "string",
+              "minLength": 1
+            },
+            "virtualSolReserves": {
+              "type": "string",
+              "minLength": 1
+            },
+            "realTokenReserves": {
+              "type": "string",
+              "minLength": 1
+            },
+            "realSolReserves": {
+              "type": "string",
+              "minLength": 1
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "rawBalances": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "balance": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)$"
+                  }
+                },
+                "optional": []
+              },
+              "maxItems": 20
+            },
+            "metricTopN": {
+              "type": "number"
+            }
+          },
+          "optional": [
+            "denominatorType",
+            "denominatorValue",
+            "returnedAccountCount",
+            "requestedTopN",
+            "exclusions",
+            "tokenProgram",
+            "decoderVersion",
+            "curveAddress",
+            "virtualTokenReserves",
+            "virtualSolReserves",
+            "realTokenReserves",
+            "realSolReserves",
+            "complete",
+            "rawBalances",
+            "metricTopN"
+          ]
         }
       },
       "optional": [
-        "transactionReference"
+        "transactionReference",
+        "context"
       ]
     },
     "claim": {
@@ -463,15 +663,16 @@
             "supply",
             "decimals",
             "mintAuthority",
-            "freezeAuthority"
-            ,"marketCap"
-            ,"fdv"
-            ,"pool"
-            ,"poolAge"
-            ,"lifecycle"
-            ,"migration"
-            ,"creatorBehavior"
-            ,"activityChange"
+            "freezeAuthority",
+            "marketCap",
+            "fdv",
+            "pool",
+            "poolAge",
+            "lifecycle",
+            "migration",
+            "creatorBehavior",
+            "activityChange",
+            "owner"
           ]
         },
         "identity": {
@@ -573,11 +774,43 @@
           "items": {
             "type": "object",
             "properties": {
-              "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
-              "providers": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 128 }, "maxItems": 10 },
-              "state": { "type": "string", "enum": ["AGREEMENT", "DISAGREEMENT", "MISSING", "STALE"] },
-              "explanation": { "type": "string", "minLength": 1, "maxLength": 1024 },
-              "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 128 }, "maxItems": 100 }
+              "capability": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "providers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "maxItems": 10
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "AGREEMENT",
+                  "DISAGREEMENT",
+                  "MISSING",
+                  "STALE"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "evidenceRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "maxItems": 100
+              }
             },
             "optional": []
           },

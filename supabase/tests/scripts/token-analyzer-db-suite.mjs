@@ -32,6 +32,7 @@ try {
     console.log(`${file}: ${ok} passed / ${bad} failed; exit ${result.code}`);
     if (bad || result.code) console.log(result.stdout, result.stderr);
   }
-  console.log(`${existing ? "EXISTING DEVELOPMENT (transactional schema overlay)" : "CLEAN DATABASE (27 migrations)"}: ${passed} passed / ${failed} failed / ${errors} execution errors`);
+  const migrationCount = (await readdir("supabase/migrations")).filter((name) => name.endsWith(".sql")).length;
+  console.log(`${existing ? "EXISTING DEVELOPMENT (transactional schema overlay)" : `CLEAN DATABASE (${migrationCount} migrations)`}: ${passed} passed / ${failed} failed / ${errors} execution errors`);
   if (failed || errors) process.exitCode = 1;
 } finally { if (!existing) await dropAuditDatabase(db); }

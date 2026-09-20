@@ -2,6 +2,7 @@ import policy from "./persistence-policy.json";
 import { canonicalJson } from "@/lib/radar/hash";
 import { isValidSolanaPublicKey } from "@/lib/radar/acceptance/solana";
 import type { AnalyzerClaim, AnalyzerObservation, AnalyzerResolution } from "./contracts";
+import { totalSupplyShare } from "./provider-integrity";
 
 type Shape = { ref?: string; const?: unknown; type?: string; nullable?: boolean; enum?: unknown[]; properties?: Record<string, Shape>; optional?: string[]; items?: Shape; maxItems?: number; minLength?: number; maxLength?: number; pattern?: string; format?: string };
 const shapes = policy.schemas as unknown as Record<string, Shape>;
@@ -51,13 +52,22 @@ export function validTransactionReference(chain: string, value: string): boolean
 export function assertObservation(observation: AnalyzerObservation, resolution: AnalyzerResolution): void {
   assertContract(observation, "observation");
   if (observation.state !== "AVAILABLE") return;
-  const rule = policy.fields[observation.key as keyof typeof policy.fields];
+  const registered = policy.fields[observation.key as keyof typeof policy.fields];
+  const aggregate = observation.context?.scope === "TOKEN_AGGREGATE" && ["liquidity", "volume", "transactions"].includes(observation.key);
+  const rule = aggregate ? { ...registered, identityType: "TOKEN", referenceType: "TOKEN" } : registered;
+  const c = observation.context;
+  if (["birdeye", "dex-screener", "helius", "alchemy"].includes(observation.source) && !c) throw new Error("Provider observation requires explicit scope.");
+  if (observation.source === "birdeye" && (c?.scope !== "TOKEN_AGGREGATE" || c.methodology !== "BIRDEYE_TOKEN_OVERVIEW")) throw new Error("Birdeye overview cannot claim a pool.");
+  if (c && (c.chain !== resolution.chain || c.token !== resolution.tokenAddress || (c.scope === "TOKEN_AGGREGATE" && c.poolId !== null) || (["PAIR", "POOL"].includes(c.scope) && (!c.poolId || !validEntityAddress(c.chain, c.poolId))) || (c.quoteAsset !== null && !validEntityAddress(c.chain, c.quoteAsset)))) throw new Error("Analyzer observation scope is invalid.");
+  if (c && rule.identityType === "POOL" && c.poolId !== observation.identity) throw new Error("Analyzer scope/provenance pool mismatch.");
+  if (c?.classification === "OBJECTIVE_DERIVED" && observation.evidenceClass === "VERIFIED_DATA") throw new Error("Derived metrics are not direct verified facts.");
+  if (observation.key === "concentration" && (!c || c.classification !== "OBJECTIVE_DERIVED" || c.denominatorType !== "TOTAL_SUPPLY" || c.completeness !== "PARTIAL" || c.methodology !== "TOP10_TOTAL_SUPPLY_SHARE" || c.requestedTopN !== 20 || c.metricTopN !== 10 || !c.rawBalances || c.returnedAccountCount !== c.rawBalances.length || !c.exclusions || c.rawBalances.some((r) => !validEntityAddress(resolution.chain, r.address)) || totalSupplyShare(c.rawBalances, c.denominatorValue ?? null, 10, c.exclusions) !== observation.value)) throw new Error("Invalid total-supply share derivation.");
   if (!rule || !resolution.canonicalTokenId || observation.tokenId !== resolution.canonicalTokenId || observation.identityType !== rule.identityType || !observation.identity || !validEntityAddress(resolution.chain, observation.identity) || !observation.observedAt) throw new Error("Analyzer evidence identity is invalid.");
   if (rule.identityType === "TOKEN" && observation.identity !== resolution.tokenAddress) throw new Error("Analyzer evidence token mismatch.");
   if (rule.identityType === "POOL" && (resolution.poolAddress ?? resolution.pairAddress) && observation.identity !== (resolution.poolAddress ?? resolution.pairAddress)) throw new Error("Analyzer evidence pool mismatch.");
   const value = observation.value;
   if (typeof value !== "string" || (rule.value === "decimal" && !/^(0|[1-9][0-9]*)(\.[0-9]+)?$/.test(value)) || (rule.value === "integer" && !/^(0|[1-9][0-9]*)$/.test(value)) || (rule.value === "address" && !validEntityAddress(resolution.chain, value)) || (rule.value === "text" && value.trim().length === 0)) throw new Error("Analyzer evidence value is invalid.");
-  if (observation.key === "creator" && value !== observation.identity) throw new Error("Creator identity mismatch.");
+  if (["creator", "owner"].includes(observation.key) && value !== observation.identity) throw new Error("Entity identity mismatch.");
   const reference = observation.key === "trade" ? observation.transactionReference : observation.identity;
   if (observation.key === "trade" && (!reference || !validTransactionReference(resolution.chain, reference))) throw new Error("Trade transaction identity is required.");
   const kinds: readonly string[] = observation.evidenceClass === "VERIFIED_DATA" ? policy.verifiedProvenance : policy.signalProvenance;
