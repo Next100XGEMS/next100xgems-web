@@ -20,3 +20,19 @@ must use the SSRF-safe server helper. Content is bounded and sanitized; prompt
 instructions inside a source cannot control the Analyzer. Facebook and
 Instagram are allowed to return `SOURCE_CONTENT_UNAVAILABLE` or
 `PROVIDER_NOT_CONFIGURED` rather than using unauthorized scraping.
+
+For deterministic live testing, a Solana mint is preserved with exact base58
+casing and is enriched only after a chain/provider observation. An EVM contract
+is normalized to lowercase for canonical identity. A DEX URL is resolved as
+pair/pool structure first, then the selected source must return the base token
+before the Analyzer reports a token identity. A provider pair identifier that
+is not a valid chain address remains provider metadata and is not presented as
+an authoritative pool address.
+
+For deterministic live testing, a Solana mint is preserved with exact base58
+casing and is enriched only after a chain/provider observation. An EVM contract
+is normalized to lowercase for canonical identity. A DEX URL is resolved as
+pair/pool structure first, then the selected source must return the base token
+before the Analyzer reports a token identity. A provider pair identifier that
+is not a valid chain address remains provider metadata and is not presented as
+an authoritative pool address.

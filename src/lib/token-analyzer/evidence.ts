@@ -31,14 +31,16 @@ function deriveFreshness(observations: AnalyzerObservation[], policy?: AnalyzerF
   }
   return { state: "FRESH" as const, reason: "All available observations are within the configured freshness window." };
 }
-export function createEvidenceManifest(input: AnalyzerInput, resolution: AnalyzerResolution, observations: AnalyzerObservation[] = [], claims: AnalyzerClaim[] = [], capturedAt = new Date().toISOString(), freshnessPolicy?: AnalyzerFreshnessPolicy): AnalyzerEvidenceManifest {
+export function createEvidenceManifest(input: AnalyzerInput, resolution: AnalyzerResolution, observations: AnalyzerObservation[] = [], claims: AnalyzerClaim[] = [], capturedAt = new Date().toISOString(), freshnessPolicy?: AnalyzerFreshnessPolicy, providerConflicts: AnalyzerEvidenceManifest["providerConflicts"] = []): AnalyzerEvidenceManifest {
   if (!validTimestamp(capturedAt)) throw new Error("Analyzer manifest timestamp is invalid.");
   observations.forEach(validateObservation);
-  observations.forEach((item) => assertObservation(item, resolution));
+  observations.forEach((item) => {
+    try { assertObservation(item, resolution); } catch (error) { throw new Error(`Analyzer observation ${item.key} is invalid: ${error instanceof Error ? error.message : "validation failed"}`); }
+  });
   const copiedObservations = clone(observations); const copiedClaims = clone(claims); const copiedResolution = clone(resolution);
   const available = new Set(copiedObservations.filter((item) => item.state === "AVAILABLE").map((item) => item.key));
   const freshness = deriveFreshness(copiedObservations, freshnessPolicy);
-  const manifest = { schemaVersion: "token-analyzer-v1" as const, versions: ANALYZER_VERSIONS, manifestFormatVersion: 1 as const, evidenceRevision: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: [], missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
+  const manifest = { schemaVersion: "token-analyzer-v1" as const, versions: ANALYZER_VERSIONS, manifestFormatVersion: 1 as const, evidenceRevision: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: clone(providerConflicts), missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
   assertContract(manifest, "manifest");
   if (!validateAnalyzerClaims(copiedClaims, manifest as unknown as AnalyzerEvidenceManifest)) throw new Error("Analyzer claim grounding is invalid.");
   const result = { ...manifest, manifestHash: sha256(manifest) };

@@ -20,3 +20,29 @@ Admin operation rules:
 - no public navigation or marketing surface is added.
 
 The dashboard is an operator test surface, not a public product experience.
+
+## Live deterministic report
+
+When the local master switch is temporarily enabled, the report shows the
+resolved identity, token metadata, lifecycle, market, liquidity, holder
+distribution, creator/owner facts, activity, top-trade availability,
+provider conflicts, missing capabilities, provider usage/latency, and the
+sealed evidence summary. `UNKNOWN` means the configured capability did not
+produce an eligible observation; it is not a zero.
+
+The UI intentionally displays `NO SCORE`, `AI DISABLED`, and the current
+master/public flag state. The switch must be returned to OFF after a local
+smoke run; public access remains OFF throughout.
+
+## Live deterministic report
+
+When the local master switch is temporarily enabled, the report shows the
+resolved identity, token metadata, lifecycle, market, liquidity, holder
+distribution, creator/owner facts, activity, top-trade availability,
+provider conflicts, missing capabilities, provider usage/latency, and the
+sealed evidence summary. `UNKNOWN` means the configured capability did not
+produce an eligible observation; it is not a zero.
+
+The UI intentionally displays `NO SCORE`, `AI DISABLED`, and the current
+master/public flag state. The switch must be returned to OFF after a local
+smoke run; public access remains OFF throughout.

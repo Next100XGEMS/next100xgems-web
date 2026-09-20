@@ -61,6 +61,11 @@
       "referenceType": "TOKEN",
       "value": "integer"
     },
+    "decimals": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "integer"
+    },
     "mintAuthority": {
       "identityType": "TOKEN",
       "referenceType": "TOKEN",
@@ -70,6 +75,46 @@
       "identityType": "TOKEN",
       "referenceType": "TOKEN",
       "value": "address"
+    },
+    "marketCap": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "decimal"
+    },
+    "fdv": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "decimal"
+    },
+    "pool": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "address"
+    },
+    "poolAge": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "integer"
+    },
+    "lifecycle": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "text"
+    },
+    "migration": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "text"
+    },
+    "creatorBehavior": {
+      "identityType": "WALLET",
+      "referenceType": "WALLET",
+      "value": "text"
+    },
+    "activityChange": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "decimal"
     }
   },
   "verifiedProvenance": [
@@ -276,8 +321,17 @@
             "wallet",
             "trade",
             "supply",
+            "decimals",
             "mintAuthority",
             "freezeAuthority"
+            ,"marketCap"
+            ,"fdv"
+            ,"pool"
+            ,"poolAge"
+            ,"lifecycle"
+            ,"migration"
+            ,"creatorBehavior"
+            ,"activityChange"
           ]
         },
         "label": {
@@ -407,8 +461,17 @@
             "wallet",
             "trade",
             "supply",
+            "decimals",
             "mintAuthority",
             "freezeAuthority"
+            ,"marketCap"
+            ,"fdv"
+            ,"pool"
+            ,"poolAge"
+            ,"lifecycle"
+            ,"migration"
+            ,"creatorBehavior"
+            ,"activityChange"
           ]
         },
         "identity": {
@@ -508,9 +571,17 @@
         "providerConflicts": {
           "type": "array",
           "items": {
-            "type": "scalar"
+            "type": "object",
+            "properties": {
+              "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "providers": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 128 }, "maxItems": 10 },
+              "state": { "type": "string", "enum": ["AGREEMENT", "DISAGREEMENT", "MISSING", "STALE"] },
+              "explanation": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 128 }, "maxItems": 100 }
+            },
+            "optional": []
           },
-          "maxItems": 0
+          "maxItems": 50
         },
         "missing": {
           "type": "array",

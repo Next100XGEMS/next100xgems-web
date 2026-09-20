@@ -3,9 +3,9 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { getAuthorizationContext, type AuthorizationContext } from "@/lib/auth/authorization";
 import policy from "./persistence-policy.json";
-import { createEvidenceManifest, verifyEvidenceManifestHash } from "./evidence";
-import { resolveAnalyzerInput } from "./input-resolver";
-import type { AnalyzerInput, AnalyzerResult, AnalyzerResolution } from "./contracts";
+import { verifyEvidenceManifestHash } from "./evidence";
+import type { AnalyzerInput, AnalyzerResolution, AnalyzerResult } from "./contracts";
+import { collectLiveAnalyzerEvidence, prepareLiveAnalyzerResolution, type LivePreparedResolution } from "./live-intelligence";
 
 export type AnalyzerRunOperation = "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
 export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; intentId?: string; sourceDeliveryId?: string };
@@ -29,6 +29,18 @@ export async function setAnalyzerEnabled(enabled: boolean) {
 
 function receiptResult(response: Record<string, unknown>): AnalyzerResult {
   return { ...safeResult(response.result), deliveryId: String(response.delivery_key) };
+}
+async function recordProviderTelemetry(context: AuthorizationContext, response: Record<string, unknown>, prepared: LivePreparedResolution, usage: readonly { provider: string; capability: string; status: string; latencyMs: number; attempts: number; cache: string; error: string | null }[]) {
+  const requestId = typeof response.request_id === "string" ? response.request_id : null;
+  const analysisId = typeof response.analysis_id === "string" ? response.analysis_id : null;
+  if (!requestId || !analysisId) return;
+  const observed = new Set(usage.map((item) => item.provider + ":" + item.capability));
+  const statusOnly = prepared.statuses.filter((item) => !observed.has(item.provider + ":" + item.capability)).map((item) => ({ provider: item.provider, capability: item.capability, status: "CAPABILITY_STATUS", capabilityStatus: item.status, latencyMs: 0, attempts: 0, cache: "NONE", error: item.status === "TEMPORARILY_UNAVAILABLE" ? "TEMPORARILY_UNAVAILABLE" : null }));
+  await Promise.all([...usage, ...statusOnly].map(async (item) => {
+    const status = item.status === "CAPABILITY_STATUS" ? "SUCCEEDED" : item.status === "SUCCESS" || item.status === "CACHE_HIT" ? "SUCCEEDED" : item.status === "UNSUPPORTED" ? "UNSUPPORTED" : item.status === "NOT_CONFIGURED" ? "MISSING" : item.status === "RATE_LIMITED" ? "FAILED" : "FAILED";
+    const capabilityStatus = "capabilityStatus" in item && typeof item.capabilityStatus === "string" ? item.capabilityStatus : null;
+    try { await context.supabase.rpc("analyzer_record_provider_event", { p_payload: { request_id: requestId, analysis_id: analysisId, provider: item.provider, capability: item.capability, status, latency_ms: item.latencyMs, metadata: { attempts: item.attempts, cache: item.cache, error: item.error, requestMade: item.status !== "CAPABILITY_STATUS", capabilityStatus, statuses: prepared.statuses.filter((candidate) => candidate.provider === item.provider && candidate.capability === item.capability) } } }); } catch { /* telemetry must not invalidate a sealed analysis */ }
+  }));
 }
 function rpcFailure(code?: string): never {
   if (code === "42501") throw new AnalyzerOperationError("UNAUTHORIZED", "Analyzer operation is not authorized.");
@@ -55,7 +67,8 @@ export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOpti
   if (!safeBoolean(state.enabled)) throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled.");
   if (!input || typeof input.raw !== "string" || !input.raw.trim() || input.raw.length > 4096) throw new AnalyzerOperationError("INVALID_INPUT", "Enter a supported contract, mint, or URL.");
   const safeInput = { raw: input.raw.trim(), hintChain: input.hintChain ?? null };
-  const resolution = resolveAnalyzerInput(input);
+  const prepared = await prepareLiveAnalyzerResolution({ raw: safeInput.raw, hintChain: input.hintChain ?? undefined });
+  const resolution = prepared.resolution;
   let name = "analyzer_reserve_delivery";
   let parameters: Record<string, unknown> = { p_input: safeInput, p_resolution: resolution };
   if (options.operation === "FRESH_ANALYSIS") {
@@ -82,9 +95,12 @@ export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOpti
   }
   if (reservation.status !== "NEW" || typeof reservation.owner_token !== "string") throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Invalid reservation response.");
   let draft = null;
+  let liveUsage = prepared.usage;
   if (!reservation.source_delivery_key) {
     // Only the reservation owner captures timestamped evidence.
-    const manifest = createEvidenceManifest(reservation.input as AnalyzerInput, reservation.resolution as AnalyzerResolution);
+    const live = await collectLiveAnalyzerEvidence(reservation.input as AnalyzerInput, { ...prepared, resolution: reservation.resolution as AnalyzerResolution });
+    const manifest = live.manifest;
+    liveUsage = live.usage;
     if (!verifyEvidenceManifestHash(manifest)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Evidence failed its local integrity check.");
     const { manifestHash: localHash, ...content } = manifest;
     void localHash;
@@ -92,5 +108,7 @@ export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOpti
   }
   const completed = await context.supabase.rpc("analyzer_complete_delivery", { p_delivery_key: key, p_owner_token: reservation.owner_token, p_manifest: draft });
   if (completed.error) rpcFailure(completed.error.code);
-  return receiptResult(stateFrom(completed.data));
+  const response = stateFrom(completed.data);
+  await recordProviderTelemetry(context, response, prepared, liveUsage);
+  return receiptResult(await receipt(context, key));
 }

@@ -71,6 +71,8 @@ export type AnalyzerEvidenceManifest = {
   observations: AnalyzerObservation[];
   claims: AnalyzerClaim[];
   providerConflicts: AnalyzerProviderConflict[];
+  providerUsage?: AnalyzerProviderUsage[];
+  capabilityStatuses?: AnalyzerCapabilityStatus[];
   missing: string[];
   freshness: { state: "FRESH" | "STALE" | "UNKNOWN"; reason: string };
   methodologyVersion: string | null;
@@ -97,6 +99,22 @@ export type AnalyzerProviderConflict = {
   state: "AGREEMENT" | "DISAGREEMENT" | "MISSING" | "STALE";
   explanation: string;
   evidenceRefs: string[];
+};
+
+export type AnalyzerProviderUsage = {
+  provider: string;
+  capability: string;
+  status: "SUCCESS" | "FAILED" | "RATE_LIMITED" | "NOT_CONFIGURED" | "UNSUPPORTED" | "CACHE_HIT";
+  latencyMs: number;
+  attempts: number;
+  cache: "HIT" | "MISS" | "STALE" | "NONE";
+  error: string | null;
+};
+
+export type AnalyzerCapabilityStatus = {
+  provider: string;
+  capability: string;
+  status: "SUPPORTED" | "UNSUPPORTED" | "NOT_CONFIGURED" | "TEMPORARILY_UNAVAILABLE";
 };
 
 export type AnalyzerScore = {
@@ -127,6 +145,7 @@ export type AnalyzerResult = {
   holders: Record<string, unknown>;
   creator: Record<string, unknown>;
   activity: Record<string, unknown>;
+  lifecycle?: Record<string, unknown>;
   topTrades: AnalyzerObservation[];
   whyMoving: { classification: AnalyzerEvidenceClass; explanation: string; evidenceRefs: string[] }[];
   claimVerification: AnalyzerClaim[];
@@ -136,6 +155,8 @@ export type AnalyzerResult = {
   aiInterpretation: { status: "DISABLED" | "NOT_REQUESTED" | "AVAILABLE"; provider: string | null; model: string | null; content: unknown | null };
   citations: AnalyzerProvenance[];
   providerConflicts: AnalyzerProviderConflict[];
+  providerUsage?: AnalyzerProviderUsage[];
+  capabilityStatuses?: AnalyzerCapabilityStatus[];
   methodologyVersion: string | null;
   schemaVersion: typeof ANALYZER_SCHEMA_VERSION;
   createdAt: string;

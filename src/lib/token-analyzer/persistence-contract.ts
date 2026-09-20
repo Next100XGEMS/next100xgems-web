@@ -56,7 +56,7 @@ export function assertObservation(observation: AnalyzerObservation, resolution: 
   if (rule.identityType === "TOKEN" && observation.identity !== resolution.tokenAddress) throw new Error("Analyzer evidence token mismatch.");
   if (rule.identityType === "POOL" && (resolution.poolAddress ?? resolution.pairAddress) && observation.identity !== (resolution.poolAddress ?? resolution.pairAddress)) throw new Error("Analyzer evidence pool mismatch.");
   const value = observation.value;
-  if (typeof value !== "string" || (rule.value === "decimal" && !/^(0|[1-9][0-9]*)(\.[0-9]+)?$/.test(value)) || (rule.value === "integer" && !/^(0|[1-9][0-9]*)$/.test(value)) || (rule.value === "address" && !validEntityAddress(resolution.chain, value))) throw new Error("Analyzer evidence value is invalid.");
+  if (typeof value !== "string" || (rule.value === "decimal" && !/^(0|[1-9][0-9]*)(\.[0-9]+)?$/.test(value)) || (rule.value === "integer" && !/^(0|[1-9][0-9]*)$/.test(value)) || (rule.value === "address" && !validEntityAddress(resolution.chain, value)) || (rule.value === "text" && value.trim().length === 0)) throw new Error("Analyzer evidence value is invalid.");
   if (observation.key === "creator" && value !== observation.identity) throw new Error("Creator identity mismatch.");
   const reference = observation.key === "trade" ? observation.transactionReference : observation.identity;
   if (observation.key === "trade" && (!reference || !validTransactionReference(resolution.chain, reference))) throw new Error("Trade transaction identity is required.");

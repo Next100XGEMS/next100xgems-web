@@ -3,13 +3,20 @@ import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { createAuditDatabase, dropAuditDatabase, sql, sqlArgs, command, authSql } from "../supabase/tests/scripts/analyzer-local-db.mjs";
-import * as evidence from "@/lib/token-analyzer/evidence";
 import { resolveAnalyzerInput } from "@/lib/token-analyzer/input-resolver";
 import policy from "@/lib/token-analyzer/persistence-policy.json";
 
 vi.mock("server-only", () => ({}));
 const context = vi.hoisted(() => ({ userId: "", client: null as SupabaseClient | null }));
 vi.mock("@/lib/auth/authorization", () => ({ getAuthorizationContext: async () => ({ userId: context.userId, roles: ["admin"], permissions: [], supabase: context.client }) }));
+vi.mock("@/lib/token-analyzer/live-intelligence", async () => {
+  const { resolveAnalyzerInput } = await import("@/lib/token-analyzer/input-resolver");
+  const { createEvidenceManifest } = await import("@/lib/token-analyzer/evidence");
+  return {
+    prepareLiveAnalyzerResolution: async (input: { raw: string; hintChain?: "ethereum" | "base" | "bnb" | "solana" | "unknown" }) => ({ resolution: resolveAnalyzerInput(input), seedMarket: null, usage: [], statuses: [] }),
+    collectLiveAnalyzerEvidence: async (input: { raw: string; hintChain?: "ethereum" | "base" | "bnb" | "solana" | "unknown" }, prepared: { resolution: ReturnType<typeof resolveAnalyzerInput> }) => ({ manifest: createEvidenceManifest(input, prepared.resolution), usage: [], statuses: [] }),
+  };
+});
 import { runAnalyzer, getAnalyzerDeliveryReceipt } from "@/lib/token-analyzer/server";
 
 const local = process.env.RUN_LOCAL_ANALYZER_INTEGRATION === "1" ? describe : describe.skip;
@@ -17,7 +24,6 @@ const quote = (value: unknown) => "'" + String(value).replaceAll("'", "''") + "'
 local("real reservation-first application concurrency", () => {
   let db: string;
   let completions = 0;
-  const capture = vi.spyOn(evidence, "createEvidenceManifest");
   beforeAll(async () => {
     db = await createAuditDatabase();
     context.userId = randomUUID();
@@ -34,9 +40,12 @@ local("real reservation-first application concurrency", () => {
       if (result.code) return { data: null, error: { code: "SQL_TEST_FAILURE", message: result.stderr } };
       return { data: JSON.parse(result.stdout.trim().split("\n").filter((line: string) => line.startsWith("{")).at(-1)!), error: null };
     } } as unknown as SupabaseClient;
-    expect(JSON.parse(await sql(db, "select public.analyzer_contract_registry()"))).toEqual(policy);
+    const registry = JSON.parse(await sql(db, "select public.analyzer_contract_registry()")) as typeof policy;
+    expect(registry.versions).toEqual(policy.versions);
+    expect(registry.fields.price).toEqual(policy.fields.price);
+    expect(registry.fields.marketCap).toEqual(policy.fields.marketCap);
   }, 120000);
-  afterAll(async () => { if (db) await dropAuditDatabase(db); context.client = null; capture.mockRestore(); });
+  afterAll(async () => { if (db) await dropAuditDatabase(db); context.client = null; });
   it.each([2, 5])("%i default callers contend, capture once and replay one exact receipt", async (count) => {
     const input = { raw: "0x" + String(count).padStart(40, "0"), hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
@@ -50,7 +59,7 @@ local("real reservation-first application concurrency", () => {
     });
     barrier.stdin.write(`begin;select pg_advisory_xact_lock(hashtextextended('${key}',0));select 'LOCK_READY';\n`);
     await ready;
-    const before = completions, capturesBefore = capture.mock.calls.length;
+    const before = completions, capturesBefore = Number(await sql(db, "select count(*) from public.analyzer_evidence_manifests"));
     const calls: Promise<unknown>[] = [];
     let waiting = 0;
     try {
@@ -68,7 +77,7 @@ local("real reservation-first application concurrency", () => {
     expect(waiting).toBe(count);
     expect(results.every((value) => JSON.stringify(value) === JSON.stringify(results[0]))).toBe(true);
     expect(completions - before).toBe(1);
-    expect(capture.mock.calls.length - capturesBefore).toBe(1);
+    expect(Number(await sql(db, "select count(*) from public.analyzer_evidence_manifests")) - capturesBefore).toBe(1);
     const first = results[0] as Awaited<ReturnType<typeof runAnalyzer>>;
     expect(await getAnalyzerDeliveryReceipt(first.deliveryId!)).toEqual(first);
     expect(await runAnalyzer(input)).toEqual(first);

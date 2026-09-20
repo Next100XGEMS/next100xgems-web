@@ -22,7 +22,7 @@ describe("Analyzer server gateway", () => {
     rpc.mockImplementation(async (name: string) => name === "analyzer_read_state" ? { data: { enabled: true }, error: null } : name === "analyzer_reserve_delivery" ? { data: { status: "NEW", delivery_key: "a".repeat(64), owner_token: "capability", input: fixture.input, resolution: fixture.resolution }, error: null } : { data: { delivery_key: "a".repeat(64), result: { requestId: "durable", status: "INSUFFICIENT_DATA" } }, error: null });
     const result = await runAnalyzer({ raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" });
     expect(result.requestId).toBe("durable");
-    expect(rpc.mock.calls.map(([name]) => name)).toEqual(["analyzer_read_state", "analyzer_reserve_delivery", "analyzer_complete_delivery"]);
+    expect(rpc.mock.calls.map(([name]) => name)).toEqual(["analyzer_read_state", "analyzer_reserve_delivery", "analyzer_complete_delivery", "analyzer_get_delivery_receipt"]);
   });
 
   it("does not convert a state RPC error into ordinary disabled state", async () => {

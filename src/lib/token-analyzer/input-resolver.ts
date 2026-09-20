@@ -27,9 +27,12 @@ function urlResolution(raw: string, url: URL): AnalyzerResolution {
   if (pathChain && queryChain && pathChain !== queryChain) return base("UNKNOWN", host, "unknown", null, null, null, raw);
   const chain = queryChain ?? pathChain ?? "unknown"; const isDex = providerHost(host, "dexscreener.com"); const isBirdeye = providerHost(host, "birdeye.so"); const isGmgn = providerHost(host, "gmgn.ai"); const isGecko = providerHost(host, "geckoterminal.com");
   const pool = isGecko && parts.includes("pools") ? parts[parts.indexOf("pools") + 1] ?? null : null; const pair = isDex ? parts[1] ?? null : null;
+  const tokenMarker = parts.indexOf("token") >= 0 ? parts.indexOf("token") : parts.indexOf("tokens");
+  const tokenCandidate = tokenMarker >= 0 ? parts[tokenMarker + 1] ?? null : null;
+  const token = tokenCandidate && (chain === "solana" ? isValidSolanaPublicKey(tokenCandidate) : ["ethereum", "base", "bnb"].includes(chain) ? EVM.test(tokenCandidate) : isValidSolanaPublicKey(tokenCandidate) || EVM.test(tokenCandidate)) ? tokenCandidate : null;
   const articleHost = host === "medium.com" || host.endsWith(".medium.com") || host === "substack.com" || host.endsWith(".substack.com") || host === "mirror.xyz" || host.endsWith(".mirror.xyz");
   const type: AnalyzerInputType = isDex || isBirdeye || isGmgn || isGecko ? (isDex || isGecko ? "DEX_URL" : "CHART_URL") : host === "x.com" || host.endsWith(".x.com") || host === "twitter.com" || host.endsWith(".twitter.com") ? "X_POST" : host === "facebook.com" || host.endsWith(".facebook.com") ? "FACEBOOK_POST" : host === "instagram.com" || host.endsWith(".instagram.com") ? "INSTAGRAM_POST" : articleHost ? "ARTICLE" : "GENERIC_URL";
-  const result = base(type, host, chain, null, pair, pool, raw, pair || pool ? "PARTIAL" : "UNKNOWN");
+  const result = base(type, host, chain, token, pair, pool, raw, token || pair || pool ? "PARTIAL" : "UNKNOWN");
   if ((pair && !EVM.test(pair) && !isValidSolanaPublicKey(pair)) || (pool && !EVM.test(pool) && !isValidSolanaPublicKey(pool))) result.confidence = "UNKNOWN";
   return result;
 }

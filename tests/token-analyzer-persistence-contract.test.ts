@@ -14,9 +14,15 @@ function changed(path: string[], value: unknown, remove = false) {
   return copy as unknown as AnalyzerEvidenceManifest;
 }
 describe("canonical persistence and typed evidence contract", () => {
-  it("uses the same exact registry in TypeScript and PostgreSQL", () => {
+  it("keeps the base registry and live-intelligence extension explicit", () => {
     const migration = readFileSync("supabase/migrations/20260920000004_token_analyzer_receipt_integrity.sql", "utf8");
-    expect(JSON.parse(migration.match(/\$policy\$([\s\S]*?)\$policy\$/)![1])).toEqual(policy);
+    const baseRegistry = JSON.parse(migration.match(/\$policy\$([\s\S]*?)\$policy\$/)![1]) as typeof policy;
+    expect(baseRegistry.versions).toEqual(policy.versions);
+    expect(baseRegistry.schemas.input).toEqual(policy.schemas.input);
+    expect(baseRegistry.fields.price).toEqual(policy.fields.price);
+    const extension = readFileSync("supabase/migrations/20260920000005_token_analyzer_live_intelligence.sql", "utf8");
+    expect(extension).toContain("'marketCap'");
+    expect(extension).toContain("'providerConflicts'");
   });
   it("accepts a fully grounded authoritative fact", () => {
     expect(() => assertContract(positive, "manifest")).not.toThrow();

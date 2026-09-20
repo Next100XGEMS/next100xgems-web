@@ -27,6 +27,13 @@ describe("Universal Token Analyzer contracts", () => {
     expect(result.tokenAddress).toBeNull();
   });
 
+  it("extracts token or pool identity from approved provider URLs", () => {
+    const mint = "So11111111111111111111111111111111111111112";
+    expect(resolveAnalyzerInput({ raw: `https://birdeye.so/token/${mint}?chain=solana` })).toMatchObject({ inputType: "CHART_URL", chain: "solana", tokenAddress: mint });
+    expect(resolveAnalyzerInput({ raw: `https://gmgn.ai/sol/token/${mint}` })).toMatchObject({ inputType: "CHART_URL", chain: "solana", tokenAddress: mint });
+    expect(resolveAnalyzerInput({ raw: "https://www.geckoterminal.com/solana/pools/11111111111111111111111111111111" })).toMatchObject({ inputType: "DEX_URL", chain: "solana", poolAddress: "11111111111111111111111111111111" });
+  });
+
   it("preserves Solana case and does not trust a syntax-only identity as resolved", () => {
     const mint = "So11111111111111111111111111111111111111112";
     const result = resolveAnalyzerInput({ raw: mint, hintChain: "solana" });

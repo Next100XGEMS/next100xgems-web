@@ -41,6 +41,48 @@ analysis after the disable operation has acquired the feature-row lock.
 Provider collection, AI network execution, model budgets, and public Analyzer
 access remain intentionally NOT YET ACTIVE.
 
+## Deterministic live intelligence (internal only)
+
+The development connector adds a server-only selective provider layer behind
+the existing reservation and immutable-manifest boundary. Supported live input
+paths are Solana mint, EVM contract, and accepted DEX/chart URLs; initial live
+chains are Solana, Ethereum, Base, and BNB.
+
+Solana authority is ordered as Helius/Solana RPC and Pump/PumpSwap state for
+chain facts, Birdeye for primary market observations, DEX Screener for fallback
+and comparison, and optional GMGN context that remains provider-derived. EVM
+chain facts use Alchemy read-only calls, with DEX Screener as market context.
+CoinGecko is capability-advertised for selective verification but is not called
+on every routine analysis. Unsupported or unconfigured capabilities are
+reported explicitly rather than silently substituted.
+
+Provider requests are server-only, time-bounded, sanitized, and recorded as
+bounded usage telemetry. A 429 or transient 5xx is retried at most once with
+backoff; non-retryable failures are recorded and do not become verified facts.
+No live connector calls AI, writes credentials, changes Radar authority,
+publishes a record, or calculates a score.
+
+## Deterministic live intelligence (internal only)
+
+The development connector adds a server-only selective provider layer behind
+the existing reservation and immutable-manifest boundary. Supported live input
+paths are Solana mint, EVM contract, and accepted DEX/chart URLs; initial live
+chains are Solana, Ethereum, Base, and BNB.
+
+Solana authority is ordered as Helius/Solana RPC and Pump/PumpSwap state for
+chain facts, Birdeye for primary market observations, DEX Screener for fallback
+and comparison, and optional GMGN context that remains provider-derived. EVM
+chain facts use Alchemy read-only calls, with DEX Screener as market context.
+CoinGecko is capability-advertised for selective verification but is not called
+on every routine analysis. Unsupported or unconfigured capabilities are
+reported explicitly rather than silently substituted.
+
+Provider requests are server-only, time-bounded, sanitized, and recorded as
+bounded usage telemetry. A 429 or transient 5xx is retried at most once with
+backoff; non-retryable failures are recorded and do not become verified facts.
+No live connector calls AI, writes credentials, changes Radar authority,
+publishes a record, or calculates a score.
+
 ## Sealed delivery contract
 
 Routine calls reserve before collecting evidence. PostgreSQL canonicalizes the
