@@ -25,7 +25,7 @@ describe("Universal Token Analyzer evidence safety", () => {
 
   it("keeps stale observations stale and copies caller-owned evidence", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
-    const observation = { key: "price", label: "Price", value: "1", state: "STALE" as const, evidenceClass: "UNKNOWN" as const, source: "fixture", observedAt: new Date().toISOString(), evidenceId: "price-1", provenance: [] };
+    const observation = { key: "price", label: "Price", value: "1", state: "STALE" as const, evidenceClass: "UNKNOWN" as const, source: "fixture", observedAt: new Date().toISOString(), evidenceId: "price-1", identity: null, identityType: null, tokenId: null, provenance: [] };
     const manifest = createEvidenceManifest(input, resolveAnalyzerInput(input), [observation]);
     expect(manifest.freshness.state).toBe("STALE");
     observation.value = "999";
@@ -35,9 +35,9 @@ describe("Universal Token Analyzer evidence safety", () => {
   it("requires typed evidence, identity, and exact values for claims", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
-    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, reference: "pool-1", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
+    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "0x0000000000000000000000000000000000000002", identityType: "POOL" as const, tokenId: resolution.canonicalTokenId!, provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, referenceType: "POOL" as const, reference: "0x0000000000000000000000000000000000000002", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
     const manifest = createEvidenceManifest(input, resolution, observations);
-    const valid = { claim: "Pool liquidity is 100", source: "chain", verification: "SUPPORTED" as const, evidenceRefs: ["liquidity-1"], evidenceType: "VERIFIED_DATA" as const, field: "liquidity", identity: "pool-1", value: "100" };
+    const valid = { conclusionType: "CLAIM_SUPPORTED" as const, identityType: "POOL" as const, tokenId: resolution.canonicalTokenId!, claim: "liquidity (0x0000000000000000000000000000000000000002) = 100", source: "chain", verification: "SUPPORTED" as const, evidenceRefs: ["liquidity-1"], evidenceType: "VERIFIED_DATA" as const, field: "liquidity", identity: "0x0000000000000000000000000000000000000002", value: "100" };
     expect(validateAnalyzerClaims([valid], manifest)).toBe(true);
     expect(validateAnalyzerClaims([{ ...valid, field: "wallet" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, identity: "wrong-pool" }], manifest)).toBe(false);
@@ -46,19 +46,19 @@ describe("Universal Token Analyzer evidence safety", () => {
     expect(validateAnalyzerClaims([{ ...valid, value: "999" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, evidenceType: "AI_INFERENCE" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, source: "invented" }], manifest)).toBe(false);
-    expect(validateAnalyzerClaims([{ ...valid, identity: "pool-1", evidenceType: "VERIFIED_DATA", value: "100" }], { ...manifest, observations: [{ ...observations[0], provenance: [{ ...observations[0].provenance[0], reference: "pool-2" }] }] })).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, identity: "0x0000000000000000000000000000000000000002", evidenceType: "VERIFIED_DATA", value: "100" }], { ...manifest, observations: [{ ...observations[0], provenance: [{ ...observations[0].provenance[0], reference: "pool-2" }] }] })).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, evidenceType: "VERIFIED_DATA" }], { ...manifest, observations: [{ ...observations[0], provenance: [{ ...observations[0].provenance[0], kind: "CONTEXTUAL_PROPRIETARY" as const }] }] })).toBe(false);
     const omittedIdentity = { ...valid } as { identity?: string | null } & Omit<typeof valid, "identity">;
     delete omittedIdentity.identity;
     expect(validateAnalyzerClaims([omittedIdentity as typeof valid], manifest)).toBe(false);
-    expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", field: "score", identity: "pool-1" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", field: "score", identity: "0x0000000000000000000000000000000000000002" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", value: "100", evidenceType: "VERIFIED_DATA" }], { ...manifest, observations: [{ ...observations[0], state: "UNAVAILABLE" }] })).toBe(false);
   });
 
   it("flags a structured output value that disagrees with grounded evidence", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
-    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, reference: "pool-1", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
+    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "0x0000000000000000000000000000000000000002", identityType: "POOL" as const, tokenId: resolution.canonicalTokenId!, provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, referenceType: "POOL" as const, reference: "0x0000000000000000000000000000000000000002", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
     const manifest = createEvidenceManifest(input, resolution, observations);
     expect(detectUnsupportedAnalyzerOutput({ liquidity: "999" }, manifest)).toContain("EVIDENCE_VALUE_MISMATCH");
     expect(detectUnsupportedAnalyzerOutput({ liquidity: "100" }, manifest)).not.toContain("EVIDENCE_VALUE_MISMATCH");
@@ -67,7 +67,7 @@ describe("Universal Token Analyzer evidence safety", () => {
   it("requires a policy before an observation can be fresh", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
-    const observation = { key: "price", label: "Price", value: "1", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "price-1", provenance: [] };
+    const observation = { key: "price", label: "Price", value: "1", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "price-1", identity: input.raw, identityType: "TOKEN" as const, tokenId: resolution.canonicalTokenId!, provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, referenceType: "TOKEN" as const, reference: input.raw, capturedAt: "2026-09-20T00:00:00.000Z" }] };
     expect(createEvidenceManifest(input, resolution, [observation]).freshness.state).toBe("UNKNOWN");
     expect(createEvidenceManifest(input, resolution, [observation], [], "2026-09-20T01:00:00.000Z", { maxAgeMs: 2 * 60 * 60 * 1000, referenceTime: "2026-09-20T01:00:00.000Z" }).freshness.state).toBe("FRESH");
     expect(createEvidenceManifest(input, resolution, [observation], [], "2026-09-20T04:00:00.000Z", { maxAgeMs: 2 * 60 * 60 * 1000, referenceTime: "2026-09-20T04:00:00.000Z" }).freshness.state).toBe("STALE");

@@ -53,8 +53,7 @@ const resolution = {
 
 const manifest = {
   schemaVersion: "token-analyzer-v1",
-  manifestFormatVersion: 1,
-  evidenceRevision: 1,
+  manifestVersion: 1,
   capturedAt: "2026-09-20T00:00:00Z",
   input: { type: "CONTRACT_ADDRESS", rawHash: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
   resolvedToken: resolution,
@@ -130,9 +129,27 @@ async function main() {
   `;
   const setupResult = await sql(db, setup);
   assert.equal(setupResult.trim().split(/\s+/).at(-1), "1", "migration 26 must create one valid pre-existing analysis");
+  const snapshotSql = `select jsonb_build_object(
+    'analysis',(select jsonb_agg(to_jsonb(a)-'evidence_revision'-'delivery_identity' order by id) from public.analyzer_analyses a),
+    'evidence',(select jsonb_agg(to_jsonb(m) order by id) from public.analyzer_evidence_manifests m),
+    'requests',(select jsonb_agg(to_jsonb(r) order by id) from public.analyzer_requests r),
+    'resolutions',(select jsonb_agg(to_jsonb(r) order by id) from public.analyzer_resolutions r),
+    'audit',(select jsonb_agg(to_jsonb(a) order by id) from public.audit_logs a))::text;`;
+  const before = await sql(db, snapshotSql);
   await sql(db, await readFile(new URL(`../../migrations/${migrationFiles[26]}`, import.meta.url), "utf8"));
+  assert.equal(await sql(db, snapshotSql), before, "IDs, hashes, timestamps, full results and audit content must be unchanged");
   const preserved = await sql(db, "select count(*) || ':' || count(evidence_revision) || ':' || count(delivery_identity) from public.analyzer_analyses;");
   assert.equal(preserved, "1:1:1", "existing analysis must be backfilled without semantic loss");
+  assert.equal(await sql(db, "select bool_and(a.delivery_identity=d.delivery_key)::text from public.analyzer_analyses a join public.analyzer_deliveries d on d.analysis_id=a.id"), "true", "One authoritative key in every linkage");
+  const requestId = await sql(db, "select request_id from public.analyzer_analyses limit 1");
+  const roundTrips = await sql(db, `begin;
+    select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000987704',true);
+    select set_config('request.jwt.claims','{"sub":"00000000-0000-0000-0000-000000987704","role":"authenticated"}',true);
+    set local role authenticated;
+    select public.analyzer_get_analysis_by_version('${requestId}',1)=public.analyzer_get_delivery_receipt(public.analyzer_get_analysis_by_version('${requestId}',1)->>'delivery_key');
+    select public.analyzer_get_latest_analysis('${requestId}')=public.analyzer_get_delivery_receipt(public.analyzer_get_latest_analysis('${requestId}')->>'delivery_key');
+    rollback;`);
+  assert.deepEqual(roundTrips.split("\n").slice(-2), ["t", "t"], "Historical and latest returned keys must round-trip to identical receipts");
   const immutability = await sql(db, "select count(*) from pg_trigger where tgrelid = 'public.analyzer_analyses'::regclass and tgname = 'analyzer_analyses_no_mutation' and not tgisinternal;");
   assert.equal(immutability, "1", "post-upgrade analysis guard must remain installed");
   const update = await command(sqlArgs(db), "update public.analyzer_analyses set status = 'SCORED';");
@@ -143,6 +160,9 @@ async function main() {
   assert.notEqual(deliveryUpdate.code, 0, "post-upgrade delivery UPDATE must remain blocked");
   const deliveryDeletion = await command(sqlArgs(db), "delete from public.analyzer_deliveries;");
   assert.notEqual(deliveryDeletion.code, 0, "post-upgrade delivery DELETE must remain blocked");
+  for (const statement of ["update public.analyzer_evidence_manifests set manifest=manifest", "delete from public.analyzer_evidence_manifests"]) {
+    assert.notEqual((await command(sqlArgs(db), statement)).code, 0, "Post-upgrade evidence remains immutable");
+  }
   console.log("Token Analyzer populated upgrade: PASS");
 }
 

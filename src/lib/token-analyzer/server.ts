@@ -1,15 +1,14 @@
 import "server-only";
 
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { getAuthorizationContext, type AuthorizationContext } from "@/lib/auth/authorization";
-import { analyzeEvidence, stableAnalyzerRequestFingerprint } from "./analysis";
+import policy from "./persistence-policy.json";
 import { createEvidenceManifest, verifyEvidenceManifestHash } from "./evidence";
 import { resolveAnalyzerInput } from "./input-resolver";
-import type { AnalyzerInput, AnalyzerResult } from "./contracts";
+import type { AnalyzerInput, AnalyzerResult, AnalyzerResolution } from "./contracts";
 
-const REPLAY_FRESHNESS_MS = 5 * 60 * 1000;
-export type AnalyzerRunOperation = "DELIVERY_RETRY" | "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
-export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; deliveryId?: string };
+export type AnalyzerRunOperation = "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
+export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; intentId?: string; sourceDeliveryId?: string };
 export class AnalyzerOperationError extends Error { constructor(public readonly code: "FEATURE_DISABLED" | "INVALID_INPUT" | "UNAUTHORIZED" | "PROVIDER_FAILURE" | "PERSISTENCE_FAILURE" | "CONFLICT", message: string) { super(message); this.name = "AnalyzerOperationError"; } }
 function requireOperator(context: AuthorizationContext) { if (!context.roles.some((role) => role === "owner" || role === "admin")) throw new AnalyzerOperationError("UNAUTHORIZED", "Only Owner or Admin can operate the Token Analyzer."); }
 function stateFrom(data: unknown) { if (!data || typeof data !== "object" || Array.isArray(data)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer state is unavailable."); return data as Record<string, unknown>; }
@@ -27,23 +26,71 @@ export async function setAnalyzerEnabled(enabled: boolean) {
   if (error || typeof data !== "boolean") throw new AnalyzerOperationError(error?.code === "42501" ? "UNAUTHORIZED" : "PERSISTENCE_FAILURE", "The Token Analyzer flag could not be changed."); return data;
 }
 
+
+function receiptResult(response: Record<string, unknown>): AnalyzerResult {
+  return { ...safeResult(response.result), deliveryId: String(response.delivery_key) };
+}
+function rpcFailure(code?: string): never {
+  if (code === "42501") throw new AnalyzerOperationError("UNAUTHORIZED", "Analyzer operation is not authorized.");
+  if (code === "55000") throw new AnalyzerOperationError("FEATURE_DISABLED", "Analyzer mutation is disabled or the delivery is already sealed.");
+  throw new AnalyzerOperationError("CONFLICT", "Analyzer delivery contract could not be satisfied.");
+}
+async function receipt(context: AuthorizationContext, key: string) {
+  if (!/^[0-9a-f]{64}$/.test(key)) throw new AnalyzerOperationError("INVALID_INPUT", "Invalid delivery key.");
+  const { data, error } = await context.supabase.rpc("analyzer_get_delivery_receipt", { p_delivery_key: key });
+  if (error) rpcFailure(error.code);
+  return stateFrom(data);
+}
+/** Historical retry accepts only the sealed key. No new input or evidence. */
+export async function getAnalyzerDeliveryReceipt(key: string): Promise<AnalyzerResult> {
+  const context = await getAuthorizationContext(); requireOperator(context);
+  const response = await receipt(context, key);
+  if (response.status !== "COMPLETED") throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Delivery is still in progress.");
+  return receiptResult(response);
+}
+
 export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOptions = {}): Promise<AnalyzerResult> {
   const context = await getAuthorizationContext(); requireOperator(context);
-  const operation = options.operation ?? "DELIVERY_RETRY";
-  if (operation === "DELIVERY_RETRY" && options.deliveryId) {
-    const { data, error } = await context.supabase.rpc("analyzer_get_delivery_receipt", { p_delivery_key: options.deliveryId });
-    if (error) throw new AnalyzerOperationError(error.code === "42501" ? "UNAUTHORIZED" : "CONFLICT", "The sealed Analyzer delivery could not be replayed.");
-    const response = stateFrom(data); return { ...safeResult(response.result), deliveryId: typeof response.delivery_key === "string" ? response.delivery_key : options.deliveryId };
-  }
   const state = await readState(context);
-  if (!safeBoolean(state.enabled)) throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled. Enable it from its Admin control before running a new analysis.");
-  if (!input || typeof input.raw !== "string" || input.raw.trim().length === 0 || input.raw.length > 4096) throw new AnalyzerOperationError("INVALID_INPUT", "Enter a supported contract, mint, or URL.");
-  if (operation === "EXPLICIT_REANALYSIS" && !options.reanalysisReason?.trim()) throw new AnalyzerOperationError("INVALID_INPUT", "An explicit reanalysis requires a reason.");
-  const safeInput: AnalyzerInput = { raw: input.raw.trim(), hintChain: input.hintChain }; const resolution = resolveAnalyzerInput(safeInput); const manifest = createEvidenceManifest(safeInput, resolution); if (!verifyEvidenceManifestHash(manifest)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer evidence could not be verified locally.");
-  const fingerprint = stableAnalyzerRequestFingerprint(safeInput, resolution); const result = analyzeEvidence("00000000-0000-4000-8000-000000000000", safeInput, manifest); const identity = { chain: resolution.chain, canonicalTokenId: resolution.canonicalTokenId, inputType: resolution.inputType, pairAddress: resolution.pairAddress, poolAddress: resolution.poolAddress, schemaVersion: manifest.schemaVersion, methodologyVersion: manifest.methodologyVersion, scoreEngineVersion: null, analysisMode: "DETERMINISTIC" };
-  const expires = manifest.freshness.state === "FRESH" ? new Date(Date.now() + REPLAY_FRESHNESS_MS).toISOString() : new Date().toISOString();
-  const deliveryId = options.deliveryId ?? (operation === "DELIVERY_RETRY" ? undefined : createHash("sha256").update(randomUUID()).digest("hex"));
-  const { data, error } = await context.supabase.rpc("analyzer_submit_run", { p_payload: { fingerprint, raw_input: safeInput.raw, input_type: resolution.inputType, requested_chain: resolution.chain, resolution, manifest, result, status: result.status, schema_version: manifest.schemaVersion, score_engine_version: null, analysis_mode: "DETERMINISTIC", freshness_class: manifest.freshness.state, freshness_expires_at: expires, methodology_version: null, identity, operation, delivery_id: deliveryId, reanalysis_reason: options.reanalysisReason?.trim() ?? null } });
-  if (error) { if (error.code === "42501") throw new AnalyzerOperationError("UNAUTHORIZED", "Analyzer operation is not authorized."); if (error.code === "55000") throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled."); if (error.code === "23P01") throw new AnalyzerOperationError("CONFLICT", "Analyzer request context conflicts with an existing result."); throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Analyzer result could not be persisted."); }
-  const response = stateFrom(data); const persisted = safeResult(response.result); return { ...persisted, deliveryId: typeof response.delivery_key === "string" ? response.delivery_key : deliveryId };
+  if (!safeBoolean(state.enabled)) throw new AnalyzerOperationError("FEATURE_DISABLED", "Token Analyzer is disabled.");
+  if (!input || typeof input.raw !== "string" || !input.raw.trim() || input.raw.length > 4096) throw new AnalyzerOperationError("INVALID_INPUT", "Enter a supported contract, mint, or URL.");
+  const safeInput = { raw: input.raw.trim(), hintChain: input.hintChain ?? null };
+  const resolution = resolveAnalyzerInput(input);
+  let name = "analyzer_reserve_delivery";
+  let parameters: Record<string, unknown> = { p_input: safeInput, p_resolution: resolution };
+  if (options.operation === "FRESH_ANALYSIS") {
+    name = "analyzer_start_fresh_analysis";
+    parameters = { ...parameters, p_intent_id: options.intentId ?? randomUUID() };
+  } else if (options.operation === "EXPLICIT_REANALYSIS") {
+    if (!options.sourceDeliveryId || !options.reanalysisReason?.trim()) throw new AnalyzerOperationError("INVALID_INPUT", "Reanalysis requires a source delivery and reason.");
+    name = "analyzer_start_reanalysis";
+    parameters = { p_delivery_key: options.sourceDeliveryId, p_intent_id: options.intentId ?? randomUUID(), p_reason: options.reanalysisReason.trim() };
+  } else if (options.operation !== undefined) throw new AnalyzerOperationError("INVALID_INPUT", "Unsupported Analyzer operation.");
+  const reserved = await context.supabase.rpc(name, parameters);
+  if (reserved.error) rpcFailure(reserved.error.code);
+  const reservation = stateFrom(reserved.data);
+  const key = String(reservation.delivery_key);
+  if (reservation.status === "COMPLETED") return receiptResult(stateFrom(reservation.receipt));
+  if (reservation.status === "EXISTING_IN_PROGRESS") {
+    const deadline = Date.now() + policy.completionWaitMs;
+    do {
+      const response = await receipt(context, key);
+      if (response.status === "COMPLETED") return receiptResult(response);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    } while (Date.now() < deadline);
+    throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Delivery is still in progress; retry its receipt key.");
+  }
+  if (reservation.status !== "NEW" || typeof reservation.owner_token !== "string") throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Invalid reservation response.");
+  let draft = null;
+  if (!reservation.source_delivery_key) {
+    // Only the reservation owner captures timestamped evidence.
+    const manifest = createEvidenceManifest(reservation.input as AnalyzerInput, reservation.resolution as AnalyzerResolution);
+    if (!verifyEvidenceManifestHash(manifest)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Evidence failed its local integrity check.");
+    const { manifestHash: localHash, ...content } = manifest;
+    void localHash;
+    draft = content;
+  }
+  const completed = await context.supabase.rpc("analyzer_complete_delivery", { p_delivery_key: key, p_owner_token: reservation.owner_token, p_manifest: draft });
+  if (completed.error) rpcFailure(completed.error.code);
+  return receiptResult(stateFrom(completed.data));
 }

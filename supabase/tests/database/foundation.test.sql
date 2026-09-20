@@ -15,7 +15,7 @@ select tables_are('public', array[
   'article_related_research', 'article_tokens',
   'analyzer_config', 'analyzer_requests', 'analyzer_resolutions',
   'analyzer_evidence_manifests', 'analyzer_analyses', 'analyzer_model_calls',
-  'analyzer_provider_events', 'analyzer_cost_usage', 'analyzer_deliveries'
+  'analyzer_provider_events', 'analyzer_cost_usage', 'analyzer_deliveries', 'analyzer_delivery_intents'
 ], 'Only the intended foundation/Research/Radar/Analyzer tables exist; no trading or analytics event tables');
 
 select ok(c.relrowsecurity, c.relname || ': RLS enabled')

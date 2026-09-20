@@ -1,0 +1,561 @@
+{
+  "versions": {
+    "input": "token-analyzer-input-v1",
+    "resolution": "token-analyzer-resolution-v1",
+    "evidence": "token-analyzer-v1",
+    "manifestFormat": 1,
+    "result": "token-analyzer-v1",
+    "scoreEngine": null,
+    "methodology": null
+  },
+  "reuseSeconds": 300,
+  "completionWaitMs": 30000,
+  "fields": {
+    "price": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "decimal"
+    },
+    "liquidity": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "decimal"
+    },
+    "volume": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "decimal"
+    },
+    "transactions": {
+      "identityType": "POOL",
+      "referenceType": "POOL",
+      "value": "integer"
+    },
+    "holders": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "integer"
+    },
+    "concentration": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "decimal"
+    },
+    "creator": {
+      "identityType": "WALLET",
+      "referenceType": "WALLET",
+      "value": "address"
+    },
+    "wallet": {
+      "identityType": "WALLET",
+      "referenceType": "WALLET",
+      "value": "decimal"
+    },
+    "trade": {
+      "identityType": "WALLET",
+      "referenceType": "TRANSACTION",
+      "value": "decimal"
+    },
+    "supply": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "integer"
+    },
+    "mintAuthority": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "address"
+    },
+    "freezeAuthority": {
+      "identityType": "TOKEN",
+      "referenceType": "TOKEN",
+      "value": "address"
+    }
+  },
+  "verifiedProvenance": [
+    "DIRECT_CHAIN",
+    "OBJECTIVE_PROVIDER"
+  ],
+  "signalProvenance": [
+    "DIRECT_CHAIN",
+    "OBJECTIVE_PROVIDER",
+    "PROVIDER_DERIVED"
+  ],
+  "positiveConclusions": {
+    "CLAIM_SUPPORTED": "EXACT_TYPED_OBSERVATION",
+    "TOP_TRADE_PRESENT": "EXACT_TRADE_OBSERVATION",
+    "WHY_MOVING_VERIFIED_FACT": "UNREGISTERED",
+    "WHY_MOVING_STRONG_SIGNAL": "UNREGISTERED",
+    "RISK_PRESENT": "UNREGISTERED",
+    "LIQUIDITY_PRESENT": "UNREGISTERED",
+    "HOLDER_FACT_PRESENT": "UNREGISTERED",
+    "CREATOR_FACT_PRESENT": "UNREGISTERED",
+    "MARKET_FACT_PRESENT": "UNREGISTERED",
+    "ACTIVITY_FACT_PRESENT": "UNREGISTERED"
+  },
+  "schemas": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "raw": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "hintChain": {
+          "type": "string",
+          "enum": [
+            "solana",
+            "ethereum",
+            "base",
+            "bnb",
+            "unknown"
+          ],
+          "nullable": true
+        }
+      },
+      "optional": []
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "DIRECT_INPUT",
+            "URL_STRUCTURE",
+            "DIRECT_CHAIN",
+            "OBJECTIVE_PROVIDER",
+            "PROVIDER_DERIVED",
+            "CONTEXTUAL_PROPRIETARY"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "timestamp"
+        },
+        "referenceType": {
+          "type": "string",
+          "enum": [
+            "TOKEN",
+            "POOL",
+            "WALLET",
+            "TRANSACTION"
+          ]
+        }
+      },
+      "optional": [
+        "referenceType"
+      ]
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "inputType": {
+          "type": "string",
+          "enum": [
+            "CONTRACT_ADDRESS",
+            "TOKEN_MINT",
+            "DEX_URL",
+            "CHART_URL",
+            "X_POST",
+            "ARTICLE",
+            "FACEBOOK_POST",
+            "INSTAGRAM_POST",
+            "GENERIC_URL",
+            "UNKNOWN"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chain": {
+          "type": "string",
+          "enum": [
+            "solana",
+            "ethereum",
+            "base",
+            "bnb",
+            "unknown"
+          ]
+        },
+        "tokenAddress": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "canonicalTokenId": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "pairAddress": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "poolAddress": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "symbol": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "decimals": {
+          "type": "string",
+          "nullable": true
+        },
+        "supply": {
+          "type": "string",
+          "nullable": true
+        },
+        "launchpad": {
+          "type": "string",
+          "nullable": true
+        },
+        "creator": {
+          "type": "string",
+          "nullable": true
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "nullable": true
+        },
+        "programOrContract": {
+          "type": "string",
+          "nullable": true
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "RESOLVED",
+            "CANDIDATE_IDENTITY",
+            "PARTIAL",
+            "UNKNOWN"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "ref": "provenance"
+          },
+          "maxItems": 1000
+        }
+      },
+      "optional": []
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "enum": [
+            "price",
+            "liquidity",
+            "volume",
+            "transactions",
+            "holders",
+            "concentration",
+            "creator",
+            "wallet",
+            "trade",
+            "supply",
+            "mintAuthority",
+            "freezeAuthority"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "scalar"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "AVAILABLE",
+            "UNKNOWN",
+            "UNAVAILABLE",
+            "UNSUPPORTED",
+            "STALE"
+          ]
+        },
+        "evidenceClass": {
+          "type": "string",
+          "enum": [
+            "VERIFIED_DATA",
+            "STRONG_SIGNAL",
+            "UNKNOWN"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "timestamp",
+          "nullable": true
+        },
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "identityType": {
+          "type": "string",
+          "enum": [
+            "TOKEN",
+            "POOL",
+            "WALLET"
+          ],
+          "nullable": true
+        },
+        "tokenId": {
+          "type": "string",
+          "minLength": 1,
+          "nullable": true
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "ref": "provenance"
+          },
+          "maxItems": 1000
+        },
+        "transactionReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 88
+        }
+      },
+      "optional": [
+        "transactionReference"
+      ]
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "conclusionType": {
+          "type": "string",
+          "enum": [
+            "CLAIM_SUPPORTED"
+          ]
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "SUPPORTED",
+            "PARTIALLY_SUPPORTED"
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 1000
+        },
+        "evidenceType": {
+          "type": "string",
+          "enum": [
+            "VERIFIED_DATA",
+            "STRONG_SIGNAL"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "price",
+            "liquidity",
+            "volume",
+            "transactions",
+            "holders",
+            "concentration",
+            "creator",
+            "wallet",
+            "trade",
+            "supply",
+            "mintAuthority",
+            "freezeAuthority"
+          ]
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identityType": {
+          "type": "string",
+          "enum": [
+            "TOKEN",
+            "POOL",
+            "WALLET"
+          ]
+        },
+        "tokenId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "scalar"
+        }
+      },
+      "optional": []
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "token-analyzer-v1"
+        },
+        "versions": {
+          "const": {
+            "input": "token-analyzer-input-v1",
+            "resolution": "token-analyzer-resolution-v1",
+            "evidence": "token-analyzer-v1",
+            "manifestFormat": 1,
+            "result": "token-analyzer-v1",
+            "scoreEngine": null,
+            "methodology": null
+          }
+        },
+        "manifestFormatVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "evidenceRevision": {
+          "type": "number",
+          "const": 1
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "timestamp"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "CONTRACT_ADDRESS",
+                "TOKEN_MINT",
+                "DEX_URL",
+                "CHART_URL",
+                "X_POST",
+                "ARTICLE",
+                "FACEBOOK_POST",
+                "INSTAGRAM_POST",
+                "GENERIC_URL",
+                "UNKNOWN"
+              ]
+            },
+            "rawHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "optional": []
+        },
+        "resolvedToken": {
+          "ref": "resolution"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "ref": "observation"
+          },
+          "maxItems": 1000
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "ref": "claim"
+          },
+          "maxItems": 1000
+        },
+        "providerConflicts": {
+          "type": "array",
+          "items": {
+            "type": "scalar"
+          },
+          "maxItems": 0
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 1000
+        },
+        "freshness": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "FRESH",
+                "STALE",
+                "UNKNOWN"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "optional": []
+        },
+        "methodologyVersion": {
+          "const": null
+        }
+      },
+      "optional": []
+    }
+  },
+  "requiredSignals": [
+    "price",
+    "marketCap",
+    "fdv",
+    "liquidity",
+    "volume",
+    "transactions",
+    "holders",
+    "distribution",
+    "creatorBehavior",
+    "authorities",
+    "topTrades",
+    "freshness"
+  ]
+}

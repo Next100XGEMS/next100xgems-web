@@ -1,31 +1,8 @@
 import type { AnalyzerClaim, AnalyzerEvidenceManifest } from "./contracts";
+import { assertTypedClaim } from "./persistence-contract";
 export function validateAnalyzerClaims(claims: readonly AnalyzerClaim[], manifest: AnalyzerEvidenceManifest) {
-  const observations = new Map(manifest.observations.map((item) => [item.evidenceId, item]));
-  return claims.every((claim) => {
-    if (!claim.claim || !claim.source || !claim.field || !claim.evidenceType || !Array.isArray(claim.evidenceRefs) || claim.evidenceRefs.length === 0) return false;
-    if (claim.verification === "SUPPORTED" || claim.verification === "PARTIALLY_SUPPORTED") {
-      if (typeof claim.identity !== "string" || claim.identity.trim().length === 0) return false;
-      if (claim.field === "score" || claim.field === "methodology" || claim.field === "riskScore") return false;
-    }
-    const referenced = claim.evidenceRefs.map((ref) => observations.get(ref));
-    if (referenced.some((item) => !item)) return false;
-    return referenced.every((item) => {
-      if (item!.source !== claim.source || item!.key !== claim.field || item!.evidenceClass !== claim.evidenceType) return false;
-      if (item!.state !== "AVAILABLE") return false;
-      if (claim.verification === "SUPPORTED" || claim.verification === "PARTIALLY_SUPPORTED") {
-        if (typeof item!.identity !== "string" || item!.identity.trim().length === 0 || claim.identity !== item!.identity) return false;
-      }
-      const compatible = item!.provenance.some((provenance) => {
-        if (provenance.source !== claim.source || typeof provenance.reference !== "string" || provenance.reference.trim().length === 0) return false;
-        if (claim.evidenceType === "VERIFIED_DATA" && !["DIRECT_CHAIN", "OBJECTIVE_PROVIDER"].includes(provenance.kind)) return false;
-        return provenance.reference === item!.identity || provenance.reference === item!.evidenceId;
-      });
-      if (!compatible) return false;
-      if (typeof claim.value !== typeof item!.value || JSON.stringify(claim.value) !== JSON.stringify(item!.value)) return false;
-      if (claim.verification === "SUPPORTED" && item!.evidenceClass !== "VERIFIED_DATA") return false;
-      return true;
-    });
-  });
+  try { claims.forEach((claim) => assertTypedClaim(claim, manifest.observations, manifest.resolvedToken)); return true; }
+  catch { return false; }
 }
 export function detectUnsupportedAnalyzerOutput(value: unknown, manifest: AnalyzerEvidenceManifest) {
   const text = typeof value === "string" ? value : JSON.stringify(value ?? "");

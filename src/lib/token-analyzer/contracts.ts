@@ -37,6 +37,7 @@ export type AnalyzerResolution = {
 };
 
 export type AnalyzerProvenance = {
+  referenceType?: "TOKEN" | "POOL" | "WALLET" | "TRANSACTION";
   source: string;
   kind: "DIRECT_INPUT" | "URL_STRUCTURE" | "DIRECT_CHAIN" | "OBJECTIVE_PROVIDER" | "PROVIDER_DERIVED" | "CONTEXTUAL_PROPRIETARY";
   reference: string | null;
@@ -53,10 +54,14 @@ export type AnalyzerObservation = {
   observedAt: string | null;
   evidenceId: string;
   identity?: string | null;
+  identityType?: "TOKEN" | "POOL" | "WALLET" | null;
+  tokenId?: string | null;
+  transactionReference?: string;
   provenance: AnalyzerProvenance[];
 };
 
 export type AnalyzerEvidenceManifest = {
+  versions: typeof import("./persistence-policy.json").versions;
   schemaVersion: typeof ANALYZER_SCHEMA_VERSION;
   manifestFormatVersion: 1;
   evidenceRevision: number;
@@ -73,6 +78,9 @@ export type AnalyzerEvidenceManifest = {
 };
 
 export type AnalyzerClaim = {
+  conclusionType?: "CLAIM_SUPPORTED";
+  identityType?: "TOKEN" | "POOL" | "WALLET";
+  tokenId?: string;
   claim: string;
   source: string;
   verification: AnalyzerClaimVerification;

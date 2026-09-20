@@ -41,6 +41,66 @@ analysis after the disable operation has acquired the feature-row lock.
 Provider collection, AI network execution, model budgets, and public Analyzer
 access remain intentionally NOT YET ACTIVE.
 
+## Sealed delivery contract
+
+Routine calls reserve before collecting evidence. PostgreSQL canonicalizes the
+request and joins calls by authenticated operator, canonical input/resolution,
+the inactive configuration/version registry, and the existing five-minute
+request reuse window. The window starts at reservation (not a wall-clock bucket
+boundary). This is transport deduplication, not a claim that evidence is fresh.
+Expired routine intents create a new reservation. Explicit fresh analysis uses
+a caller-retained UUID intent; explicit reanalysis uses a new UUID and a reason
+and references an existing delivery's exact manifest.
+
+Reservations are append-only. Only the new reservation holder receives its
+completion capability. Joiners poll the key-only receipt operation for at most
+30 seconds. An interrupted owner does not authorize another collector to take
+over; callers may retry the receipt, or start an explicit fresh intent. Routine
+reservation expiry bounds abandoned work to the existing five-minute window.
+Completion must occur before reservation expiry and while the master flag is on.
+
+Completion accepts only a key, owner capability, and draft evidence manifest.
+It accepts no caller result, operation, score, analysis version, or receipt hash.
+PostgreSQL validates the whole manifest against the reserved canonical context
+and derives the report, manifest revision/hash, and analysis version. No
+positive causal explanation or risk derivation is registered in this inactive
+foundation: those result sections remain UNKNOWN. Typed claims and trades must
+pass the shared strict schema/field/provenance policy; unsupported derivations
+are rejected rather than persisted as prose. Retry accepts only a delivery key.
+
+The version and evidence policy is in `persistence-policy.json`, embedded
+verbatim in migration 27 and checked for parity by tests. Internal evidence IDs
+are never semantic provenance references. Positive evidence requires an explicit
+AVAILABLE state, canonical token/entity identity, typed semantic source reference,
+eligible provenance, exact field/value, and an allowed evidence classification.
+Positive claim display text is the deterministic rendering of that typed fact;
+arbitrary causal prose cannot be labelled supported through an unrelated fact.
+Trades additionally require a typed transaction reference, wallet/token identity,
+exact amount and observation timestamp. Missingness is derived against the shared
+field registry, not accepted as a caller-selected confidence denominator.
+
+Migration 27 retains historical manifest bytes/hashes and derives legacy revision
+from the manifest row. One canonical delivery key is stored in both the analysis
+link and delivery record; historical/latest lookup round-trips through that key.
+Repository-local inspection found no remote deployment evidence; this is not an
+assertion about uninspected infrastructure.
+
+Local regressions (no provider calls):
+
+- `pnpm exec vitest run tests/token-analyzer*.test.ts`
+- `RUN_LOCAL_ANALYZER_INTEGRATION=1 pnpm exec vitest run tests/token-analyzer-concurrency.integration.test.ts`
+- `node supabase/tests/scripts/token-analyzer-populated-upgrade.mjs`
+- `node supabase/tests/scripts/token-analyzer-db-suite.mjs`
+- `node supabase/tests/scripts/token-analyzer-db-suite.mjs --existing-overlay`
+
+The overlap test uses the actual `runAnalyzer` flow and separate PostgreSQL
+sessions, observing blocked sessions before releasing the reservation lock.
+Authentication is injected for this test; it is not a live Auth/PostgREST test.
+The upgrade test verifies full old-row content and both receipt-key round trips.
+The existing-development suite applies the repaired schema inside each rollback
+test transaction only; it does not advance that database's migration history or
+leave Analyzer enabled. No permanent test bypass is installed.
+
 ## Security
 
 Admin actions re-check authenticated identity and Owner/Admin role at the

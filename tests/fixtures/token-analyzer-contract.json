@@ -1,0 +1,85 @@
+{
+  "input": {
+    "raw": "0x0000000000000000000000000000000000000001",
+    "hintChain": "ethereum"
+  },
+  "resolution": {
+    "inputType": "CONTRACT_ADDRESS",
+    "source": "direct-input",
+    "chain": "ethereum",
+    "tokenAddress": "0x0000000000000000000000000000000000000001",
+    "canonicalTokenId": "ethereum:0x0000000000000000000000000000000000000001",
+    "pairAddress": null,
+    "poolAddress": null,
+    "symbol": null,
+    "name": null,
+    "decimals": null,
+    "supply": null,
+    "launchpad": null,
+    "creator": null,
+    "creationTimestamp": null,
+    "programOrContract": null,
+    "confidence": "CANDIDATE_IDENTITY",
+    "provenance": []
+  },
+  "manifest": {
+    "schemaVersion": "token-analyzer-v1",
+    "manifestFormatVersion": 1,
+    "evidenceRevision": 1,
+    "capturedAt": "2026-09-20T00:00:00Z",
+    "input": {
+      "type": "CONTRACT_ADDRESS",
+      "rawHash": "48656d1a1f79ff695564063cf7281cb84beefb0d1e3b34a2d2c66439790f53ff"
+    },
+    "resolvedToken": {
+      "inputType": "CONTRACT_ADDRESS",
+      "source": "direct-input",
+      "chain": "ethereum",
+      "tokenAddress": "0x0000000000000000000000000000000000000001",
+      "canonicalTokenId": "ethereum:0x0000000000000000000000000000000000000001",
+      "pairAddress": null,
+      "poolAddress": null,
+      "symbol": null,
+      "name": null,
+      "decimals": null,
+      "supply": null,
+      "launchpad": null,
+      "creator": null,
+      "creationTimestamp": null,
+      "programOrContract": null,
+      "confidence": "CANDIDATE_IDENTITY",
+      "provenance": []
+    },
+    "observations": [],
+    "claims": [],
+    "providerConflicts": [],
+    "missing": [
+      "price",
+      "marketCap",
+      "fdv",
+      "liquidity",
+      "volume",
+      "transactions",
+      "holders",
+      "distribution",
+      "creatorBehavior",
+      "authorities",
+      "topTrades",
+      "freshness"
+    ],
+    "freshness": {
+      "state": "UNKNOWN",
+      "reason": "No explicit freshness policy is available."
+    },
+    "methodologyVersion": null,
+    "versions": {
+      "input": "token-analyzer-input-v1",
+      "resolution": "token-analyzer-resolution-v1",
+      "evidence": "token-analyzer-v1",
+      "manifestFormat": 1,
+      "result": "token-analyzer-v1",
+      "scoreEngine": null,
+      "methodology": null
+    }
+  }
+}

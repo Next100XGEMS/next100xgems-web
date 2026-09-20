@@ -1,8 +1,10 @@
 import { sha256 } from "@/lib/radar/hash";
 import { validateAnalyzerClaims } from "./claims";
+import { ANALYZER_VERSIONS, assertContract, assertObservation } from "./persistence-contract";
+import policy from "./persistence-policy.json";
 import { type AnalyzerClaim, type AnalyzerEvidenceManifest, type AnalyzerInput, type AnalyzerObservation, type AnalyzerResolution } from "./contracts";
 
-const missingFields = ["price", "marketCap", "fdv", "liquidity", "volume", "transactions", "holders", "distribution", "creatorBehavior", "authorities", "topTrades", "freshness"];
+const missingFields = policy.requiredSignals;
 const STATES = new Set(["AVAILABLE", "UNKNOWN", "UNAVAILABLE", "UNSUPPORTED", "STALE"]);
 const CLASSES = new Set(["VERIFIED_DATA", "STRONG_SIGNAL", "AI_INFERENCE", "UNKNOWN"]);
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)) as T; }
@@ -32,10 +34,12 @@ function deriveFreshness(observations: AnalyzerObservation[], policy?: AnalyzerF
 export function createEvidenceManifest(input: AnalyzerInput, resolution: AnalyzerResolution, observations: AnalyzerObservation[] = [], claims: AnalyzerClaim[] = [], capturedAt = new Date().toISOString(), freshnessPolicy?: AnalyzerFreshnessPolicy): AnalyzerEvidenceManifest {
   if (!validTimestamp(capturedAt)) throw new Error("Analyzer manifest timestamp is invalid.");
   observations.forEach(validateObservation);
+  observations.forEach((item) => assertObservation(item, resolution));
   const copiedObservations = clone(observations); const copiedClaims = clone(claims); const copiedResolution = clone(resolution);
   const available = new Set(copiedObservations.filter((item) => item.state === "AVAILABLE").map((item) => item.key));
   const freshness = deriveFreshness(copiedObservations, freshnessPolicy);
-  const manifest = { schemaVersion: "token-analyzer-v1" as const, manifestFormatVersion: 1 as const, evidenceRevision: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: [], missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
+  const manifest = { schemaVersion: "token-analyzer-v1" as const, versions: ANALYZER_VERSIONS, manifestFormatVersion: 1 as const, evidenceRevision: 1, capturedAt, input: { type: copiedResolution.inputType, rawHash: sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }) }, resolvedToken: copiedResolution, observations: copiedObservations, claims: copiedClaims, providerConflicts: [], missing: missingFields.filter((item) => !available.has(item)), freshness, methodologyVersion: null as string | null };
+  assertContract(manifest, "manifest");
   if (!validateAnalyzerClaims(copiedClaims, manifest as unknown as AnalyzerEvidenceManifest)) throw new Error("Analyzer claim grounding is invalid.");
   const result = { ...manifest, manifestHash: sha256(manifest) };
   return freeze(result);

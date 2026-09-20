@@ -1,82 +1,87 @@
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { createAuditDatabase, dropAuditDatabase, sql, sqlArgs, command, authSql } from "../supabase/tests/scripts/analyzer-local-db.mjs";
+import * as evidence from "@/lib/token-analyzer/evidence";
+import { resolveAnalyzerInput } from "@/lib/token-analyzer/input-resolver";
+import policy from "@/lib/token-analyzer/persistence-policy.json";
 
 vi.mock("server-only", () => ({}));
-const state = vi.hoisted(() => ({ userId: "", client: null as SupabaseClient | null }));
-vi.mock("@/lib/auth/authorization", () => ({
-  getAuthorizationContext: vi.fn(async () => ({ userId: state.userId, roles: ["admin"], permissions: [], supabase: state.client })),
-}));
+const context = vi.hoisted(() => ({ userId: "", client: null as SupabaseClient | null }));
+vi.mock("@/lib/auth/authorization", () => ({ getAuthorizationContext: async () => ({ userId: context.userId, roles: ["admin"], permissions: [], supabase: context.client }) }));
+import { runAnalyzer, getAnalyzerDeliveryReceipt } from "@/lib/token-analyzer/server";
 
-import { runAnalyzer } from "@/lib/token-analyzer/server";
-
-const enabled = process.env.RUN_LOCAL_ANALYZER_INTEGRATION === "1";
-const describeLocal = enabled ? describe : describe.skip;
-const containerName = "supabase_db_next100xgems-web_2";
-
-function localEnv() {
-  const values = Object.fromEntries(readFileSync(".env.local", "utf8").split(/\r?\n/).filter((line) => line && !line.startsWith("#")).map((line) => {
-    const index = line.indexOf("=");
-    return index < 0 ? [line, ""] : [line.slice(0, index), line.slice(index + 1).replace(/^['"]|['"]$/g, "")];
-  }));
-  return {
-    url: values.NEXT_PUBLIC_SUPABASE_URL || values.SUPABASE_URL,
-    publishableKey: values.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-    secretKey: values.SUPABASE_SECRET_KEY,
-  };
-}
-
-async function sql(statement: string) {
-  return new Promise<string>((resolve, reject) => {
-    const child = spawn("docker", ["exec", "-i", containerName, "psql", "-X", "-qAt", "-U", "postgres", "-d", "postgres", "-v", "ON_ERROR_STOP=1"]);
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => { stdout += chunk; });
-    child.stderr.on("data", (chunk) => { stderr += chunk; });
-    child.on("error", reject);
-    child.on("close", (code) => code === 0 ? resolve(stdout.trim()) : reject(new Error(stderr.trim() || `psql exited with ${code}`)));
-    child.stdin.end(statement);
-  });
-}
-
-describeLocal("Analyzer application/database concurrency", () => {
-  const password = `Analyzer-local-${randomUUID()}`;
-  const email = `analyzer-concurrency-${randomUUID()}@local.test`;
-  const rawInput = "0x0000000000000000000000000000000000000001";
-  let admin: SupabaseClient;
-  let user: SupabaseClient;
-
+const local = process.env.RUN_LOCAL_ANALYZER_INTEGRATION === "1" ? describe : describe.skip;
+const quote = (value: unknown) => "'" + String(value).replaceAll("'", "''") + "'";
+local("real reservation-first application concurrency", () => {
+  let db: string;
+  let completions = 0;
+  const capture = vi.spyOn(evidence, "createEvidenceManifest");
   beforeAll(async () => {
-    const config = localEnv();
-    if (!config.url || !config.publishableKey || !config.secretKey) throw new Error("Local Supabase credentials are not configured for the opt-in integration test.");
-    admin = createClient(config.url, config.secretKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
-    user = createClient(config.url, config.publishableKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
-    const created = await admin.auth.admin.createUser({ email, password, email_confirm: true });
-    if (created.error || !created.data.user) throw created.error ?? new Error("Could not create local integration user.");
-    state.userId = created.data.user.id;
-    await sql(`insert into public.profiles(id, display_name, status) values ('${state.userId}', 'Analyzer concurrency test', 'ACTIVE'); insert into public.user_roles(user_id, role_id) select '${state.userId}', id from public.roles where key = 'admin';`);
-    const signedIn = await user.auth.signInWithPassword({ email, password });
-    if (signedIn.error || !signedIn.data.session) throw signedIn.error ?? new Error("Could not sign in the local integration user.");
-    state.client = user;
-    const enabledResult = await user.rpc("set_token_analyzer_enabled", { p_enabled: true });
-    if (enabledResult.error) throw enabledResult.error;
-  });
-
-  afterAll(async () => {
-    if (!state.userId) return;
-    await user?.rpc("set_token_analyzer_enabled", { p_enabled: false });
-    await sql(`begin; set local session_replication_role = replica; delete from public.analyzer_model_calls where analysis_id in (select id from public.analyzer_analyses where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}')); delete from public.analyzer_provider_events where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}'); delete from public.analyzer_cost_usage where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}'); delete from public.analyzer_analyses where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}'); delete from public.analyzer_evidence_manifests where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}'); delete from public.analyzer_resolutions where request_id in (select id from public.analyzer_requests where raw_input = '${rawInput}'); delete from public.analyzer_requests where raw_input = '${rawInput}'; delete from public.user_roles where user_id = '${state.userId}'; delete from public.profiles where id = '${state.userId}'; commit;`);
-    await admin?.auth.admin.deleteUser(state.userId);
-    state.client = null;
-  });
-
-  it("creates one durable analysis for overlapping identical application requests", async () => {
-    const results = await Promise.all(Array.from({ length: 5 }, () => runAnalyzer({ raw: rawInput, hintChain: "ethereum" })));
-    expect(new Set(results.map((result) => result.requestId)).size).toBe(1);
-    const requestId = results[0].requestId;
-    const rows = await sql(`select count(*)::text || '|' || coalesce(max(analysis_version), 0)::text from public.analyzer_analyses where request_id = '${requestId}';`);
-    expect(rows).toBe("1|1");
+    db = await createAuditDatabase();
+    context.userId = randomUUID();
+    await sql(db, `begin;insert into auth.users(id) values ('${context.userId}');insert into public.profiles(id,display_name) values ('${context.userId}','Analyzer overlap');insert into public.user_roles(user_id,role_id) select '${context.userId}',id from public.roles where key='admin';${authSql(context.userId)}select public.set_token_analyzer_enabled(true);commit;`);
+    context.client = { rpc: async (name: string, params: Record<string, unknown> = {}) => {
+      const allowed = ["analyzer_read_state","analyzer_reserve_delivery","analyzer_complete_delivery","analyzer_start_fresh_analysis","analyzer_start_reanalysis","analyzer_get_delivery_receipt"];
+      if (!allowed.includes(name)) throw new Error("Unexpected RPC");
+      if (name === "analyzer_complete_delivery") completions++;
+      const named = Object.entries(params).map(([key, value]) => {
+        if (!/^p_[a-z_]+$/.test(key)) throw new Error("Unexpected RPC argument");
+        return key + " => " + (value === null ? "null" : quote(typeof value === "object" ? JSON.stringify(value) : value)) + (["p_input","p_resolution","p_manifest"].includes(key) ? "::jsonb" : "");
+      }).join(",");
+      const result = await command(sqlArgs(db), `begin;set local application_name='analyzer_contract_overlap';${authSql(context.userId)}select public.${name}(${named});commit;`);
+      if (result.code) return { data: null, error: { code: "SQL_TEST_FAILURE", message: result.stderr } };
+      return { data: JSON.parse(result.stdout.trim().split("\n").filter((line: string) => line.startsWith("{")).at(-1)!), error: null };
+    } } as unknown as SupabaseClient;
+    expect(JSON.parse(await sql(db, "select public.analyzer_contract_registry()"))).toEqual(policy);
+  }, 120000);
+  afterAll(async () => { if (db) await dropAuditDatabase(db); context.client = null; capture.mockRestore(); });
+  it.each([2, 5])("%i default callers contend, capture once and replay one exact receipt", async (count) => {
+    const input = { raw: "0x" + String(count).padStart(40, "0"), hintChain: "ethereum" as const };
+    const resolution = resolveAnalyzerInput(input);
+    const requestContext = { actor: context.userId, input, chain: resolution.chain, token: resolution.canonicalTokenId, inputType: resolution.inputType, pair: null, pool: null, versions: policy.versions, mode: "DETERMINISTIC", config: { ai: false, social: false, escalation: false } };
+    const key = await sql(db, `select public.analyzer_compute_delivery_key(public.analyzer_canonical_json(${quote(JSON.stringify(requestContext))}::jsonb))`);
+    const barrier = spawn("docker", sqlArgs(db));
+    let output = "";
+    const ready = new Promise<void>((resolve, reject) => {
+      barrier.stdout.on("data", (chunk) => { output += chunk; if (output.includes("LOCK_READY")) resolve(); });
+      barrier.on("error", reject);
+    });
+    barrier.stdin.write(`begin;select pg_advisory_xact_lock(hashtextextended('${key}',0));select 'LOCK_READY';\n`);
+    await ready;
+    const before = completions, capturesBefore = capture.mock.calls.length;
+    const calls: Promise<unknown>[] = [];
+    let waiting = 0;
+    try {
+      for (let i = 0; i < count; i++) {
+        calls.push(runAnalyzer(input));
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+      for (let i = 0; i < 100; i++) {
+        waiting = Number(await sql(db, "select count(*) from pg_stat_activity where application_name='analyzer_contract_overlap' and wait_event_type='Lock' and cardinality(pg_blocking_pids(pid))>0"));
+        if (waiting === count) break;
+        await new Promise((resolve) => setTimeout(resolve, 25));
+      }
+    } finally { barrier.stdin.end("commit;\n"); }
+    const results = await Promise.all(calls);
+    expect(waiting).toBe(count);
+    expect(results.every((value) => JSON.stringify(value) === JSON.stringify(results[0]))).toBe(true);
+    expect(completions - before).toBe(1);
+    expect(capture.mock.calls.length - capturesBefore).toBe(1);
+    const first = results[0] as Awaited<ReturnType<typeof runAnalyzer>>;
+    expect(await getAnalyzerDeliveryReceipt(first.deliveryId!)).toEqual(first);
+    expect(await runAnalyzer(input)).toEqual(first);
+    expect(await sql(db, `select count(*)||':'||max(analysis_version) from public.analyzer_analyses where request_id='${first.requestId}'`)).toBe("1:1");
+  }, 60000);
+  it("fresh and same-evidence explicit reanalysis retain independent key-only receipts", async () => {
+    const input = { raw: "0x0000000000000000000000000000000000000009", hintChain: "ethereum" as const };
+    const d1 = await runAnalyzer(input);
+    const d2 = await runAnalyzer(input, { operation: "FRESH_ANALYSIS", intentId: randomUUID() });
+    const d3 = await runAnalyzer(input, { operation: "EXPLICIT_REANALYSIS", intentId: randomUUID(), sourceDeliveryId: d2.deliveryId, reanalysisReason: "Contract regression" });
+    expect([d1.analysisVersion,d2.analysisVersion,d3.analysisVersion]).toEqual([1,2,3]);
+    expect(d2.evidenceManifestHash).toBe(d3.evidenceManifestHash);
+    expect(d2.deliveryId).not.toBe(d3.deliveryId);
+    for (const original of [d1,d2,d3]) expect(await getAnalyzerDeliveryReceipt(original.deliveryId!)).toEqual(original);
   });
 });
