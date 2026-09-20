@@ -99,7 +99,10 @@ manifest is now committed at
 - 1,800 identity-only checkpoint manifests across T+5M, T+15M, T+30M, T+1H,
   T+6H and T+24H; market and historical holder values remain explicitly
   `UNKNOWN`/not reconstructable rather than replaced with current values;
-- PumpSwap migration/pool linkage was not attempted and no pool was inferred;
+- a bounded official PumpSwap validation tested the 10 currently complete
+  curves: 7/10 explicit migrations linked to canonical PumpSwap pools, 3/10
+  had no matching migration in the bounded signature window, and 0 ambiguous or
+  false links were accepted; this is not full historical coverage;
 - chronological metadata is reserved as 180 TRAIN, 60 VALIDATION and 60 locked
   HOLDOUT cases, with outcome labels still pending a future observation window.
 
@@ -162,9 +165,12 @@ an automatic exit or intent label.
 Current lifecycle enrichment read the 300 derived bonding-curve accounts and
 recorded exact integer reserves/supply/progress where the account was valid.
 This is current state observed after acquisition, not a historical checkpoint.
-PumpSwap migration linkage remains `NOT_ATTEMPTED` because a separate official
-migration-event decoder is required; no pool identity was inferred from names,
-symbols or current market listings.
+The new read-only linkage decoder accepts only official Pump `migrate` or
+`migrate_v2` instructions plus a PumpSwap-owned canonical Pool account whose
+base/quote mints agree. No pool identity is inferred from names, symbols or
+current market listings. The bounded result is retained in
+`tests/data/radar-pumpswap-validation-20260920.json`; its standard RPC billing
+was not exposed locally.
 
 The market pilot was intentionally bounded and current-state only. CoinGecko
 Demo returned successful batch responses but no usable values for this sample;

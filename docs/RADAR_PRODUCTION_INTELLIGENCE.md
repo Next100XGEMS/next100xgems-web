@@ -540,3 +540,24 @@ The final corpus-phase tooling is documented in
 cutoff manifests, structural labels, holder snapshots and bounded provider
 studies, but does not claim that the current 108-token acceptance sample is a
 balanced 300-token historical corpus. Solana remains MORE_DATA_WORK_REQUIRED.
+
+## Prospective shadow collection status — 2026-09-20
+
+The development-only PumpSwap/shadow layer now separates deterministic
+Pump-to-PumpSwap linkage from prospective observation capture. The linkage
+decoder requires an explicit official migration instruction and a PumpSwap-owned
+canonical pool account with matching mint/quote identity; the bounded live
+validation linked 7/10 committed completed cases and left 3/10 not found in the
+bounded signature window. No pool was inferred from names, symbols or listings.
+
+The restart-safe shadow runner admits a separate bounded cohort, schedules
+T+5M/T+15M/T+30M/T+1H/T+6H/T+24H checkpoints, preserves exact values and
+provenance, and leaves missed windows pending rather than inserting late
+look-ahead data. The first bootstrap admitted 20 real Pump tokens and captured
+14 T+5M checkpoints; no T+24H or methodology-data readiness claim is made.
+See [RADAR_SHADOW_COLLECTION.md](RADAR_SHADOW_COLLECTION.md).
+
+This remains `SHADOW_COLLECTION_READY` only after the implementation and
+validation gates pass, while `METHODOLOGY_DATA_READY` remains false until real
+checkpoints and objective future labels mature. No score, threshold, provider
+precedence or public activation is approved.

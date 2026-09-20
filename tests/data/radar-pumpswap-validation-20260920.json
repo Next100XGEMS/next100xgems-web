@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "radar-pumpswap-validation-v1",
+  "generatedAt": "2026-09-19T23:49:33.157Z",
+  "readOnly": true,
+  "officialPrograms": {
+    "pump": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+    "pumpSwap": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+  },
+  "completedCurvesTested": 10,
+  "records": [
+    {
+      "mint": "DB2Pb1Jwv1cE2dQiiouKpSSEy6uH6xPGKRATXXZmpump",
+      "bondingCurve": "9h6RtFtddw7qxjmz336R8vPKufBhkkpuBRdPnAmZkVVp",
+      "status": "NOT_FOUND",
+      "migrationSignature": null,
+      "migrationSlot": null,
+      "poolAddress": null,
+      "pool": null,
+      "reason": "No matching explicit migrate/migrate_v2 transaction was found in the bounded transaction window."
+    },
+    {
+      "mint": "uMn6TmCU9ko1Xp7YhfpUAaYpuGTUrfQm9BVNZWUpump",
+      "bondingCurve": "73tFSyqF69wuAN7kSBnMYZPwUwLFAJg9Fo3XsWZBDwMm",
+      "status": "NOT_FOUND",
+      "migrationSignature": null,
+      "migrationSlot": null,
+      "poolAddress": null,
+      "pool": null,
+      "reason": "No matching explicit migrate/migrate_v2 transaction was found in the bounded transaction window."
+    },
+    {
+      "mint": "CmRx3de3EoL3d69C7zYRLNnsAAgax99zrUYvcuqPpump",
+      "bondingCurve": "83TQKqXHHDYb2JJ46GzMLvBNMRqHvXeKWo4XW3rDaXe1",
+      "status": "LINKED",
+      "migrationSignature": "4cQXV476qZNP6t1ui5fhzWmGqjiEMV52D8q6fpytBnGxhedEJr1oBrE9qNTNCJFcxh53wYAq73FNs14P69sGPjEM",
+      "migrationSlot": 441103343,
+      "migrationTimestamp": "2026-08-23T06:57:42.000Z",
+      "poolAddress": "6irG9WgY9edzd7QHAkuqAYJj1EtwuMKSkJjAjN8ujriM",
+      "poolAuthority": "2du5ZP4doaVU1yyaHD8EK8GjP1dPGCdvoCYpdA83d1md",
+      "baseMint": "CmRx3de3EoL3d69C7zYRLNnsAAgax99zrUYvcuqPpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "6irG9WgY9edzd7QHAkuqAYJj1EtwuMKSkJjAjN8ujriM",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "CmRx3de3EoL3d69C7zYRLNnsAAgax99zrUYvcuqPpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "BXkVDhW1HzR5MAgomJuyyarC4oTccEq7VyigPQh5pump",
+      "bondingCurve": "8LcN9dtRwyTE2e8rgRmZXvnFNXBZD4Uc7UQQyr5RfFWH",
+      "status": "LINKED",
+      "migrationSignature": "4UGu3t4fxuXJ82FF9c7m6gR3fBQcZyvM1sZNFo1cYVai9juPFJRG2MiDktJStmnB4H2J3Ng7Vf9dpRd8EL2cnfjL",
+      "migrationSlot": 439607358,
+      "migrationTimestamp": "2026-08-16T08:32:04.000Z",
+      "poolAddress": "9nEm6uZyD19Ff7ZkRzfHxa69vZKZ96R7f9Mtr2qRL2vv",
+      "poolAuthority": "6Wj5fXspH712HUHpVtoqtEro9Ven8PH95gkXywyeoFyj",
+      "baseMint": "BXkVDhW1HzR5MAgomJuyyarC4oTccEq7VyigPQh5pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "9nEm6uZyD19Ff7ZkRzfHxa69vZKZ96R7f9Mtr2qRL2vv",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "BXkVDhW1HzR5MAgomJuyyarC4oTccEq7VyigPQh5pump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "HvPhhZCZNJUj6MvS6TxWEQLiwVBKsSZsvGoFkA5Jpump",
+      "bondingCurve": "8bLGRx6vcGSkJ6xwXxHbEx87xvR338ai4fyh3G7FvUaN",
+      "status": "LINKED",
+      "migrationSignature": "wUBBKoYsiJLPNwiGbQwKNS7wkGDkEzqt3YfkrWA8tScDHaL5bRTj68sarDBDLpPkmo1bixH85ouj9zB2U2TeC1u",
+      "migrationSlot": 439607448,
+      "migrationTimestamp": "2026-08-16T08:32:40.000Z",
+      "poolAddress": "H9xQmSv8r3gKpQEcBhMunz25tbyCwBW77AqCc8uuZye7",
+      "poolAuthority": "9mtMBybjYAHpVAV7xyErqWWo7NK6fQunZ6JHsUktjxVo",
+      "baseMint": "HvPhhZCZNJUj6MvS6TxWEQLiwVBKsSZsvGoFkA5Jpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "H9xQmSv8r3gKpQEcBhMunz25tbyCwBW77AqCc8uuZye7",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "HvPhhZCZNJUj6MvS6TxWEQLiwVBKsSZsvGoFkA5Jpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "9Bd96eHTQwSqgGPSQVvFcsnbwTfDftP5RjsBd8gXpump",
+      "bondingCurve": "Hp14BerJKTCndVyBkTmNu8hbQXBBT3WB3mb92yhJSVJr",
+      "status": "LINKED",
+      "migrationSignature": "4bk84BAYdQeDVUtaCmCxGgvS545mTZoaj91hmfWwZ3ipiDTqBepvYEeXxmQScd4EzmFGkCvnCXJxgxcUAd5brmmP",
+      "migrationSlot": 435356796,
+      "migrationTimestamp": "2026-07-26T15:17:46.000Z",
+      "poolAddress": "7cGQp9GmxvqBRyGwrEhDuQyaTuC2QCLYqerYxzFUWEJ8",
+      "poolAuthority": "J2QTuJXA65iFBeZtRFwd2SZhEghwRst91zGXDdZkRJYE",
+      "baseMint": "9Bd96eHTQwSqgGPSQVvFcsnbwTfDftP5RjsBd8gXpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "7cGQp9GmxvqBRyGwrEhDuQyaTuC2QCLYqerYxzFUWEJ8",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "9Bd96eHTQwSqgGPSQVvFcsnbwTfDftP5RjsBd8gXpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "Em4TPXE3P5zCWz31mDre8siqUp4DbJxzYEoWvdbtZhE5",
+      "bondingCurve": "3EV9VpaVaFtTsE5G6Dx2AUgtfkxTuSfxkEcnjquxxXja",
+      "status": "NOT_FOUND",
+      "migrationSignature": null,
+      "migrationSlot": null,
+      "poolAddress": null,
+      "pool": null,
+      "reason": "No matching explicit migrate/migrate_v2 transaction was found in the bounded transaction window."
+    },
+    {
+      "mint": "DmSevLDx27zpabUjAYTdmo6rxy8BrfeMn5uENDja8Lpr",
+      "bondingCurve": "2acYJrme8dCkf4xzv82q7WUX9M2KhrYMhg89hyqXR83U",
+      "status": "LINKED",
+      "migrationSignature": "1Qp3npts2AGfHCJr4PyMzPAgqVueyJEgkVV5ZcEaoaDPiirXRzaphGTsVsCMTE4tWoDWujw3nFDMa7RgNM9LyQw",
+      "migrationSlot": 438180335,
+      "migrationTimestamp": "2026-08-09T10:28:24.000Z",
+      "poolAddress": "Cqn6uMQ7e1j4HJSbp16t7sEeacohrofF42JNyJyLYEWy",
+      "poolAuthority": "Bkw7oT2um3d4yx8AFaQ4Zm878A9bHDzjcQMuswwB3ruC",
+      "baseMint": "DmSevLDx27zpabUjAYTdmo6rxy8BrfeMn5uENDja8Lpr",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "Cqn6uMQ7e1j4HJSbp16t7sEeacohrofF42JNyJyLYEWy",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "DmSevLDx27zpabUjAYTdmo6rxy8BrfeMn5uENDja8Lpr",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "AKbox1hQ5zfLghcbqTukUJq3THaeAJFpXQ31w1M6pump",
+      "bondingCurve": "5a2XSN4qvTbB5oNCDqfYVifFdfU3gdRn8cjhp74GmgaW",
+      "status": "LINKED",
+      "migrationSignature": "4GgHxDyD6zkemDyvCRkb8KtMtL9sUt1bhpfz9AjbAfKV6tDPUCcUf2Rt1bDr5YcHRtacgKQBvYpRsGmFuBGAZQiJ",
+      "migrationSlot": 441111101,
+      "migrationTimestamp": "2026-08-23T07:45:01.000Z",
+      "poolAddress": "FGduCcZsaNz8ieDwNnVPGtrtAh13i5FLhds3cac42Jac",
+      "poolAuthority": "9GiGGh1nTfJyyi8FjW38r16vmK8mTqtJt12k8bXYqvi2",
+      "baseMint": "AKbox1hQ5zfLghcbqTukUJq3THaeAJFpXQ31w1M6pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "FGduCcZsaNz8ieDwNnVPGtrtAh13i5FLhds3cac42Jac",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "AKbox1hQ5zfLghcbqTukUJq3THaeAJFpXQ31w1M6pump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    },
+    {
+      "mint": "EqbW5avix8zBAC3hWfoq4fXBdRxXUrGmyHpKVextpump",
+      "bondingCurve": "567Kbxt8aqmPPyuZ1N4wgWwowjfyfJs8heZVGtALVjUB",
+      "status": "LINKED",
+      "migrationSignature": "2CmHvHAyeMbQXWweNnzLwTvaNf4gNc8gsfB3RZ7MJcGevyJGjd5y9fqZsHB7BxbqjLugzMhy8sLA5AgyPpkkUAKo",
+      "migrationSlot": 441195892,
+      "migrationTimestamp": "2026-08-23T16:21:24.000Z",
+      "poolAddress": "29LwJax55Ze7mia8uunDyWr19kpk6FhvEUmXoTwaU1CS",
+      "poolAuthority": "2tj4AKDALdM3VSHDjZWHSnxX3PVeWZJEYtcvorrArnk4",
+      "baseMint": "EqbW5avix8zBAC3hWfoq4fXBdRxXUrGmyHpKVextpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": {
+        "address": "29LwJax55Ze7mia8uunDyWr19kpk6FhvEUmXoTwaU1CS",
+        "owner": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "index": 0,
+        "canonical": true,
+        "baseMint": "EqbW5avix8zBAC3hWfoq4fXBdRxXUrGmyHpKVextpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "dataBytes": 301
+      },
+      "reason": "Explicit official migration and PumpSwap-owned canonical Pool agree."
+    }
+  ],
+  "metrics": {
+    "rpcCalls": 470,
+    "estimatedHeliusCredits": null,
+    "billingNote": "Standard RPC billing was not exposed; no 100-credit gTFA estimate is applied to these RPC calls."
+  },
+  "summary": {
+    "migrationFound": 7,
+    "linked": 7,
+    "ambiguous": 0,
+    "unavailable": 0,
+    "falseLinkage": 0
+  }
+}

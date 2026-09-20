@@ -15,3 +15,5 @@ export * from "@/lib/radar/acceptance/bounded-study";
 export * from "@/lib/radar/acceptance/corpus";
 export * from "@/lib/radar/acceptance/snapshots";
 export * from "@/lib/radar/acceptance/backfill";
+export * from "@/lib/radar/acceptance/pumpswap";
+export * from "@/lib/radar/acceptance/shadow";
