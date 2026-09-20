@@ -11,7 +11,7 @@ const token = "0x0000000000000000000000000000000000000001";
 const evmPool = "0x0000000000000000000000000000000000000002";
 const quoteToken = "0x0000000000000000000000000000000000000003";
 function mintBytes() { const bytes = Buffer.alloc(82); bytes[45] = 1; bytes[44] = 6; bytes.writeBigUInt64LE(BigInt(1000), 36); return bytes; }
-function account(bytes = mintBytes(), owner = TOKEN_PROGRAM) { return { owner, executable: false, data: [bytes.toString("base64"), "base64"] }; }
+function account(bytes = mintBytes(), owner: unknown = TOKEN_PROGRAM) { return { owner, executable: false, data: [bytes.toString("base64"), "base64"] }; }
 function json(value: unknown, status = 200) { return new Response(JSON.stringify(value), { status }); }
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
@@ -36,9 +36,10 @@ describe("provider identity boundary", () => {
     vi.stubGlobal("fetch", vi.fn(async () => json({ pairs: [{ chainId: "solana", pairAddress: pool, baseToken: { address: mint.toLowerCase() } }] })));
     await expect(prepareLiveAnalyzerResolution({ raw: mint, hintChain: "solana" })).rejects.toMatchObject({ code: "IDENTITY_CONFLICT" });
   });
-  it("retains validated DEX pair base/quote/chain proof", async () => {
+  it("returns provider response identity for server attestation without caller-authored proof", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => json({ pairs: [{ chainId: "base", pairAddress: evmPool, baseToken: { address: token }, quoteToken: { address: quoteToken } }] })));
-    expect((await prepareLiveAnalyzerResolution({ raw: `https://dexscreener.com/base/${evmPool}` })).resolution).toMatchObject({ tokenAddress: token, pairAddress: evmPool, pairProof: { chain: "base", pair: evmPool, baseToken: token, quoteToken } });
+    expect((await prepareLiveAnalyzerResolution({ raw: `https://dexscreener.com/base/${evmPool}` })).resolution).toMatchObject({ tokenAddress: token, pairAddress: evmPool, resolvedBaseToken: token, resolvedQuoteToken: quoteToken });
+    expect((await prepareLiveAnalyzerResolution({ raw: `https://dexscreener.com/base/${evmPool}` })).resolution).not.toHaveProperty("pairProof");
   });
 });
 
@@ -63,6 +64,12 @@ describe("Solana Mint verification and supply-based distribution", () => {
     const result = await collectLiveAnalyzerEvidence({ raw: mint }, await prepareLiveAnalyzerResolution({ raw: mint }));
     expect(result.manifest.observations).toEqual([]);
     expect(result.usage.filter((u) => u.provider === "helius")).toHaveLength(1);
+  });
+  it.each([[ [TOKEN_PROGRAM] ], [{ program: TOKEN_PROGRAM }], [null], ["TokenkegQf"]])("does not promote malformed Solana owner %j", async (owner) => {
+    vi.stubEnv("SOLANA_RPC_URL", "https://controlled.invalid"); vi.stubEnv("BIRDEYE_API_KEY", "");
+    vi.stubGlobal("fetch", vi.fn(async (url) => String(url).includes("dexscreener") ? json({ pairs: [] }) : json({ result: { value: account(mintBytes(), owner) } })));
+    const result = await collectLiveAnalyzerEvidence({ raw: mint }, await prepareLiveAnalyzerResolution({ raw: mint }));
+    expect(result.statuses.find((item) => item.capability === "TOKEN_PROGRAM_OWNED")?.status).not.toBe("SUPPORTED");
   });
   it("100 + 100 / TOTAL_SUPPLY 1000 is 0.2; exclusions do not change denominator", () => {
     const rows = [{ address: mint, balance: "100" }, { address: pool, balance: "100" }];

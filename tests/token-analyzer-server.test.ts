@@ -5,6 +5,9 @@ const rpc = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/auth/authorization", () => ({
   getAuthorizationContext: vi.fn(async () => ({ userId: "00000000-0000-4000-8000-000000000001", roles: ["admin"], permissions: [], supabase: { rpc } })),
 }));
+vi.mock("@/lib/token-analyzer/trusted-resolution", () => ({
+  attestAnalyzerResolution: vi.fn(async ({ resolution }: { resolution: Record<string, unknown> }) => ({ id: "00000000-0000-4000-8000-000000000007", resolution: { ...resolution, resolutionReceiptId: "00000000-0000-4000-8000-000000000007" } })),
+}));
 
 import { getAnalyzerSnapshot, runAnalyzer } from "@/lib/token-analyzer/server";
 import fixture from "./fixtures/token-analyzer-contract.json";

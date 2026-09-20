@@ -17,7 +17,10 @@ export type AnalyzerClaimVerification = "SUPPORTED" | "PARTIALLY_SUPPORTED" | "U
 
 export type AnalyzerInput = { raw: string; hintChain?: AnalyzerChain };
 export type AnalyzerResolution = {
-  pairProof?: { provider: "dex-screener"; chain: string; pair: string; baseToken: string; quoteToken: string; selection: "BASE_TOKEN" };
+  resolutionReceiptId?: string;
+  resolvedBaseToken?: string;
+  resolvedQuoteToken?: string;
+  trustedPoolIds?: string[];
   inputType: AnalyzerInputType;
   source: string;
   chain: AnalyzerChain;

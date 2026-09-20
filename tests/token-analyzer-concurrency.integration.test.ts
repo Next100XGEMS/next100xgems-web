@@ -8,10 +8,19 @@ import { createAuditDatabase, dropAuditDatabase, sql, sqlArgs, command, authSql 
 import { resolveAnalyzerInput } from "@/lib/token-analyzer/input-resolver";
 import policy from "@/lib/token-analyzer/persistence-policy.json";
 import { TOKEN_PROGRAM } from "@/lib/token-analyzer/provider-integrity";
+import { sha256 } from "@/lib/radar/hash";
 
 vi.mock("server-only", () => ({}));
-const context = vi.hoisted(() => ({ userId: "", client: null as SupabaseClient | null }));
+const context = vi.hoisted(() => ({ userId: "", db: "", client: null as SupabaseClient | null }));
 vi.mock("@/lib/auth/authorization", () => ({ getAuthorizationContext: async () => ({ userId: context.userId, roles: ["admin"], permissions: [], supabase: context.client }) }));
+vi.mock("@/lib/token-analyzer/trusted-resolution", () => ({
+  attestAnalyzerResolution: async ({ deliveryKey, input, resolution, providerResponse }: { deliveryKey: string; input: unknown; resolution: unknown; providerResponse: unknown }) => {
+    const named = (value: unknown) => "'" + JSON.stringify(value).replaceAll("'", "''") + "'::jsonb";
+    const result = await command(sqlArgs(context.db), `begin;set local role service_role;select public.analyzer_attest_resolution('${deliveryKey}',${named(input)},${named(resolution)},'${sha256({ providerResponse })}','token-analyzer-live-collector-v2');commit;`);
+    if (result.code) throw new Error(result.stderr);
+    return JSON.parse(result.stdout.trim().split("\n").at(-1) ?? "null");
+  },
+}));
 import { runAnalyzer, getAnalyzerDeliveryReceipt, getAnalyzerProviderTelemetry } from "@/lib/token-analyzer/server";
 
 const local = process.env.RUN_LOCAL_ANALYZER_INTEGRATION === "1" ? describe : describe.skip;
@@ -63,6 +72,7 @@ local("real reservation-first application concurrency", () => {
   });
   beforeAll(async () => {
     db = await createAuditDatabase();
+    context.db = db;
     context.userId = randomUUID();
     await sql(db, `begin;insert into auth.users(id) values ('${context.userId}');insert into public.profiles(id,display_name) values ('${context.userId}','Analyzer overlap');insert into public.user_roles(user_id,role_id) select '${context.userId}',id from public.roles where key='admin';${authSql(context.userId)}select public.set_token_analyzer_enabled(true);commit;`);
     context.client = { rpc: async (name: string, params: Record<string, unknown> = {}) => {
@@ -84,7 +94,7 @@ local("real reservation-first application concurrency", () => {
     expect(registry.fields.price).toEqual(policy.fields.price);
     expect(registry.fields.marketCap).toEqual(policy.fields.marketCap);
   }, 120000);
-  afterAll(async () => { if (db) await dropAuditDatabase(db); context.client = null; providerServer?.close(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+  afterAll(async () => { if (db) await dropAuditDatabase(db); context.client = null; context.db = ""; providerServer?.close(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
   it.each([[2, false], [5, false], [2, true], [5, true]] as const)("%i default callers (DEX URL=%s) contend, capture once and replay one exact receipt", async (count, dexUrl) => {
     const address = "0x" + String(count).padStart(40, "0");
     const input = { raw: dexUrl ? `https://dexscreener.com/ethereum/${address}` : address, hintChain: "ethereum" as const };

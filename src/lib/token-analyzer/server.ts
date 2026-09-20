@@ -6,6 +6,7 @@ import policy from "./persistence-policy.json";
 import { verifyEvidenceManifestHash } from "./evidence";
 import type { AnalyzerInput, AnalyzerResolution, AnalyzerResult } from "./contracts";
 import { collectLiveAnalyzerEvidence, prepareLiveAnalyzerResolution, initialLiveResolution, type LivePreparedResolution } from "./live-intelligence";
+import { attestAnalyzerResolution } from "./trusted-resolution";
 
 export type AnalyzerRunOperation = "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
 export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; intentId?: string; sourceDeliveryId?: string };
@@ -107,6 +108,8 @@ export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOpti
   if (!reservation.source_delivery_key) {
     // Only the reservation owner captures timestamped evidence.
     prepared = await prepareLiveAnalyzerResolution(reservation.input as AnalyzerInput, reservation.resolution as AnalyzerResolution);
+    const attestation = await attestAnalyzerResolution({ deliveryKey: key, input: reservation.input as AnalyzerInput, resolution: prepared.resolution, providerResponse: prepared.seedMarket });
+    prepared = { ...prepared, resolution: attestation.resolution };
     const live = await collectLiveAnalyzerEvidence(reservation.input as AnalyzerInput, prepared);
     prepared = { ...prepared, statuses: live.statuses };
     const manifest = live.manifest;

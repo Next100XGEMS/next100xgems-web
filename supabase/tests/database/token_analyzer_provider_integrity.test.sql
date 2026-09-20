@@ -20,12 +20,16 @@ select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,r||'{"pa
 update url_case set r=r||'{"tokenAddress":"0x0000000000000000000000000000000000000001","canonicalTokenId":"base:0x0000000000000000000000000000000000000001"}';
 select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,r) from url_case$$,'23P01',null,'Provider-resolved pair requires typed response proof');
 update url_case set r=r||'{"pairProof":{"provider":"dex-screener","chain":"base","pair":"0x0000000000000000000000000000000000000002","baseToken":"0x0000000000000000000000000000000000000001","quoteToken":"0x0000000000000000000000000000000000000003","selection":"BASE_TOKEN"}}';
-select extensions.lives_ok($$select public.analyzer_reserve_delivery(i,r) from url_case$$,'Pair response proof reconciles original URL');
+select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,r) from url_case$$,'23P01',null,'Caller-authored pair proof is rejected');
 select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,jsonb_set(r,'{pairProof,chain}','"ethereum"')) from url_case$$,'23P01',null,'Ethereum pair proof cannot resolve Base');
 select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,jsonb_set(r,'{pairProof,pair}','"0x0000000000000000000000000000000000000003"')) from url_case$$,'23P01',null,'Wrong response pool rejected');
 select extensions.throws_ok($$select public.analyzer_reserve_delivery(i,jsonb_set(r,'{pairProof,baseToken}','"0x0000000000000000000000000000000000000003"')) from url_case$$,'23P01',null,'Wrong response token rejected');
 
 update analyzer_case set r=public.analyzer_reserve_delivery(f->'input',f->'resolution');
+set local role service_role;
+update analyzer_case set f=jsonb_set(f,'{manifest,resolvedToken}',(select public.analyzer_attest_resolution(r->>'delivery_key',f->'input',f->'resolution',repeat('a',64),'token-analyzer-live-collector-v2')->'resolution'));
+update analyzer_case set p=jsonb_set(p,'{resolvedToken}',f->'manifest'->'resolvedToken');
+set local role authenticated;
 update analyzer_case set d1=public.analyzer_complete_delivery(r->>'delivery_key',(r->>'owner_token')::uuid,f->'manifest');
 select extensions.ok(not ((select d1->'result' from analyzer_case) ? 'providerUsage'),'Completed receipt has no telemetry');
 select public.analyzer_record_provider_event(jsonb_build_object('request_id',d1->>'request_id','analysis_id',d1->>'analysis_id','provider','dex-screener','capability','MARKET','status','SUCCEEDED','latency_ms',1,'metadata','{"capabilityStatus":null,"requestMade":true,"attempts":1,"requestOutcome":"SUCCESS","cache":"MISS"}'::jsonb)) from analyzer_case;

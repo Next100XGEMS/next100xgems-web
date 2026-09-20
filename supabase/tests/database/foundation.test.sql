@@ -13,7 +13,7 @@ select tables_are('public', array[
   'radar_evidence', 'radar_methodology_versions',
   'radar_freshness_policies', 'radar_evidence_freezes', 'research_authors', 'article_sources',
   'article_related_research', 'article_tokens',
-  'analyzer_config', 'analyzer_requests', 'analyzer_resolutions',
+  'analyzer_config', 'analyzer_requests', 'analyzer_resolutions', 'analyzer_resolution_receipts',
   'analyzer_evidence_manifests', 'analyzer_analyses', 'analyzer_model_calls',
   'analyzer_provider_events', 'analyzer_cost_usage', 'analyzer_deliveries', 'analyzer_delivery_intents'
 ], 'Only the intended foundation/Research/Radar/Analyzer tables exist; no trading or analytics event tables');

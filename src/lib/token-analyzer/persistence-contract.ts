@@ -51,6 +51,14 @@ export function validTransactionReference(chain: string, value: string): boolean
 
 export function assertObservation(observation: AnalyzerObservation, resolution: AnalyzerResolution): void {
   assertContract(observation, "observation");
+  const scopedContext = observation.context;
+  if (scopedContext && ["PAIR", "POOL"].includes(scopedContext.scope)) {
+    const trustedPools = resolution.trustedPoolIds ?? [];
+    const expectedPool = resolution.pairAddress ?? resolution.poolAddress;
+    if ((!expectedPool || scopedContext.poolId !== expectedPool) && !trustedPools.includes(scopedContext.poolId ?? "")) throw new Error("Analyzer scoped observation is not bound to trusted provider resolution.");
+    if (resolution.resolvedBaseToken && scopedContext.token !== resolution.resolvedBaseToken) throw new Error("Analyzer scoped observation base token mismatch.");
+    if (resolution.resolvedQuoteToken && scopedContext.quoteAsset !== resolution.resolvedQuoteToken) throw new Error("Analyzer scoped observation quote mismatch.");
+  }
   if (observation.state !== "AVAILABLE") return;
   const registered = policy.fields[observation.key as keyof typeof policy.fields];
   const aggregate = observation.context?.scope === "TOKEN_AGGREGATE" && ["liquidity", "volume", "transactions"].includes(observation.key);
@@ -59,6 +67,13 @@ export function assertObservation(observation: AnalyzerObservation, resolution: 
   if (["birdeye", "dex-screener", "helius", "alchemy"].includes(observation.source) && !c) throw new Error("Provider observation requires explicit scope.");
   if (observation.source === "birdeye" && (c?.scope !== "TOKEN_AGGREGATE" || c.methodology !== "BIRDEYE_TOKEN_OVERVIEW")) throw new Error("Birdeye overview cannot claim a pool.");
   if (c && (c.chain !== resolution.chain || c.token !== resolution.tokenAddress || (c.scope === "TOKEN_AGGREGATE" && c.poolId !== null) || (["PAIR", "POOL"].includes(c.scope) && (!c.poolId || !validEntityAddress(c.chain, c.poolId))) || (c.quoteAsset !== null && !validEntityAddress(c.chain, c.quoteAsset)))) throw new Error("Analyzer observation scope is invalid.");
+  if (c && observation.state === "AVAILABLE" && ["PAIR", "POOL"].includes(c.scope)) {
+    const trustedPools = resolution.trustedPoolIds ?? [];
+    const expectedPool = resolution.pairAddress ?? resolution.poolAddress;
+    if ((!expectedPool || c.poolId !== expectedPool) && !trustedPools.includes(c.poolId!)) throw new Error("Analyzer scoped observation is not bound to trusted provider resolution.");
+    if (resolution.resolvedBaseToken && c.token !== resolution.resolvedBaseToken) throw new Error("Analyzer scoped observation base token mismatch.");
+    if (resolution.resolvedQuoteToken && c.quoteAsset !== resolution.resolvedQuoteToken) throw new Error("Analyzer scoped observation quote mismatch.");
+  }
   if (c && rule.identityType === "POOL" && c.poolId !== observation.identity) throw new Error("Analyzer scope/provenance pool mismatch.");
   if (c?.classification === "OBJECTIVE_DERIVED" && observation.evidenceClass === "VERIFIED_DATA") throw new Error("Derived metrics are not direct verified facts.");
   if (observation.key === "concentration" && (!c || c.classification !== "OBJECTIVE_DERIVED" || c.denominatorType !== "TOTAL_SUPPLY" || c.completeness !== "PARTIAL" || c.methodology !== "TOP10_TOTAL_SUPPLY_SHARE" || c.requestedTopN !== 20 || c.metricTopN !== 10 || !c.rawBalances || c.returnedAccountCount !== c.rawBalances.length || !c.exclusions || c.rawBalances.some((r) => !validEntityAddress(resolution.chain, r.address)) || totalSupplyShare(c.rawBalances, c.denominatorValue ?? null, 10, c.exclusions) !== observation.value)) throw new Error("Invalid total-supply share derivation.");

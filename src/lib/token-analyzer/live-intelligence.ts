@@ -175,7 +175,9 @@ async function solanaEvidence(resolution: AnalyzerResolution, observations: Anal
   const account = await request("getAccountInfo", [resolution.tokenAddress, { encoding: "base64", commitment: "confirmed" }]);
   const rawAccount = (account.result as JsonRecord | undefined)?.value as JsonRecord | undefined;
   const mint = verifySolanaMint(rawAccount);
-  statuses.push(status("helius", "SOLANA_ADDRESS_VALID", "SUPPORTED"), status("helius", "ACCOUNT_EXISTS", rawAccount ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "TOKEN_PROGRAM_OWNED", rawAccount && [TOKEN_PROGRAM, TOKEN_2022_PROGRAM].includes(String(rawAccount.owner)) ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "MINT_ACCOUNT_VERIFIED", mint ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "MINT_FIELDS_DECODED", mint ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"));
+  const ownerIsString = rawAccount !== undefined && typeof rawAccount.owner === "string";
+  const ownerIsApproved = ownerIsString && [TOKEN_PROGRAM, TOKEN_2022_PROGRAM].includes(rawAccount.owner as string);
+  statuses.push(status("helius", "SOLANA_ADDRESS_VALID", "SUPPORTED"), status("helius", "ACCOUNT_EXISTS", rawAccount ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "TOKEN_PROGRAM_OWNED", ownerIsApproved ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "MINT_ACCOUNT_VERIFIED", mint ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"), status("helius", "MINT_FIELDS_DECODED", mint ? "SUPPORTED" : "TEMPORARILY_UNAVAILABLE"));
   if (!mint) { statuses.push(status("helius", "TOKEN_IDENTITY", "TEMPORARILY_UNAVAILABLE"), status("helius", "AUTHORITIES", "TEMPORARILY_UNAVAILABLE")); return; } // Never override a non-mint account with token RPCs.
   const start = observations.length;
   observations.push(observation("supply", "Verified Mint raw total supply", mint.supply, "helius", "VERIFIED_DATA", resolution, "TOKEN", resolution.tokenAddress, "TOKEN"));
@@ -252,8 +254,13 @@ export async function prepareLiveAnalyzerResolution(input: AnalyzerInput, reserv
   if (!resolution.tokenAddress && seedMarket) {
     const token = canonicalAddress(resolution.chain, (seedMarket.pair.baseToken as JsonRecord)?.address)!;
     const quote = canonicalAddress(resolution.chain, (seedMarket.pair.quoteToken as JsonRecord)?.address)!;
-    const pair = canonicalAddress(resolution.chain, seedMarket.pair.pairAddress)!;
-    resolution = { ...resolution, tokenAddress: token, canonicalTokenId: `${resolution.chain}:${token}`, confidence: "PARTIAL", pairProof: { provider: "dex-screener", chain: resolution.chain, pair, baseToken: token, quoteToken: quote, selection: "BASE_TOKEN" } };
+    const trustedPoolIds = seedMarket.pairs.map((candidate) => canonicalAddress(resolution.chain, candidate.pairAddress)).filter((candidate): candidate is string => candidate !== null);
+    resolution = { ...resolution, tokenAddress: token, canonicalTokenId: `${resolution.chain}:${token}`, confidence: "PARTIAL", resolvedBaseToken: token, resolvedQuoteToken: quote, trustedPoolIds: [...new Set(trustedPoolIds)] };
+  } else if (seedMarket && resolution.tokenAddress) {
+    const trustedPoolIds = seedMarket.pairs.map((candidate) => canonicalAddress(resolution.chain, candidate.pairAddress)).filter((candidate): candidate is string => candidate !== null);
+    const matchingPair = seedMarket.pairs.find((candidate) => canonicalAddress(resolution.chain, (candidate.baseToken as JsonRecord)?.address) === resolution.tokenAddress);
+    const resolvedQuoteToken = canonicalAddress(resolution.chain, (matchingPair?.quoteToken as JsonRecord)?.address);
+    resolution = { ...resolution, resolvedBaseToken: resolution.tokenAddress, resolvedQuoteToken: resolvedQuoteToken ?? resolution.resolvedQuoteToken, trustedPoolIds: [...new Set([...(resolution.trustedPoolIds ?? []), ...trustedPoolIds])] };
   }
   return { resolution, seedMarket, usage, statuses };
 }
