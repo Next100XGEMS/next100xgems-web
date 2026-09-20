@@ -1,44 +1,40 @@
+import { isValidSolanaPublicKey } from "@/lib/radar/acceptance/solana";
 import { ANALYZER_INPUT_TYPES, type AnalyzerChain, type AnalyzerInput, type AnalyzerInputType, type AnalyzerResolution } from "./contracts";
 
-const EVM = /^0x[a-fA-F0-9]{40}$/;
-const SOLANA = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+const EVM = /^0x[0-9a-fA-F]{40}$/;
 const CHAIN_ALIASES: Record<string, AnalyzerChain> = { eth: "ethereum", ethereum: "ethereum", base: "base", bsc: "bnb", bnb: "bnb", solana: "solana", sol: "solana" };
+const CHAINS = new Set<AnalyzerChain>(["solana", "ethereum", "base", "bnb"]);
 const now = () => new Date().toISOString();
-
-function base(inputType: AnalyzerInputType, source: string, chain: AnalyzerChain, tokenAddress: string | null, pairAddress: string | null, poolAddress: string | null, reference: string): AnalyzerResolution {
-  const capturedAt = now();
+function normalizeAddress(chain: AnalyzerChain, value: string) { return chain === "solana" ? value : value.toLowerCase(); }
+function base(inputType: AnalyzerInputType, source: string, chain: AnalyzerChain, tokenAddress: string | null, pairAddress: string | null, poolAddress: string | null, reference: string, confidence: AnalyzerResolution["confidence"] = "UNKNOWN"): AnalyzerResolution {
+  const capturedAt = now(); const normalizedToken = tokenAddress ? normalizeAddress(chain, tokenAddress) : null;
   const provenance = [{ source, kind: source === "direct-input" ? "DIRECT_INPUT" as const : "URL_STRUCTURE" as const, reference, capturedAt }];
-  return { inputType, source, chain, tokenAddress, canonicalTokenId: tokenAddress ? `${chain}:${tokenAddress.toLowerCase()}` : null, pairAddress, poolAddress, symbol: null, name: null, decimals: null, supply: null, launchpad: null, creator: null, creationTimestamp: null, programOrContract: null, confidence: tokenAddress ? "RESOLVED" : "UNKNOWN", provenance };
+  return { inputType, source, chain, tokenAddress: normalizedToken, canonicalTokenId: normalizedToken && CHAINS.has(chain) ? `${chain}:${normalizedToken}` : null, pairAddress: pairAddress ? normalizeAddress(chain, pairAddress) : null, poolAddress: poolAddress ? normalizeAddress(chain, poolAddress) : null, symbol: null, name: null, decimals: null, supply: null, launchpad: null, creator: null, creationTimestamp: null, programOrContract: null, confidence, provenance };
 }
-
 function identifyAddress(raw: string, hintChain?: AnalyzerChain): AnalyzerResolution | null {
-  if (EVM.test(raw)) return base("CONTRACT_ADDRESS", "direct-input", hintChain && hintChain !== "solana" ? hintChain : "unknown", raw, null, null, raw);
-  if (SOLANA.test(raw)) return base("TOKEN_MINT", "direct-input", hintChain === "solana" ? "solana" : "unknown", raw, null, null, raw);
+  if (EVM.test(raw)) { const chain = hintChain && CHAINS.has(hintChain) && hintChain !== "solana" ? hintChain : "unknown"; return base("CONTRACT_ADDRESS", "direct-input", chain, raw, null, null, raw, "CANDIDATE_IDENTITY"); }
+  if (isValidSolanaPublicKey(raw)) { const chain = hintChain === "solana" ? "solana" : "unknown"; return base("TOKEN_MINT", "direct-input", chain, raw, null, null, raw, "CANDIDATE_IDENTITY"); }
   return null;
 }
-
+function providerHost(host: string, root: string) { const normalized = host.toLowerCase().replace(/\.$/, ""); return normalized === root || normalized.endsWith(`.${root}`); }
 function urlResolution(raw: string, url: URL): AnalyzerResolution {
-  const host = url.hostname.toLowerCase();
-  const parts = url.pathname.split("/").filter(Boolean);
-  const chain = CHAIN_ALIASES[url.searchParams.get("chain")?.toLowerCase() ?? ""] ?? CHAIN_ALIASES[parts[0]?.toLowerCase() ?? ""] ?? "unknown";
-  const address = parts.find((part) => EVM.test(part) || SOLANA.test(part)) ?? null;
-  const isDex = host.includes("dexscreener.com");
-  const isBirdeye = host.includes("birdeye.so");
-  const isGmgn = host.includes("gmgn.ai");
-  const isGecko = host.includes("geckoterminal.com");
-  const pool = isGecko && parts.includes("pools") ? parts[parts.indexOf("pools") + 1] ?? null : null;
-  const pair = isDex ? parts[1] ?? null : null;
+  const host = url.hostname.toLowerCase().replace(/\.$/, ""); const parts = url.pathname.split("/").filter(Boolean);
+  const pathChain = CHAIN_ALIASES[parts[0]?.toLowerCase() ?? ""]; const queryValue = url.searchParams.get("chain")?.toLowerCase(); const queryChain = queryValue ? CHAIN_ALIASES[queryValue] : undefined;
+  if (queryValue && !queryChain) return base("UNKNOWN", host, "unknown", null, null, null, raw);
+  if (pathChain && queryChain && pathChain !== queryChain) return base("UNKNOWN", host, "unknown", null, null, null, raw);
+  const chain = queryChain ?? pathChain ?? "unknown"; const isDex = providerHost(host, "dexscreener.com"); const isBirdeye = providerHost(host, "birdeye.so"); const isGmgn = providerHost(host, "gmgn.ai"); const isGecko = providerHost(host, "geckoterminal.com");
+  const pool = isGecko && parts.includes("pools") ? parts[parts.indexOf("pools") + 1] ?? null : null; const pair = isDex ? parts[1] ?? null : null;
   const articleHost = host === "medium.com" || host.endsWith(".medium.com") || host === "substack.com" || host.endsWith(".substack.com") || host === "mirror.xyz" || host.endsWith(".mirror.xyz");
-  const type: AnalyzerInputType = isDex || isBirdeye || isGmgn || isGecko ? (isDex || isGecko ? "DEX_URL" : "CHART_URL") : host.includes("x.com") || host.includes("twitter.com") ? "X_POST" : host.includes("facebook.com") ? "FACEBOOK_POST" : host.includes("instagram.com") ? "INSTAGRAM_POST" : articleHost ? "ARTICLE" : "GENERIC_URL";
-  const result = base(type, host, chain, address, pair, pool, raw);
-  if (!address && !pair && !pool && ["DEX_URL", "CHART_URL"].includes(type)) result.confidence = "PARTIAL";
+  const type: AnalyzerInputType = isDex || isBirdeye || isGmgn || isGecko ? (isDex || isGecko ? "DEX_URL" : "CHART_URL") : host === "x.com" || host.endsWith(".x.com") || host === "twitter.com" || host.endsWith(".twitter.com") ? "X_POST" : host === "facebook.com" || host.endsWith(".facebook.com") ? "FACEBOOK_POST" : host === "instagram.com" || host.endsWith(".instagram.com") ? "INSTAGRAM_POST" : articleHost ? "ARTICLE" : "GENERIC_URL";
+  const result = base(type, host, chain, null, pair, pool, raw, pair || pool ? "PARTIAL" : "UNKNOWN");
+  if ((pair && !EVM.test(pair) && !isValidSolanaPublicKey(pair)) || (pool && !EVM.test(pool) && !isValidSolanaPublicKey(pool))) result.confidence = "UNKNOWN";
   return result;
 }
 
 export function classifyAnalyzerInput(raw: string): AnalyzerInputType {
   const value = raw.trim();
   if (EVM.test(value)) return "CONTRACT_ADDRESS";
-  if (SOLANA.test(value)) return "TOKEN_MINT";
+  if (isValidSolanaPublicKey(value)) return "TOKEN_MINT";
   try { const url = new URL(value); if (!/^https?:$/.test(url.protocol)) return "UNKNOWN"; return urlResolution(value, url).inputType; } catch { return "UNKNOWN"; }
 }
 

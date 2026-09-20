@@ -4,10 +4,10 @@ The Analyzer is selective by design: one primary evidence source, conditional
 verification, cached normalized observations, and stable request/evidence
 fingerprints. It must not query every provider for every request.
 
-Before an AI call, the future runner estimates input/output cost and checks
-per-analysis, daily, monthly, and escalation caps. Afterward it records model,
-usage, latency, estimated cost, and provider-reported actual cost where known.
-Budget failure is explicit `AI_BUDGET_EXCEEDED`; it never silently spends more.
+The schema and trusted telemetry RPCs reserve fields for future AI cost
+accounting. A production AI budget runner, spend reservation, and provider
+call path are NOT YET ACTIVE. No AI call can occur merely because a key or
+configuration exists.
 
 Provider events and cost usage are bounded structured telemetry. API keys,
 headers, cookies, raw prompts, hidden reasoning, and unbounded provider

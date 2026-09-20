@@ -16,14 +16,20 @@ does not duplicate a public Radar projection or change Radar publication.
 
 ## Storage
 
-The additive Analyzer migration stores requests, resolutions, immutable
+The additive Analyzer migrations store requests, resolutions, immutable
 evidence manifests, versioned analyses, provider events, cost usage, and model
 call telemetry. Tables have RLS enabled and no browser-role grants. Named
-server operations are the only application access path.
+authenticated server operations are the only application access path; the
+hardening gateway performs state reads and run persistence transactionally.
 
 An analysis version never mutates a completed manifest. Reanalysis creates a
 new analysis version. Stable request fingerprints permit deterministic evidence
-reuse inside an approved freshness window once provider collection is attached.
+reuse only inside an explicit freshness window. Stale requests create a new
+immutable analysis version; concurrent submissions serialize on the fingerprint
+boundary.
+
+Provider collection, AI network execution, model budgets, and public Analyzer
+access remain intentionally NOT YET ACTIVE.
 
 ## Security
 

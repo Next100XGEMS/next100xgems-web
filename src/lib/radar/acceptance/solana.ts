@@ -30,6 +30,15 @@ function isEd25519Point(bytes: Uint8Array): boolean {
   if (mod(x * x - x2) !== BigInt(0)) x = mod(x * powMod(BigInt(2), (P - BigInt(1)) / BigInt(4)));
   return mod(x * x - x2) === BigInt(0);
 }
+
+/** Validates a Solana public-key encoding without accepting syntax-only strings. */
+export function isValidSolanaPublicKey(value: string): boolean {
+  try {
+    return base58Decode(value).length === 32 && isEd25519Point(base58Decode(value));
+  } catch {
+    return false;
+  }
+}
 function sha256(parts: readonly Uint8Array[]): Uint8Array { const hash = createHash("sha256"); for (const part of parts) hash.update(part); return Uint8Array.from(hash.digest()); }
 
 /** Derives the official Pump bonding-curve PDA without adding a Solana SDK dependency. */

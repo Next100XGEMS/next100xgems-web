@@ -32,7 +32,7 @@ export type AnalyzerResolution = {
   creator: string | null;
   creationTimestamp: string | null;
   programOrContract: string | null;
-  confidence: "RESOLVED" | "PARTIAL" | "UNKNOWN";
+  confidence: "RESOLVED" | "CANDIDATE_IDENTITY" | "PARTIAL" | "UNKNOWN";
   provenance: AnalyzerProvenance[];
 };
 

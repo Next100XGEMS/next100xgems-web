@@ -24,6 +24,20 @@ describe("Universal Token Analyzer contracts", () => {
     expect(result.chain).toBe("base");
     expect(result.pairAddress).toBe("0x0000000000000000000000000000000000000001");
     expect(result.name).toBeNull();
+    expect(result.tokenAddress).toBeNull();
+  });
+
+  it("preserves Solana case and does not trust a syntax-only identity as resolved", () => {
+    const mint = "So11111111111111111111111111111111111111112";
+    const result = resolveAnalyzerInput({ raw: mint, hintChain: "solana" });
+    expect(result.tokenAddress).toBe(mint);
+    expect(result.canonicalTokenId).toBe(`solana:${mint}`);
+    expect(result.confidence).toBe("CANDIDATE_IDENTITY");
+  });
+
+  it("rejects spoofed provider hosts and conflicting chain context", () => {
+    expect(resolveAnalyzerInput({ raw: "https://dexscreener.com.evil.test/base/0x0000000000000000000000000000000000000001" }).inputType).toBe("GENERIC_URL");
+    expect(resolveAnalyzerInput({ raw: "https://dexscreener.com/base/0x0000000000000000000000000000000000000001?chain=ethereum" }).inputType).toBe("UNKNOWN");
   });
 
   it("rejects unsupported schemes and leaves identity unresolved", () => {
@@ -67,5 +81,7 @@ describe("Universal Token Analyzer contracts", () => {
     expect(calculatePositionSizing({ portfolioCapital: "1000", maxRiskPercent: "1", entryPrice: "10", invalidationPrice: "9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "10", positionNotional: "100" });
     expect(calculatePositionSizing({ portfolioCapital: "1000", maxRiskPercent: "1", entryPrice: "10", invalidationPrice: "10" }).status).toBe("INVALID_INPUT");
     expect(calculatePositionSizing({ portfolioCapital: "1000", maxRiskPercent: "1", entryPrice: "10", invalidationPrice: "9", maxPositionNotional: "50" }).positionNotional).toBe("50");
+    expect(calculatePositionSizing({ portfolioCapital: "1000000000000000000000000000000", maxRiskPercent: "100", entryPrice: "10", invalidationPrice: "9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "1000000000000000000000000000000", positionNotional: "10000000000000000000000000000000" });
+    expect(calculatePositionSizing({ portfolioCapital: "1" + "0".repeat(38), maxRiskPercent: "100", entryPrice: "10", invalidationPrice: "9" }).status).toBe("INVALID_INPUT");
   });
 });

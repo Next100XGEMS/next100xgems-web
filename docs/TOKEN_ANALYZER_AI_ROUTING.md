@@ -9,11 +9,11 @@ structured-output support, and cost metadata without storing keys. All listed
 adapters default to disabled. Routine analysis permits one primary call;
 social-specialist and escalation routes require separate enabled controls.
 
-The deterministic evidence manifest is the only model context. Raw RPC
-payloads, credentials, hidden reasoning, unnecessary HTML, and provider
-headers are excluded. Output must be bounded structured JSON, cite evidence
-IDs, preserve `UNKNOWN`, and pass schema/reference checks. A bounded retry may
-be used for validation failure; otherwise the deterministic report is returned.
+The deterministic evidence manifest is intended to be the only model context.
+Raw RPC payloads, credentials, hidden reasoning, unnecessary HTML, and provider
+headers are excluded. AI network execution, schema-grounded output handling,
+bounded retries, and budget enforcement are NOT YET ACTIVE; the current
+foundation always returns the deterministic report with AI disabled.
 
 The future benchmark harness compares models on the same frozen manifests for
 schema validity, evidence references, unknown handling, grounding flags,
