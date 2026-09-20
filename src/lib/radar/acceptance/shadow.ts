@@ -3,7 +3,7 @@ import { sha256 } from "@/lib/radar/hash";
 export const SHADOW_CHECKPOINTS = ["T+5M", "T+15M", "T+30M", "T+1H", "T+6H", "T+24H"] as const;
 export type ShadowCheckpointName = (typeof SHADOW_CHECKPOINTS)[number];
 export type ShadowCheckpointStatus = "PENDING" | "CAPTURED" | "MISSED";
-export type ShadowObservationState = "AVAILABLE" | "UNKNOWN" | "UNAVAILABLE" | "STALE";
+export type ShadowObservationState = "AVAILABLE" | "UNKNOWN" | "UNAVAILABLE" | "STALE" | "NOT_APPLICABLE";
 
 export type ShadowAdmission = {
   mint: string;
@@ -78,9 +78,15 @@ export function recordImmutableShadowCheckpoint(state: ShadowCollectionState, ch
 
 export function appendShadowTelemetry(state: ShadowCollectionState, event: ShadowTelemetryEvent): ShadowCollectionState { return { ...state, updatedAt: event.observedAt, telemetry: [...state.telemetry, { ...event }] }; }
 
-export function summarizeShadowAvailability(state: ShadowCollectionState, metrics: readonly string[]): Record<string, { available: number; unknown: number; stale: number; providerFailure: number; total: number }> {
+export function classifyShadowMarketStage(input: { lifecycleComplete: boolean | null; poolFound: boolean }): "PUMP_BONDING_CURVE_STAGE" | "DEX_POOL_STAGE" | "UNKNOWN" {
+  if (input.poolFound) return "DEX_POOL_STAGE";
+  if (input.lifecycleComplete === false) return "PUMP_BONDING_CURVE_STAGE";
+  return "UNKNOWN";
+}
+
+export function summarizeShadowAvailability(state: ShadowCollectionState, metrics: readonly string[]): Record<string, { available: number; unknown: number; stale: number; providerFailure: number; notApplicable: number; total: number }> {
   return Object.fromEntries(metrics.map((metric) => {
     const observations = state.checkpoints.flatMap((checkpoint) => checkpoint.observations).filter((observation) => observation.metric === metric);
-    return [metric, { available: observations.filter((item) => item.state === "AVAILABLE").length, unknown: observations.filter((item) => item.state === "UNKNOWN").length, stale: observations.filter((item) => item.state === "STALE").length, providerFailure: observations.filter((item) => item.state === "UNAVAILABLE").length, total: observations.length }];
+    return [metric, { available: observations.filter((item) => item.state === "AVAILABLE").length, unknown: observations.filter((item) => item.state === "UNKNOWN").length, stale: observations.filter((item) => item.state === "STALE").length, providerFailure: observations.filter((item) => item.state === "UNAVAILABLE").length, notApplicable: observations.filter((item) => item.state === "NOT_APPLICABLE").length, total: observations.length }];
   }));
 }

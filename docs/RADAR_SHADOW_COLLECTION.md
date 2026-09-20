@@ -15,10 +15,11 @@ what is available at the actual checkpoint time. It retains UNKNOWN and
 UNAVAILABLE rather than substituting current values for missed historical
 checkpoints.
 
-The current bootstrap is intentionally bounded to 10–20 tokens. The runner is
-development-only and uses server-side local credentials when present. It does
-not use a service key in browser code, call swap or trading endpoints, build or
-sign transactions, publish Radar data, or write production tables.
+The runner is development-only and uses server-side local credentials when
+present. It does not use a service key in browser code, call swap or trading
+endpoints, build or sign transactions, publish Radar data, or write production
+tables. The expansion target is 100 admissions, but each invocation is capped
+at a 20-token batch and the live source may yield fewer unique creations.
 
 ## Official lifecycle linkage
 
@@ -47,6 +48,9 @@ covered. The normalized result is in
 - fixed checkpoints: `T+5M`, `T+15M`, `T+30M`, `T+1H`, `T+6H`, `T+24H`;
 - immutable checkpoint manifests and SHA-256 identities;
 - observation states `AVAILABLE`, `UNKNOWN`, `UNAVAILABLE` and `STALE`;
+- lifecycle-aware market-stage observations, including `PUMP_BONDING_CURVE_STAGE`,
+  `DEX_POOL_STAGE`, and `NOT_APPLICABLE` when a pre-graduation token has no DEX
+  pool yet;
 - bounded provenance, source timestamps, capture time and exact string values;
 - restart-safe telemetry and idempotent checkpoint replay.
 
@@ -95,21 +99,50 @@ estimate per call (5,200 estimated credits), admitted 20 tokens, and captured
 succeeded and the bounded DEX Screener fallback supplied the other 10. No
 T+24H checkpoint is claimed.
 
-The runner caps discovery pages, keeps the cohort bounded, uses one primary
-market source per checkpoint, and records provider failure instead of retrying
-without a boundary. Any projected use above the ceiling is a stop condition.
-No paid plan is justified by this bootstrap.
+The runner caps discovery pages, admits at most 20 new tokens per invocation,
+supports a bounded page-skip for continuing a reproducible discovery walk, uses
+one primary market source per checkpoint, and records provider failure instead
+of retrying without a boundary. Any projected use above the ceiling is a stop
+condition. No paid plan is justified by this bootstrap.
+
+## Expansion and maturation measurement — 2026-09-20
+
+The controlled expansion target was 100 admissions. Four bounded runs advanced
+the live cohort from 20 to 62 unique real Pump creations; the final continuation
+check found no further unique candidates in the bounded discovery pages. The
+cohort target remains recorded as 100, but no synthetic admissions were added.
+The current local normalized state contains 29 immutable captures: 14 `T+5M`
+and 15 `T+15M`; `T+30M`, `T+1H`, `T+6H` and `T+24H` remain pending. Late windows
+are not backfilled with current observations, and no objective outcome label is
+claimed until its real observation window matures.
+
+Across the live shadow runs, Helius telemetry recorded 213 read calls and
+15,300 estimated credits; Birdeye recorded 30 market requests, 10 successes
+and 20 HTTP 429 responses; DEX Screener recorded 22 successful fallback or
+comparison requests. No CoinGecko or GMGN request was needed in this bounded
+expansion. The state file is a local development observation artifact; it is
+not a public or production record.
+
+New captures preserve market stage separately from liquidity amount. A token
+without a DEX pair while its bonding curve is incomplete is `NOT_APPLICABLE`
+for DEX-pool liquidity and is labeled `PUMP_BONDING_CURVE_STAGE`; a verified
+pair is `DEX_POOL_STAGE`. This prevents “no pool yet” from becoming a zero or
+provider failure. Existing pre-change captures retain their immutable manifests
+and therefore do not receive retroactive stage observations.
 
 ## Operating commands
 
 Run locally with credentials already present in the ignored environment; never
-print the environment file:
+print the environment file. The fourth argument is the batch size, capped at
+20. `RADAR_SHADOW_DISCOVERY_SKIP_PAGES` advances a bounded Helius discovery
+walk when the previous batch exhausted its page range:
 
 ```text
-node scripts/radar-shadow-collect.mjs tests/data/radar-pump-shadow-20260920.json 20
+node scripts/radar-shadow-collect.mjs tests/data/radar-pump-shadow-20260920.json 100 20
 ```
 
-The optional `RADAR_SHADOW_DISCOVERY_PAGES` value is bounded by the script and
+The optional `RADAR_SHADOW_DISCOVERY_PAGES` and
+`RADAR_SHADOW_DISCOVERY_SKIP_PAGES` values are bounded operational controls and
 should be increased only when the operator accepts the measured credit impact.
 The output is a development artifact and must not be copied into public or
 production storage.
@@ -129,4 +162,6 @@ The provisional unresolved-signal posture remains conservative: H07 and L05
 need prospective exclusion/liquidity history, L08 and C08 need more real
 distribution/creator history, and Q01/Q02/Q04 remain required data-quality
 and replay controls. Their presence in this collector does not make them
-production Fast Lane rules.
+production Fast Lane rules. The implementation is `SHADOW_COLLECTION_READY`,
+but `METHODOLOGY_DATA_READY` remains false pending later checkpoint windows,
+holder/activity history and objective labels.

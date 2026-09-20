@@ -2,8 +2,8 @@
   "schemaVersion": "radar-solana-shadow-v1",
   "mode": "DEVELOPMENT_SHADOW",
   "createdAt": "2026-09-19T23:52:19.458Z",
-  "updatedAt": "2026-09-19T23:59:14.341Z",
-  "cohortTarget": 20,
+  "updatedAt": "2026-09-20T00:14:56.905Z",
+  "cohortTarget": 100,
   "admissions": [
     {
       "mint": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump",
@@ -224,6 +224,578 @@
       "decoderVersion": "pump-create-v2-idl-2026-09",
       "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
       "admissionTimestamp": "2026-09-19T23:59:14.341Z"
+    },
+    {
+      "mint": "93UwtZruP232h7S44V9M96tjGP5tCuyRuFinZBe7pump",
+      "creator": "F5eCCZER9XCfH1ud57x5T124iPm9dVGpHDke31JJiz5x",
+      "creationSignature": "4zWrVEqZZsbBVVt6E6nHYjBjWHYrVzQ6CHU3gkc81VrLxTmn8g9KiW68DjZcEFELK7tjSUvyLeS6u6bzsECtvs7F",
+      "creationSlot": 448565543,
+      "creationTimestamp": "2026-09-20T00:11:16.000Z",
+      "bondingCurveAddress": "HVvCJ7d8CDWpTUFTweQu8C3F6NrXLDjMGAiVH3HVNxTx",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "5dxMCANmfL6iDVPzamfXhQPwpkQ5yMpWiwV836Pdpump",
+      "creator": "A9NzaA9LgSPeG1XdziAa7id5H8EejZ3ma4Tkf3GbU5Yx",
+      "creationSignature": "4FtEcPiYtesAHyayKKekGvaCGSFJTXNp4cr993inhBaTomC7tn6CdEbokT3nNwvvUg8QqB3g9ZJDLgJg4437Kx3f",
+      "creationSlot": 448565535,
+      "creationTimestamp": "2026-09-20T00:11:13.000Z",
+      "bondingCurveAddress": "EWXX28QVoBk3Mtp4U9yumcm7h5Nn34xYhRwtjAgTDFtp",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "BCxTKgjYFCoPZKTcLoKc4xXdC5TYDY8qZy1Qfwp4pump",
+      "creator": "8s4Vd3d2kbDM8vMgy6W7iJAogvrYXPVw6Z3gViigssPH",
+      "creationSignature": "iJ5CpNnUE1JPZfhxjg8KWD7zd7b5WJahNuzr5UaRkA5Fy4AeSP6CnZkHRXBMmHaGsKgJA9AAPn14hegCgc4ZwhB",
+      "creationSlot": 448565534,
+      "creationTimestamp": "2026-09-20T00:11:13.000Z",
+      "bondingCurveAddress": "5nGM4oanJvfEWjCvspTc8LnF2foh1UfBnWL747LYSTPz",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "hB9mJyc8s2pMokBj3nRBeHnf8rxxFUyAwrWeAjgpump",
+      "creator": "2Bo34tjngcMNny1UbW9oMga5MqFk18rZSdsffCEoxmQQ",
+      "creationSignature": "3vcsQejF62xrdycheMHk2XyTTnMoRcoqc6EyatQRU9cNhT9ReynFeTaexUcfM5udcpuMrJAToU1jiwPNDZxUwakb",
+      "creationSlot": 448565533,
+      "creationTimestamp": "2026-09-20T00:11:13.000Z",
+      "bondingCurveAddress": "eC9gYbFiKYqkiiaAZGhSe8vaD2jabko8b7NbYYzDHjY",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "DPEq6cu2MAWa3cVPGD2PpmMDVe5UfSeQrVMUZxxapump",
+      "creator": "BGLj8HcL3EdWm2Npc8xpAJwxFBH3U54WUSSDVG8Dd5DP",
+      "creationSignature": "2bFxks2abEzS9ccbgXqSZXUv6U8yNHqGNcn6J6vUD5mdUvb6inwFAaDJ7mUkPdV5NkiYVouUrkaxDKMstac2DVei",
+      "creationSlot": 448565524,
+      "creationTimestamp": "2026-09-20T00:11:11.000Z",
+      "bondingCurveAddress": "5aiGpXjokTY2984hSBhohfo48AMeH4iCH2WpTzHxkrBp",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "GYZZVQEMPW2SHcvuJdAJ4UTY2udJCnVoBxNH1fFVpump",
+      "creator": "J2UZu2syH5jfQ1io2dSgi9vWfTdeWv3X5NzQnXyX5Tkk",
+      "creationSignature": "2G2SBF1nzsg9tE6mQ98tU8uqEeBPAh9SsABPV8xCCA1rKQrgbfiYnK64WNUPecJV4DZsHXic536zNL85uSeLNn4p",
+      "creationSlot": 448565519,
+      "creationTimestamp": "2026-09-20T00:11:09.000Z",
+      "bondingCurveAddress": "4B5zrXyVQDQ35DYyAqggNiCZNeSfGGFhTusgbSQX2LXb",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "EFaLK3KGqUqVpexB7eAMh2ozjAyVJms7T5f3GkF7pump",
+      "creator": "AmvyZveziX4ucgTA1mbgMB2cDuByMXncFc8hRAdNnNXL",
+      "creationSignature": "4UmgUp28HY3rapd9Diqj3fnpSRs7oZCcszaEPkMuJudjB5Efm7TR9VJeyCAz8yqLFvu71kPhDeTZLia12qMwSdp4",
+      "creationSlot": 448565505,
+      "creationTimestamp": "2026-09-20T00:11:05.000Z",
+      "bondingCurveAddress": "Ci5FXhpnW1UAqhAXTRvSDacMReyUgwJ7pRkVpJSsnhyR",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "EXfyGSaa9snRitH5UGKGNKjmJdMNqj2DW7E2xY9Gpump",
+      "creator": "Go8zxEhAejx88wvdZXMe9ovrNLXsyE7iXbKh5wPwwG3X",
+      "creationSignature": "HhFKB1brrbV2noFoBB8VFEj8ScKLrWk6MmDwAnoS3JUgZhQSCQar4qfg98fFsKDCpW2HdEJfcqgtsUDh47rRJBG",
+      "creationSlot": 448565503,
+      "creationTimestamp": "2026-09-20T00:11:05.000Z",
+      "bondingCurveAddress": "HdNCcJAo9X9VJS3itzL2qYs88zPMLbbWCYFoYKVrWhmr",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "DDZ1rEFVg8R3wcUofwKB7NF8oAxDJoB8E2g3iJRopump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "4xspatiDdr6Lq4rb6RXG2h328ZXQkCQQt5bkjtxKwHdektEFKKvaw8ttsYdwjk9E1YuwvT1nbAHE2evqBF4adf8D",
+      "creationSlot": 448565497,
+      "creationTimestamp": "2026-09-20T00:11:03.000Z",
+      "bondingCurveAddress": "BtNZcDBTRK7nwEJFxFWooCgFWF2LdE7ZM3NVV15cjDsF",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "3tUn8dGmDceJ9pCwFLUVo2jkD6FLWaZ78YEpAa3bpump",
+      "creator": "C9jPx77ZLhG2SYb43tVh3QgepBYzh2sws9NYnEBJgE9Z",
+      "creationSignature": "2L1XgJKq65H1NUBHeX9PcRqR3GwJJCUoVXY1XzbKh38rAYDogD744i6Zy9HZfP5uFjzCXUh1gx5JPraDnyeXRPjm",
+      "creationSlot": 448565492,
+      "creationTimestamp": "2026-09-20T00:11:01.000Z",
+      "bondingCurveAddress": "EEzCvpmS8VPbaJ8NLmmkXde5Ne5LC9FFatZiFeCcUFVC",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "6JTv5DzGp3Uj8hbQasoxC7WLVUfaRxqLLBB95jRYpump",
+      "creator": "GmZ8z7xX51ZhY2DCDD1u57KJ3UyA4n7ZwoRzBc54mJx7",
+      "creationSignature": "Jkd2ocTQ6gGuesNtKvYiiRnS5ditT6t6KFYYdmmkobLAyPdrrBr9eJ2tJmwdemcuJkbUSPgNMjwSYteaWaszu6t",
+      "creationSlot": 448565482,
+      "creationTimestamp": "2026-09-20T00:10:58.000Z",
+      "bondingCurveAddress": "GXNecjZ172buBhDgMPbHnuvHEbeveoBUbdmFnV4Kwngk",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "3rWvVtiVc3w7Kz36d18zz8MsSDV6729hP15khhJopump",
+      "creator": "FJe9nK79fvYFwofoa7TERAxBBRLnYmQFXxBxUdiZyn4s",
+      "creationSignature": "3tfyoEQQ9Q1S78VC1fKbEmqojdh4HifgDACMQpU9PwF7KHE3FmfbDrwGAhbzbbURcA2Gh54Ess6tWw1fSzFgFxUK",
+      "creationSlot": 448565478,
+      "creationTimestamp": "2026-09-20T00:10:57.000Z",
+      "bondingCurveAddress": "6PzSgsRqSGkidt3rzFitkBpgXH82zuzEfHG7uA6YyMQB",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "6YvWtthTJSMypRLix3xpk1uMdrBmoD4jVuqAW3anpump",
+      "creator": "2wMsnZrAzDcZMQsLyg4iWEsZuCYoNxUjmEFbC3nEP1ia",
+      "creationSignature": "66yQ6nA2dcRzp6jpFG6M1GSBwCMH6sFU8RWzKv1iYhrZGWvno7VwpLYb6h7nymsCpeBeNEdVp7PQ7SjzppS7Az75",
+      "creationSlot": 448565471,
+      "creationTimestamp": "2026-09-20T00:10:55.000Z",
+      "bondingCurveAddress": "BLpXw3m7qrBBojf9MKwELs3pGiocevnZY6sNuavSuMvc",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "9JnXHkivwzQM7zW2ynNAPLEz5aBPiMFCiFXZApENpump",
+      "creator": "HpXny1xqZqg8drxETR1gDHKdnNK49ZYwFWLxZGVP7mJa",
+      "creationSignature": "n7cTfdrhNctuu7VTqSVcRLshirmRjniKuiV9QV1BPbd6dXnj7d9QDkPfcp6S1Nv2CgLswjoREsHyDiadDiBqByi",
+      "creationSlot": 448565444,
+      "creationTimestamp": "2026-09-20T00:10:48.000Z",
+      "bondingCurveAddress": "4rxqA7q7FcsQeJjkzmKhWswtHECRgeTiAWxRuZ5L177F",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "4pazrxYZmy8Gx8cPmk3P3Jrfv61kpJVd2h5V7xuspump",
+      "creator": "CFwZimpLVrERazxsrGKCQ46TMYkrcxxCYeFJNHiXHb5Q",
+      "creationSignature": "2DEYAJ85X3i3NLBJ52T8SUAamj3M4jmS4urgAvByw3pm9CoxdHjPcGAMD6aiKdgeqY75JmqBo7N51TwZD3XwvxVE",
+      "creationSlot": 448565442,
+      "creationTimestamp": "2026-09-20T00:10:47.000Z",
+      "bondingCurveAddress": "CZ3o6gQPbRyrLhkwGGWjTMoZBuPKUTkVweP1mcqbsTN6",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "4U89FwjX5AKmoWVeDAwYJHmiu3oKouS3us9JtocMpump",
+      "creator": "CJAgoAjWVpBd7q8383kxyE6SsgwsJ9GeBXLvhLeQJXPx",
+      "creationSignature": "nH6VQ76pPsZMHvX8QSM6cbNjSovX2cgTjw6ZPwLWXgoaFsQLvP6arfTcz4qKW4tdXHqX4BbQsH3rmNr2cSDmqpd",
+      "creationSlot": 448565437,
+      "creationTimestamp": "2026-09-20T00:10:46.000Z",
+      "bondingCurveAddress": "HAtdfdcVurrCNMUHja2LSmdxNBf5cgs7vresYVCQLRvQ",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "48m6sTdnJ7kp29nn7p2de2J3inDMVHaRcYkmbkG2pump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "3SLMgN7vZpVFMhNDfU8EaxMWPwvb1v7tHV8MEqLeqKQ81f6nwQc9R4nLdeBTUVfcoHtBTxKPXuEVF922skbxJNzN",
+      "creationSlot": 448565432,
+      "creationTimestamp": "2026-09-20T00:10:45.000Z",
+      "bondingCurveAddress": "DZZsVTMZ8BTwaLgtCKRaLCB5XiYX35ssb5tXtMzZ3Eu8",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "9Gf7cVCdknst5By2UYULZHox4nSe86eqzCqJE97apump",
+      "creator": "J87UST7jVkLWxf5irqTJTSTYPoevXy3jKrFNw8Pr665f",
+      "creationSignature": "619YUd45YhZxb9FF5cm6brWxwJGXSqXkvBbSo3eHaTh9dUVbNPFhmiytWNXPbzbKrHs9LomAHjW28RcPKpx5peU6",
+      "creationSlot": 448565430,
+      "creationTimestamp": "2026-09-20T00:10:44.000Z",
+      "bondingCurveAddress": "5USvjR5dkx2iDQc3JYGWgQ92rYmxiaWQeZp6f312YMtS",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "5fWgym2ofL9TfPsAx5zpNBJq27LYvUGjwWxGERHbpump",
+      "creator": "3xtyS7oYkE8wQ3uZN4uMf3jdhBj5SKnM4HM6kZr7M6uc",
+      "creationSignature": "9of2WoyA97zZswXbgxSYPKRH9jrVmo9xWwseqk6FbbvcAvX6mnXY2YVNCr74NJzMe4cw3fJ58FCtQmqXyc7wB9V",
+      "creationSlot": 448565429,
+      "creationTimestamp": "2026-09-20T00:10:44.000Z",
+      "bondingCurveAddress": "EBWA9pQwwp2xRD5Eu3Aa1RZD9B7okxfkXBJbwisLYkoy",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "xBBWvkm5kVjpCYRpK9Rp8vyUDyTMX3kiKoGcngJpump",
+      "creator": "374u6mBHQADPErjX9d3rioqeJNyQL5vyYisdNfNUYF4V",
+      "creationSignature": "V3xvYtj2ahookhLJ5sLFqvE5GSukP5PUpiTXDWYV9Gh15JAtU71ApSCWFhJB6GWvqd6ARBSGkZZc7B1QwMcHhAo",
+      "creationSlot": 448565425,
+      "creationTimestamp": "2026-09-20T00:10:43.000Z",
+      "bondingCurveAddress": "5TLbWRc3ematgDF5UwCgM7Vb7hk7KBNneHr1fyVcJjfH",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "mint": "CTyop6LnGJLhV3JpdbbXVPuAmrQvuuiqwoFCg9S9pump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "cDBRj6dtewVDU5tNjKsQPxtw2EAM5zAkQ9vPVcQ4yCuc4dXwoKv4zdcFd3jWzVYUNhrv3WAb84tj3fVw4NTAYDC",
+      "creationSlot": 448565713,
+      "creationTimestamp": "2026-09-20T00:12:02.000Z",
+      "bondingCurveAddress": "9m8wV8t4DeZHBUks38tEYXhy5m4h1UNv7yh4YqmgAdnf",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "HB2tEGr8wUGBGoL7ZhENdhW3DUw5hn66JjyuQZRApump",
+      "creator": "2FXZzy1Z9FWtiD1FH3qrKsJEVv1gCN16xbkAYHRKPZeP",
+      "creationSignature": "29G2c6xyvLJHrpm8LbnLWSdPji83AsxJpysXhkvFEnxKwG2ca5Ca3N3m9n596uPDsPyaFhLYBJWZ166hrHEKYVsp",
+      "creationSlot": 448565687,
+      "creationTimestamp": "2026-09-20T00:11:55.000Z",
+      "bondingCurveAddress": "5jLMpcYXp1P1EGcoJ6Wyv1WWmj1kwwuXHh8Kfv1DcyGV",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "DpFaM8BxRR95KH4D4hHhuZsbaLrdGTP41ix48Grypump",
+      "creator": "3uCn7prAARkfWQFVN9zTE7fLpq872Y9HF2R7WrpDD7dz",
+      "creationSignature": "nPJeGso8oE1MnpFoAzYzXrgQ3GvQVeyvT6keKQo6tXvrj7iqgZYyjQUt8DuC4BwTyiL2EPvi7kkv6tdDdk5N1ou",
+      "creationSlot": 448565680,
+      "creationTimestamp": "2026-09-20T00:11:54.000Z",
+      "bondingCurveAddress": "BpdRgXtC3izdMk5zzXJZHFVekL9iDcxHs89anoDdvdyD",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "5H4QumSHKpNXsHRJrivoXvscvfxvCid4d6i97E2Dpump",
+      "creator": "BaA7Z6bCjwic9dK2j7VfJKP5grDsTTrfF7VPm4Zn72hD",
+      "creationSignature": "2eCqqL6aokffHWDEbLMiDSpeAzYEx3U9W1eyKhhVrvzqLKSsuhSopMaJ68cJZHtMToUL8iQPuYqnpSX7cWCjiVij",
+      "creationSlot": 448565674,
+      "creationTimestamp": "2026-09-20T00:11:52.000Z",
+      "bondingCurveAddress": "HTnGijdryxNTbh5HEpZzHf9ky6apNe2Cw1iAoJFNUgxF",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "EY1h8Em2hXNYwW7y8KvUzmkszTYKUEUMw81WYAHLpump",
+      "creator": "ESqMxkTzabTYxsEhTvNp8K2vkqGevaFWvrcipm2a4YDy",
+      "creationSignature": "r8mJuXZGzPirtPsoQDGoHjNGvekSUcPZFJZpvBS2HC92t3hbwAmJWYvxqMcSMMmXUjtJq8uKMrJPpSikM5aryVJ",
+      "creationSlot": 448565667,
+      "creationTimestamp": "2026-09-20T00:11:50.000Z",
+      "bondingCurveAddress": "3T98BhK7MzovWP9jKd67i7ApLc4W5vR3mGAjB4peCAq5",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "35wzr2v4DgScyweaV1BaeAyKJdL7PEPZvAvVfvFxpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "43KapPDjE55av1hy8PzUugPbCps2H8Xbd8JBuMERWyLyq2RGDCKActpD478VMjnShEjk8dZgGWLe3TKyqtLSjDRd",
+      "creationSlot": 448565660,
+      "creationTimestamp": "2026-09-20T00:11:48.000Z",
+      "bondingCurveAddress": "SsJTbb2RsU6AwVA8V14CT8zyFZ7stSoJufjbVPAMH2W",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "7SGaabBpU3n7V65ZFBhy8qLfy9LWbFgN78t5UKzUpump",
+      "creator": "AM9pCgNqpTNXrHp1vREPbWLkefQSypLFkEJfqky826vy",
+      "creationSignature": "2CY2EQMMeuUU83XPhSiSvXr47RvKkHJiGHjVtvCXA2ehqSATn8dVVWkEs5DnpUeta8GBbSir3K2oujz6TjEmXymY",
+      "creationSlot": 448565653,
+      "creationTimestamp": "2026-09-20T00:11:46.000Z",
+      "bondingCurveAddress": "7je5sFBM8CCfvTs54PRFf2xE6pGn2Ts8J5kmY2chxPpc",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "4nuV3V659CnisbBEQD2NoTP5ejVRjXRZSrjruLA3pump",
+      "creator": "C8TeRmE77TAaua123jHHqu3wUEmcNWM2SLJ2ydrceCcL",
+      "creationSignature": "ajLt63XzDfKg2BEP9aSkaNioxcqA5z6dNZMxqc6MGwi2gZjrs3Z4YVxtBFGTMxD7Y5HiC7ayAC93cVqwpPunCS6",
+      "creationSlot": 448565646,
+      "creationTimestamp": "2026-09-20T00:11:44.000Z",
+      "bondingCurveAddress": "3DCKYvZLtPx68RvzHAQRG4LWskTF3BSjzEJEQDwaQLYa",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "8wJTRX9urewmsniuegjoKrwWEiLMnw8Qae9tXPRgpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "YJDz74ozxd1sbH8JEDQX6SoVvgJseNzpPVsawBa81q7yByUFCqqyFRBtPoASBZS3ZGVDLGQvsDDgv3fY9fHwZJ6",
+      "creationSlot": 448565628,
+      "creationTimestamp": "2026-09-20T00:11:39.000Z",
+      "bondingCurveAddress": "EDq9MbsioNGsj1xLvxG2zz5nUwCgKuQ4RhXkcNFiibNv",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "F5tpcViQc6amRyDJTt1G3EwoCKoK3HqepRZTw3dCpump",
+      "creator": "3SoYUq5eY8gn5p9Uz3fomA5ZbbHEpe6PhitttQ84GHBK",
+      "creationSignature": "4VdFZ9qbkRcY6X3PvxFqBk9eZVxocWt2SSvmTUMS1KXNDxdwzjxQgWA2uWtKpKmogWsUJz2RyW4X2iWf4YNsMQEy",
+      "creationSlot": 448565613,
+      "creationTimestamp": "2026-09-20T00:11:35.000Z",
+      "bondingCurveAddress": "9331tYezrmVduYXbu5ytHCv4npzQqK9SRyVXjGX66yNB",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "ATdMYJAvjv8dHyPRLYtWGTtKJN6y8xUNN3ZJ2891pump",
+      "creator": "8qFFFB8k99XVN3fMhkQRd8K6K1iPxcri1KaVrGXAbi8T",
+      "creationSignature": "3tsMZZmBuJkipqx1VHS2sowbqLTckR3RaG6V7xpnKh7pMY8VneBXhRq2tjPZzpDqFfsMGBKkRZmuGbjz9BGhqyFP",
+      "creationSlot": 448565613,
+      "creationTimestamp": "2026-09-20T00:11:35.000Z",
+      "bondingCurveAddress": "H8RAhgPPb8oUnX8fMRWMRGDW861GXu55xiwtfrpSFKY6",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "7rV9eCRnUr5fNqhWVeSkFzc4zJEZafKdoh5feVFhpump",
+      "creator": "HBh8rN6UahdE5P8oUVYD9QdQcmBnepNfNrTa8pYF8CLw",
+      "creationSignature": "5uRqQaxvVMDWJAcQHu3SSkFXc9EhCe6e2XHyH6aLqvgHzNizLEbBcRktvsH6NPzzYs6C4rXpyfoCGSdkRYodsQra",
+      "creationSlot": 448565599,
+      "creationTimestamp": "2026-09-20T00:11:31.000Z",
+      "bondingCurveAddress": "A4v86WZ96uuaSH6xyHSuZ3NR1DySjDKr9LMVzcd1Jxnk",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "mSi7HKxyg14M56d5F5k1cxfHCp24oAceUUyhfCtpump",
+      "creator": "3DrM4K8KBR62CR5W36bwkD2JQfFACZhhFeyppE6t1Zkc",
+      "creationSignature": "3S6WHUSUMcu9bcFBStZ6QRi35hJsDYcpnwJ9gjBZTPG9hdXUZW8HeXZ77QVY14Zym8untLD5z2zEATd1cL1HMcHc",
+      "creationSlot": 448565598,
+      "creationTimestamp": "2026-09-20T00:11:30.000Z",
+      "bondingCurveAddress": "7bGFDv18kh7Nn4M7o4dgPFEPcrJfn6RPViDhKgx1Fozk",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "BUwK9Ez7wiB7TqCFB82ij41B9LY5i1NXV5CBBoXUpump",
+      "creator": "H3nCJzGwQ77We7x6uY9vKPZoGUsG3r6ZzML1oRGdNAZh",
+      "creationSignature": "3x14nAmwuY9PCo9WkTGdh3fH9wvJ89siyhcezq2TNG6Pxz1kChfsRRc8ArceeXWnhCbHaSSQK61eB685LBusrHeT",
+      "creationSlot": 448565591,
+      "creationTimestamp": "2026-09-20T00:11:29.000Z",
+      "bondingCurveAddress": "61fsaZzy24nkT3XDVuuBGrbt9pA9tQG7KNFb4aNX1zya",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "5tipavCi55da2yjnG4GC5cjzDMZaoemXzhwhsaYUpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "3sRHNS2jaH9t2v5o7SnpYGjtmNS7M1P4FuQJJF32V2Hv8hPafup4sdWqS8KGTPVzatNzphwfQeN7Rkwp2sbNQb5m",
+      "creationSlot": 448565580,
+      "creationTimestamp": "2026-09-20T00:11:26.000Z",
+      "bondingCurveAddress": "AL8WiRXR4XWfCXpChNKDzsEvj3NG7kZkLXQFEvGJo5f2",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "mint": "9UU9TViVe2zYNy44hCcDYfWfcQmpEqFwrc5vBdnLpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "5JatyUAZeefeM4RKQ4P3VYG9zWYyGZC3JB2K1pM6jzZqd7v5WHyEVYoedw7kDMyVQYxm1HLH7PUTtLtpUgYwD5jG",
+      "creationSlot": 448565810,
+      "creationTimestamp": "2026-09-20T00:12:28.000Z",
+      "bondingCurveAddress": "8yYizyq9CEqXk1S7iMmKjmVgTJaZAKxn9sNsayz44A1D",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "BL1bBXs7mFi82wn3UJcH8rW7u4d2A9JoEP6Txnbnpump",
+      "creator": "BefaLZajqW2gKu4F8gNxdm7fHPE7o6494Hg7KEwejtJU",
+      "creationSignature": "2JjTJRKrZGB3LAo9sLLmKkHKUc2aKnmEf272zxUimw96JFE1GngDSC3SBfowHpcahvnb9tL8x81toCbjyZ5XdCse",
+      "creationSlot": 448565801,
+      "creationTimestamp": "2026-09-20T00:12:26.000Z",
+      "bondingCurveAddress": "C4mPYmvhZJockMbvLJWDjHq9A7GUPhguifKgeR6LDid8",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "CvtzUAjDm9jxDFn2N26zTLso4UfUS8mnmMLtbyyVpump",
+      "creator": "6WH3PbjjHb4uiQAYDmTpkVmsqfkrxcNDmp8zENK159uT",
+      "creationSignature": "3WDDynvodsZ2pPRVjXMYk3Zco8WTKGJwdYDZMUviLwQPL1pPvhqYTcuuo9uYwiARFywbvHsprB3R3Uiontg5jnAu",
+      "creationSlot": 448565799,
+      "creationTimestamp": "2026-09-20T00:12:25.000Z",
+      "bondingCurveAddress": "8o7fYwshf3fjEhyPYqcGBh2ZKYCXXQ649Rh7sPF9bd1R",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "HXF41smgGK1srg3StYC6ucTChGujGryVMtvsYHskpump",
+      "creator": "7JHtix3bfTSBHB4UjCZHsCpbZXyQyyhX88pzWk45J9Vj",
+      "creationSignature": "5it6wA4vxJsym47zNms2muEJKQZvGKMiaW8q5uaSL2d5hYdb9Kee2vTmy3VTRuPaHPiK4VY2eUSercNQoy85Nrre",
+      "creationSlot": 448565789,
+      "creationTimestamp": "2026-09-20T00:12:22.000Z",
+      "bondingCurveAddress": "CwHT45izsBrdyEvt6WMQqQLYqTGZNb4dSADoSpaPQM3u",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "7hhSaqsckPqJznZFgRasmPw8VKdJoEGGv7BchnRKpump",
+      "creator": "D3tr9TztUFhN8wB5QHGdwgeJKxw32brD8egDUHHbFFQr",
+      "creationSignature": "624ADRWSFjPa9sYYCj3XerUUREAKXStR3HqBHXW6WrHdL8QH6bkJofphvxy1QB8JCFwcRNWQWm83BkZAZSKihhTw",
+      "creationSlot": 448565777,
+      "creationTimestamp": "2026-09-20T00:12:19.000Z",
+      "bondingCurveAddress": "4Haj1Ay3CJDN5PaNoBRUsYBtdJqYVWXWpLvVAFPUWkWX",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "6vK4FTBt6pLV3BcctGPZmYQmb2T6WrKwqwYHDUDupump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "wYo8LtqJZb7aSWyuvu3mNdMtif9mTAbKnBiwKfZ3WW3BaPZfSQ81Uq3tqBWMvT7fCQH3DuJooaq8S8Zumgnv7yC",
+      "creationSlot": 448565749,
+      "creationTimestamp": "2026-09-20T00:12:12.000Z",
+      "bondingCurveAddress": "FR7dPzZZbmuiPBdmdx9G2KbdtBNLvPSuNUeUnkwqk2KP",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "FwK2qznyFxV9fmnTQrTMhZgbspbwU4NL2LUcEGDKpump",
+      "creator": "ABykKnkSCubwNdxyjkok7gjn6ACkdyxZ9hiLpTJ3mWQ5",
+      "creationSignature": "5Tqxx8V4PszcwQUhhE6eBMD8cPN4SmRfqhV7LQHmHNgWfiGxHyZMK2TUPhtUiF6uzLj3SyR3Dr5F9GWUbihjhEqu",
+      "creationSlot": 448565748,
+      "creationTimestamp": "2026-09-20T00:12:12.000Z",
+      "bondingCurveAddress": "DAbs9u9zFLHejZKNCanzWEendoTcQaZJy6gmH96f8ZuB",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "mint": "A3b46vdccRQvwwPBds6Evv3jfNSj2eeiHoQcYE1kpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "TSVhwQZWiNbWcJWCvMqvcbAQ9xWrNzbJW13CkbV7mApXTFW3BYSjbz8WuUiuxRvWAJfR5DDMNRk3dyJDVA6p2Cc",
+      "creationSlot": 448566014,
+      "creationTimestamp": "2026-09-20T00:13:22.000Z",
+      "bondingCurveAddress": "AgwAjJ15CWDTrDkCV9N4CeP1MHcTnvqYwFwJgY67B7Mi",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "6n7ukYwRKyw2SfagH7CanYbr3naWAmxKtcsdp27npump",
+      "creator": "8zeWVAWQmxPSBYFkNb8M8N7BsP1azxx49sTJgX4xbBmr",
+      "creationSignature": "4XYTbgCWN3A8U4AjZoQoLiXyDvPrPkYC4WAC3zcBjdGXyoee4reEvrRNYh1E2oDNFF1Jgy1yXi99wLJDH5huMkMJ",
+      "creationSlot": 448566004,
+      "creationTimestamp": "2026-09-20T00:13:19.000Z",
+      "bondingCurveAddress": "4iQAKZYSsTvNSaEDcTfuovg2bCXs7JRKVGJqPUBEkrbd",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "5n12Wc6ttH4ZPmvTxpT98bNKYahTbgvU1928QNtrpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "mmkHqVmqnzxc4eWARTUNEApCX3BKZ9nnbt8CS194h4bT5dfAU38wDCKQSjhMXCxJszf2VsgoxhYXNspae7Pzx3H",
+      "creationSlot": 448565976,
+      "creationTimestamp": "2026-09-20T00:13:12.000Z",
+      "bondingCurveAddress": "5SG6GZjfEGZjhf9Mc4LZNURAaxcQrPJJMGtyxoKM3FKw",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "rqJ77w1KGukDh5ZSf3f3aKzpNXGmWyFz4STmsBWpump",
+      "creator": "3wGnhVooZB3QVCJ9BEVtgo3ToPpMeJtmcMXN8wZjtqQF",
+      "creationSignature": "4MtJgevvNfaAABJTiu1mYVTaiDKb5Tp8EKAjh5HXbTyEepbcQx8NYoit2imLNLHqkKuUK6csaCjDxzVqh7axhTGo",
+      "creationSlot": 448565961,
+      "creationTimestamp": "2026-09-20T00:13:08.000Z",
+      "bondingCurveAddress": "B9uWd3qhuxi3n17iZdsduNAzNJ5sJrjm6nwhj3Zs5gu1",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "6KU8q7ooT9Y6xRuhXvhLUQLQAN4EQdHKPwFXxDMTpump",
+      "creator": "4h4Qzu3t1rnDU28Rcekz46ym6byLdjj2ysqz24b8U931",
+      "creationSignature": "4d6vP7n3ezcLLtNR7sczodxqF5wj8yF9isEzfc9ZqekzgKML1MRkG1pN4xrrh6FV2dH3qfK24u8cchqjoKxPMgKM",
+      "creationSlot": 448565943,
+      "creationTimestamp": "2026-09-20T00:13:03.000Z",
+      "bondingCurveAddress": "4iTZu9oqAGocu5Kn1piUu95oELzj4z8MUbeQHJggFzN2",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "7Ny1Y38WUBPQPntrGnRSYErZWBkEprPGrcorbPJ3pump",
+      "creator": "8AqWcCM4CzNBLKK6kbVr5PUYWoP7yE6tS3Q7T3eyV3Yv",
+      "creationSignature": "3MKV6eZ6YrxF1psceuR5gccys9AgcbUdXbeEya8f3Ab7jSco8EB1hnrjQFGmudbASQGhtwnnjscAY5gWfAuDBE1h",
+      "creationSlot": 448565935,
+      "creationTimestamp": "2026-09-20T00:13:01.000Z",
+      "bondingCurveAddress": "2jyUakKwiUMXvzKgM8fC33oUNB9Z4XnddJGydRrNrcec",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "BLjXe4X7vjFU42p9om7f9ZU7fPkx2pTAKGFqZa6Jpump",
+      "creator": "HC7sUk5ajRG44uGPwvyVH69nkacfUFYfoEL7G73bG5N9",
+      "creationSignature": "4snLX8VjtkwmndH2mmuxoa2tMFdDE7jo8UgF14uAKb6mxHGrH2Z72HQKCS9H4M733zaihNshEwzLXvPt1oBUMvgu",
+      "creationSlot": 448565912,
+      "creationTimestamp": "2026-09-20T00:12:55.000Z",
+      "bondingCurveAddress": "9XfHKBqy7oKRe73opTnDnWQcvCY2guxdFmBwKKFHBkse",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "64Fbqxjx8pLBHP1LSrCHj9KsR8ATsGeq7nX6Sirnpump",
+      "creator": "8qFFFB8k99XVN3fMhkQRd8K6K1iPxcri1KaVrGXAbi8T",
+      "creationSignature": "4L1mT2WH23bwgyGzjhohSfR35QYWGPXCnbMT7MDhjkmhAACv35chDTTKSnkAWD1v14FVtwfYHbxYs9FZBQs8fMSj",
+      "creationSlot": 448565910,
+      "creationTimestamp": "2026-09-20T00:12:55.000Z",
+      "bondingCurveAddress": "27p3AYxQUvZaKSHm6RCPeFUJ8jgbztw8tVYdpWyEQnKQ",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "CzYUyRLDKQGvnRSmrhJVEYrZLufb2yLjFqWFUBgypump",
+      "creator": "2VhZE1E3fUZCLExNZR77nDHiUmyyS8rmTt8rygM9Lx1C",
+      "creationSignature": "4gwAXwD5KJpTbRH4g8pwYzyNTsadNQ9dGNCth5xigKuetJscsgc4vbAVzRsqrxaYQ9BwbTWuYmiYMDSYk1Tk7Adx",
+      "creationSlot": 448565885,
+      "creationTimestamp": "2026-09-20T00:12:48.000Z",
+      "bondingCurveAddress": "2cdomCUjxkANrhgLn3AjFSuQJkJiVifJh7yexoriyHJm",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "mint": "3VyrtzCULs5mTTpKwaXwWUkeL7fcrbgMvjUCV2q5pump",
+      "creator": "8feNyZyXp9N1ZVY71E6f7QezJLXhjHgDdvcZ8CCLE3Fw",
+      "creationSignature": "4MLGEbLcAfmWwgQ6HZnTEuoatbF4DusoDGrKLqnRpNRD4AqYxF5CUuckkBPU86GmNTESEn4BaHm8kjDzM5LNAr3N",
+      "creationSlot": 448565878,
+      "creationTimestamp": "2026-09-20T00:12:46.000Z",
+      "bondingCurveAddress": "8iXN68Xi99BSMtyP6MZRhVnd1SKTRRQGNFQ2tZpUgzdd",
+      "decoderVersion": "pump-create-v2-idl-2026-09",
+      "selectionReason": "bounded latest successful official Pump creation from read-only discovery",
+      "admissionTimestamp": "2026-09-20T00:14:56.905Z"
     }
   ],
   "checkpoints": [
@@ -1684,6 +2256,1788 @@
         }
       ],
       "noLookAhead": true
+    },
+    {
+      "key": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump:T+15M",
+      "token": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:28.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "aa334d0bca392111d30be69268191bec3fcabc608da522fd9b9aa7676ac2ae8d",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1064354017022081\",\"virtualSolReserves\":\"30243696638\",\"realTokenReserves\":\"784454017022081\",\"realSolReserves\":\"243696638\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "3rpcUShaUunxM6DrEhJqNJADJPj4AYdtcf3ju2afYqVQ",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"8Sh1ni2hHBa1gVbGP16B3Q91hfJYiJFni33317PBVzsE\",\"amount\":\"991354017022081\"},{\"address\":\"2Gb1UvtpX9y41LyUPo9DQEFTodbRWEfHgtTy1GYUZ1cR\",\"amount\":\"8645982977919\"},{\"address\":\"HXfZoXxWauY2mRRy8FVS8AUXJvpa43euSsNfCshx41uT\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0000031595929560306694",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-19T23:53:03.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "m2Jom42sSmhNqDewiBYEUkMvza6WYBbXr3Eu7gZpump",
+            "scope": "provider_token_price"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "9s4kAonvxZqLJLnc4cK896DUqeCZSj6hQo2599E1pump:T+15M",
+      "token": "9s4kAonvxZqLJLnc4cK896DUqeCZSj6hQo2599E1pump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:27.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "3e2526fb3524fd89a8924a3193f4f6192f6d7d009d011612c672f96d5f61bb46",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1069930287723869\",\"virtualSolReserves\":\"30086072310\",\"realTokenReserves\":\"790030287723869\",\"realSolReserves\":\"86072310\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "DX5vnm7aDm7vgLyjyAyS1qcaENnCNowAbZhGRqRXNhqd",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"FoKQvHfV2fYFcdoFFVMz8uKxcvtECyfoDghi2xoH1zx6\",\"amount\":\"996930287723869\"},{\"address\":\"2y2YNx9zXyuWtJBQmomhMP8t7mxiHRRiZsWvAh5aKHye\",\"amount\":\"3036568512820\"},{\"address\":\"BzSkrERMUMmhpAcBwFRcvDWxqCH1xJ6f3syNTU7okNk2\",\"amount\":\"33143763311\"},{\"address\":\"Dm1JvqR6c9JF1XEfm5Bggud3GWrUTNtn4JZA7j39u9oD\",\"amount\":\"0\"},{\"address\":\"DYHHFRcSDsBQuCgaotjiincDx2NnqY4cNr1sbryR1Re7\",\"amount\":\"0\"},{\"address\":\"CqN6JjcdKzJNJC9QA7zoAyhHFJvr1R6p9AzeWz8UGgtE\",\"amount\":\"0\"},{\"address\":\"AX8NxTPeJuTsDxpEiXFEGGnTnitz8u3DNBchNMpAdxK2\",\"amount\":\"0\"},{\"address\":\"4Nu8QzondmpT3ALnR1smUEzj1JbSjHvKZdmw9BsfBtCu\",\"amount\":\"0\"},{\"address\":\"3Bb9dk4cNm47zYF6W8VonKa2TeWCyvq9o4aDWPqZpjaK\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "9s4kAonvxZqLJLnc4cK896DUqeCZSj6hQo2599E1pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "9s4kAonvxZqLJLnc4cK896DUqeCZSj6hQo2599E1pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000003122",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:27.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "DX5vnm7aDm7vgLyjyAyS1qcaENnCNowAbZhGRqRXNhqd",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "DX5vnm7aDm7vgLyjyAyS1qcaENnCNowAbZhGRqRXNhqd",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "181.45",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "DX5vnm7aDm7vgLyjyAyS1qcaENnCNowAbZhGRqRXNhqd",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":5,\"sells\":3}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "DX5vnm7aDm7vgLyjyAyS1qcaENnCNowAbZhGRqRXNhqd",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "7DXCycdCN5pmkvKhdrXqy5kDaHiDM95xfmjMTE9Qpump:T+15M",
+      "token": "7DXCycdCN5pmkvKhdrXqy5kDaHiDM95xfmjMTE9Qpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:25.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "7328c00abd19f49ca152b22cd4852b87b05e908a26794e636f9efe280f7e925f",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1073909891215101\",\"virtualSolReserves\":\"9280128450\",\"realTokenReserves\":\"794009891215101\",\"realSolReserves\":\"5\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "3Yt2UVmdvqUjy9g9A9G4DZf7rEEs2nj4ZNCKBdfF8zxU",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"zxEK5JHmZhHxpaHcaH3F3TjAVzVezMqo8J9fnb2W7W3\",\"amount\":\"1000909891215101\"},{\"address\":\"TmujywNbkgXWnb6RGWUXnuVKm7hD13rnCRyJyA1zpCh\",\"amount\":\"999090108784899\"},{\"address\":\"3TCigahNDdB6rveRzFsM2J9nQGT8DMiCPmGsG5ZU7kav\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "7DXCycdCN5pmkvKhdrXqy5kDaHiDM95xfmjMTE9Qpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "7DXCycdCN5pmkvKhdrXqy5kDaHiDM95xfmjMTE9Qpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0000009596",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:25.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3Yt2UVmdvqUjy9g9A9G4DZf7rEEs2nj4ZNCKBdfF8zxU",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3Yt2UVmdvqUjy9g9A9G4DZf7rEEs2nj4ZNCKBdfF8zxU",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "28.61",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3Yt2UVmdvqUjy9g9A9G4DZf7rEEs2nj4ZNCKBdfF8zxU",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":7,\"sells\":16}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3Yt2UVmdvqUjy9g9A9G4DZf7rEEs2nj4ZNCKBdfF8zxU",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "DotRhUxtWTFoG5ik1rPCgwt26T8sdNreK8kgiv4Bpump:T+15M",
+      "token": "DotRhUxtWTFoG5ik1rPCgwt26T8sdNreK8kgiv4Bpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:25.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "cce35ba8cc10f4805ab92b9848afce21ce4e8c35e96c04beeabf8dab19ff8849",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":true,\"virtualTokenReserves\":\"0\",\"virtualSolReserves\":\"0\",\"realTokenReserves\":\"0\",\"realSolReserves\":\"0\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "9Sxs2qy4hczgigW256j1mHGUtyzhEWW2bGR55NYjVTXj",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"3cUdsZESk4PSnMgD1drsKTJsYCmn9VmUYGv98mKjzuQj\",\"amount\":\"105323222757673\"},{\"address\":\"AzvmHYFwdR9PNP6i1yryLVs3DzcWaN2RgGDMFiFBWWm8\",\"amount\":\"2088961399546\"},{\"address\":\"4yf2pPm1kGBXBHCShMWLDVkZRN9G5UHzSaAmdsRxSYah\",\"amount\":\"2081278645226\"},{\"address\":\"o4GY6rRe79MVcohE4XSjrqqwCLXmC9kbbpfPCrwMfkk\",\"amount\":\"2071122799207\"},{\"address\":\"7g7cfEEwWZnCqNsc8AevwNaoPM87wVnX1nEUYMTh1KFn\",\"amount\":\"2064572278614\"},{\"address\":\"6J32msZARoPiTSTi9cjgMKSeB7CjRP98NZ25i4CxDVDa\",\"amount\":\"2063942936520\"},{\"address\":\"Bk1XQ6BCaBhNoaRaZffMhauy5maXDc4pcwAqdbrbBAEr\",\"amount\":\"2054881751948\"},{\"address\":\"8Wkka26uL2dPoySWfZo3dLhnXbgbMM2BTN63Qpcb9BY1\",\"amount\":\"2053879134666\"},{\"address\":\"AM5nJm37zu6bbQRgiMbJmdfJbbh72Zq1pHjP9cHrHXZv\",\"amount\":\"2052004194958\"},{\"address\":\"2S5Ab2wid5AK57tA5eKiCQoTUenjWYqSDbASHCdC11Nc\",\"amount\":\"2051215328923\"},{\"address\":\"74NhjDWoBNfEceKujCQCuNoJ9Ly8pxMuh5X6tvGe8M3P\",\"amount\":\"2050224226077\"},{\"address\":\"5w1FTCPaGofo6Awbx7hL9Yg4A3LNDRyaKUMGNFatV5vk\",\"amount\":\"2038608155915\"},{\"address\":\"BPkPn3JC5mneBkWYANLooRbzrbq5Nbh5hAnukyZbUMqt\",\"amount\":\"2037383992381\"},{\"address\":\"FWfCK1Rru8UKLYRnCxGxhJMCkGFBbZro3z5RxAPdgxTS\",\"amount\":\"2037358480670\"},{\"address\":\"FRFcKMEKTbYtoKLeFguzXbaY5qWmeWN7fKw8yjrg8fGZ\",\"amount\":\"2034177592509\"},{\"address\":\"9MUcvRTjjGJZN4w3xDeY4DwYdVBUXrzu8PNmb9d9mtMh\",\"amount\":\"2033376610781\"},{\"address\":\"3NrQUtgmCDQxQDgaerC9PyWz53XXGFU2kq4GGAxDVSYM\",\"amount\":\"2032618824222\"},{\"address\":\"EiiBek959Y2hf1qudVqKWotCJ8vsCYMDYrkTtkRnugSn\",\"amount\":\"2025657806385\"},{\"address\":\"6NM411ihwzbiCu19XG4PSqhKPN4UPaCs9orVU7cf8HxA\",\"amount\":\"2020616671494\"},{\"address\":\"4puWDZKvtgcTjZv6o7pHuYzHFB4V1QeQat7DdjBNDT3a\",\"amount\":\"2019845347102\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "DotRhUxtWTFoG5ik1rPCgwt26T8sdNreK8kgiv4Bpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "123905081227281/144234948934817",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "DotRhUxtWTFoG5ik1rPCgwt26T8sdNreK8kgiv4Bpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0001856994477980967",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-20T00:07:55.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "DotRhUxtWTFoG5ik1rPCgwt26T8sdNreK8kgiv4Bpump",
+            "scope": "provider_token_price"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "A3HjxFihuK1sEKMwav9kekAoeXV1P5ARZRGdGsAmpump:T+15M",
+      "token": "A3HjxFihuK1sEKMwav9kekAoeXV1P5ARZRGdGsAmpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:24.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "7166beb2557999bec8aa983f487b594e9fda0272659f831d003ca070b96e10cb",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1084187111383790\",\"virtualSolReserves\":\"4503679336\",\"realTokenReserves\":\"804287111383790\",\"realSolReserves\":\"2\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "46ACDwt5Nr8mpg4dhXYrBtf21kUU9QEjfCiZDGPnJHiU",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"9nnXE3XMDn12cCsXotfvkNMDmvxKMFAXsekcKH4NqLBh\",\"amount\":\"1011187111383790\"},{\"address\":\"A6YVdyU21DTy1eQUYHa14YjRMxgG8mF1a12keRbGcV8s\",\"amount\":\"988812888616210\"},{\"address\":\"DzAQYAJLkDmQZLia8UTJ2h2GMMQG6eNt3yLqdvQqWNyK\",\"amount\":\"0\"},{\"address\":\"BDRchVmPHb58NxtCWL4knktbMp8EM3TPxFkSPkTxSY4B\",\"amount\":\"0\"},{\"address\":\"9JWG48ihHvkJB8dzqSBS4nxV5V2XXgdhoYZaayTaWZyR\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "A3HjxFihuK1sEKMwav9kekAoeXV1P5ARZRGdGsAmpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "A3HjxFihuK1sEKMwav9kekAoeXV1P5ARZRGdGsAmpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0000004613",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:24.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "46ACDwt5Nr8mpg4dhXYrBtf21kUU9QEjfCiZDGPnJHiU",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "46ACDwt5Nr8mpg4dhXYrBtf21kUU9QEjfCiZDGPnJHiU",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "252.7",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "46ACDwt5Nr8mpg4dhXYrBtf21kUU9QEjfCiZDGPnJHiU",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":17,\"sells\":20}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "46ACDwt5Nr8mpg4dhXYrBtf21kUU9QEjfCiZDGPnJHiU",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "ADV3UYkG2f66PrKAQLp5jCJQMrtWibgvackiveHZpump:T+15M",
+      "token": "ADV3UYkG2f66PrKAQLp5jCJQMrtWibgvackiveHZpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:22.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "b4e85c8f602fd465cc0f9fbac5cffd04c524b27a558afbe7d91ff6c8e96c5566",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1071083719814149\",\"virtualSolReserves\":\"39141039206\",\"realTokenReserves\":\"791183719814149\",\"realSolReserves\":\"1\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "2uT71KvwptnSd2W6gEk1QbzZxUkGqx7mdR9gK3Pf3ZFs",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"EGb8GSZdLALMkeoQfZ3e3yJLz1iHnDJ42UPhAyr5zTTU\",\"amount\":\"1001916280185851\"},{\"address\":\"CwSjVAb72BRE85T6VGmXcUfUqJ2f4SD12xYr5MZL2Ejw\",\"amount\":\"998083719814149\"},{\"address\":\"EP4Sk2VEN3CqkeVPGpczxNhegRLMRQ7fhiTrgVGxHrdw\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "ADV3UYkG2f66PrKAQLp5jCJQMrtWibgvackiveHZpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "ADV3UYkG2f66PrKAQLp5jCJQMrtWibgvackiveHZpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000004058",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:22.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "2uT71KvwptnSd2W6gEk1QbzZxUkGqx7mdR9gK3Pf3ZFs",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "2uT71KvwptnSd2W6gEk1QbzZxUkGqx7mdR9gK3Pf3ZFs",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "49.1",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "2uT71KvwptnSd2W6gEk1QbzZxUkGqx7mdR9gK3Pf3ZFs",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":6,\"sells\":6}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "2uT71KvwptnSd2W6gEk1QbzZxUkGqx7mdR9gK3Pf3ZFs",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "2DpoYA7f6H5gxA8pc8eYywAQMbAYXWMS8Ji6Z7RHpump:T+15M",
+      "token": "2DpoYA7f6H5gxA8pc8eYywAQMbAYXWMS8Ji6Z7RHpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:22.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "4a12cfae37f393c92b64f78c40e6ebdf850ff1fc788591164883e73716d58e99",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1064157905619404\",\"virtualSolReserves\":\"75781441419\",\"realTokenReserves\":\"784257905619404\",\"realSolReserves\":\"1\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "8sytbM1X2aUX3qUwXPEMZoyTeddBKHBpnwjRdMDDqFzs",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"4RvxPzrnsuE4fGzxfiqG7aMXDkvh7gRVQxGBNjDpZdjy\",\"amount\":\"1008842094380596\"},{\"address\":\"3UFxB2Ay6d6FafY3GurNqyLevpBCdacQHXTvcSaQzipv\",\"amount\":\"991157905619404\"},{\"address\":\"5yBmHFpwykVSeoupgDsTZgcqUXrCKc74AUrgoSBxN6Ww\",\"amount\":\"0\"},{\"address\":\"35zBpSuGtFDPVxje7hDL7sLHpZNgYLpKVdhA5Ad6Nxo8\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "2DpoYA7f6H5gxA8pc8eYywAQMbAYXWMS8Ji6Z7RHpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "2DpoYA7f6H5gxA8pc8eYywAQMbAYXWMS8Ji6Z7RHpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000007908",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:22.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "8sytbM1X2aUX3qUwXPEMZoyTeddBKHBpnwjRdMDDqFzs",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "8sytbM1X2aUX3qUwXPEMZoyTeddBKHBpnwjRdMDDqFzs",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "217.1",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "8sytbM1X2aUX3qUwXPEMZoyTeddBKHBpnwjRdMDDqFzs",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":21,\"sells\":11}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "8sytbM1X2aUX3qUwXPEMZoyTeddBKHBpnwjRdMDDqFzs",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "HxGjoQBQMSaRf4eCXE5yBprmMhBKVNZ3q7pzYZDtpump:T+15M",
+      "token": "HxGjoQBQMSaRf4eCXE5yBprmMhBKVNZ3q7pzYZDtpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:55.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "48f41296c17888836bd79cbd4b49070f4c5f146554d5475d2c3d19a07f3418d4",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1175866289690231\",\"virtualSolReserves\":\"4589494326\",\"realTokenReserves\":\"895966289690231\",\"realSolReserves\":\"377813\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "2D8it427WmtDpHpyY3URWFSp25f5nVPe3Tfg15mM2HVQ",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"DtFck9ws6EpGhjAsADg66yasEc8F9Hd7Bx7a74d8g8Ko\",\"amount\":\"1102866289690231\"},{\"address\":\"41BnQweu27UiJcpyup5aGwc4tF9eUtnZ6TDuMR7wE4hf\",\"amount\":\"897036903764851\"},{\"address\":\"9rpRsAdx13yfbLPqmXgyWHzGUVkaBW7n8cZqfM8Vu2D7\",\"amount\":\"96806544918\"},{\"address\":\"3PwGPV3gLHBFSxMcLqPqTwgU8oXQsYWRRhFZedYzuyfG\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "HxGjoQBQMSaRf4eCXE5yBprmMhBKVNZ3q7pzYZDtpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "HxGjoQBQMSaRf4eCXE5yBprmMhBKVNZ3q7pzYZDtpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "4.782744525196132e-7",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-19T23:53:39.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "HxGjoQBQMSaRf4eCXE5yBprmMhBKVNZ3q7pzYZDtpump",
+            "scope": "provider_token_price"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "FsrMFqzPqxuQVEzB2vZG6D8zKTf2dXfkBXyGtrgApump:T+15M",
+      "token": "FsrMFqzPqxuQVEzB2vZG6D8zKTf2dXfkBXyGtrgApump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:53.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "f4189b2ca573081b6f398a128b89b9b4f4a934dc25c9ef9153fb9be747cc9745",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"307085653655418\",\"virtualSolReserves\":\"104824174065\",\"realTokenReserves\":\"27185653655418\",\"realSolReserves\":\"74824174065\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "CEbbDrvxQW5iruTfQXehCDp7hzWrP8joQveAtceL1NRc",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"6qYeytpqtNGma7W6wNFHDbZPC4EX9ktcMMU5MaX9srM5\",\"amount\":\"234083723731009\"},{\"address\":\"FmjVcNJ4UBKLxkmpWdyuy1Kg8BT9WcSZKJWmevxNoRsE\",\"amount\":\"63458612927867\"},{\"address\":\"6vNPe1T64rmYvmJ9gDvm6gcJTqvZw1WaD3tn9xVQJwmx\",\"amount\":\"63220642859703\"},{\"address\":\"32Ddt9MAe11xVQxGqne7sJKkDxKxQtf9oc7eXjJJRKS6\",\"amount\":\"62007111151313\"},{\"address\":\"212NVjgTr2TvH2GkGav4SJDs6AKveeF56jxCqzNupWkB\",\"amount\":\"60570264978971\"},{\"address\":\"DgatcQ3g9d8WvPCbZytGVuTb3fMhBjsDyAGLjKDQDkjy\",\"amount\":\"60431841942856\"},{\"address\":\"EvQJ1km9cG9K9NubEEw1RHPADgzBSoYirUHM8oQqk2Q6\",\"amount\":\"56805806924311\"},{\"address\":\"3gZTtwmxTjKq66AHPJVEVEu4LtohboWckKFkbT5Z3Tjs\",\"amount\":\"55011862122146\"},{\"address\":\"HMmxKZZLzQyhyP8nvuL7NmNa1JFe8hY1DgswRQ3f9XEt\",\"amount\":\"52460641763084\"},{\"address\":\"Hgb3ZXYZjx9KxfygfzrxFNsHejQn6PsJVXzYZmWH4TEA\",\"amount\":\"51109627649896\"},{\"address\":\"9Hk86vxRc918ev7SpSuMbT3vYgi7CqTmZzKdP38tszX6\",\"amount\":\"50235416665125\"},{\"address\":\"Awujb4CQvKyv1vpr6aDeCWezL5AWXPyb1H1zXTF6xZCS\",\"amount\":\"47058742790551\"},{\"address\":\"81eCgGTqdGLEZbpApVSmkFidLQStfkiCx9fhpAZJjnqV\",\"amount\":\"46526923916548\"},{\"address\":\"6onVTQ5BE9Ni49pYhkvAe71aHhVbdJ4o5zdEfyttxWPK\",\"amount\":\"46494561713261\"},{\"address\":\"GdrQGmpM2Gdru5ah7WLhmQVJptXf3jdR2sKBpDpTEB1t\",\"amount\":\"45910100321913\"},{\"address\":\"2Kkk376Gp4RShBCGjgoG2HKf9BwPpvRhenEDrj3ABWoH\",\"amount\":\"895859304696\"},{\"address\":\"D7FcxXe3K9d9CUHpCmx8LASANemaTv9qXepKtKhYtqxd\",\"amount\":\"594058201505\"},{\"address\":\"DPrj5T79SS1QhSBZZ2JVJvWf8iRbSZWatdUARwHgNhsr\",\"amount\":\"559714668439\"},{\"address\":\"9vaXSZUKQGjjVNdp2sNqgC7ELHb4v4AhnypD9ktaWJLv\",\"amount\":\"538752934327\"},{\"address\":\"8KpT8mJuMCGrXnQdGRd44q5XybSZkNDnEQsJWVpJiWJL\",\"amount\":\"533081681647\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "FsrMFqzPqxuQVEzB2vZG6D8zKTf2dXfkBXyGtrgApump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "759160136051156/998507348249168",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "FsrMFqzPqxuQVEzB2vZG6D8zKTf2dXfkBXyGtrgApump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.00003774",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:52:53.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "CEbbDrvxQW5iruTfQXehCDp7hzWrP8joQveAtceL1NRc",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "CEbbDrvxQW5iruTfQXehCDp7hzWrP8joQveAtceL1NRc",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "8745.97",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "CEbbDrvxQW5iruTfQXehCDp7hzWrP8joQveAtceL1NRc",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":41,\"sells\":8}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "CEbbDrvxQW5iruTfQXehCDp7hzWrP8joQveAtceL1NRc",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "3d2Pnfy6NC9XYy3z9G6LRjfYKnKPhy2aiTG8SYU1pump:T+15M",
+      "token": "3d2Pnfy6NC9XYy3z9G6LRjfYKnKPhy2aiTG8SYU1pump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:07:40.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:07:55.278Z",
+      "manifestHash": "ce713c014f264cf109fad274160eeb6978f274689a8f757c99a5caac6c46c960",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1047127190072956\",\"virtualSolReserves\":\"1160482654\",\"realTokenReserves\":\"767227190072956\",\"realSolReserves\":\"1\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "2MG6MkbL6qTB8Dioa3P6nhwrneNDZs8i9mXECeq9xWZm",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"E5CnaSQXF8K9fa5DEV75d6b1E9Uqp4PhvcLhTeJoUCAy\",\"amount\":\"1025872809927044\"},{\"address\":\"GQh82dxnmszerqr2yiHaknc8mNNBvWgsKhP6uXTZwugx\",\"amount\":\"974127190072956\"},{\"address\":\"FfwjHoAeZ7947NgmZkmuj8PCP1QaHZ7LhaQNfRg5bvHM\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "3d2Pnfy6NC9XYy3z9G6LRjfYKnKPhy2aiTG8SYU1pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "2000000000000000/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "3d2Pnfy6NC9XYy3z9G6LRjfYKnKPhy2aiTG8SYU1pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0000011122496327692018",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-19T23:53:59.000Z",
+          "observedAt": "2026-09-20T00:07:55.278Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "3d2Pnfy6NC9XYy3z9G6LRjfYKnKPhy2aiTG8SYU1pump",
+            "scope": "provider_token_price"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "G2t8uMqpPzep9P9WsCd739zNb51ZxBP622ekoyjnpump:T+15M",
+      "token": "G2t8uMqpPzep9P9WsCd739zNb51ZxBP622ekoyjnpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:12:54.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:13:24.605Z",
+      "manifestHash": "4158086ec4758cb3d633225b0a9c6bda9b6652da3f87e062daa15402ca836804",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"340208131313847\",\"virtualSolReserves\":\"61245171\",\"realTokenReserves\":\"60308131313847\",\"realSolReserves\":\"51193988\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "4zLysPCLCTn1eqWhwpF7MGBhDL2PZeDyCiY7zzhunu99",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"7AWCgk2q3fpCHmMS3bN9CirPzdZv4aG19L8LHtXBU5J9\",\"amount\":\"288557903313815\"},{\"address\":\"5Lr4mnG6Ecmo3G3xgb3pKXodA5SDibwFsSXyPcYEUjLt\",\"amount\":\"284111652073848\"},{\"address\":\"7Kyk24yPxbUdUgJoyq2itFaW9ZyA1awu53Ym7N4mTMbB\",\"amount\":\"267208131313847\"},{\"address\":\"Gk4zCPnsW6hcEWQsdgtybP1RLGt1ZKGU9tFn266tQQBs\",\"amount\":\"247425029583915\"},{\"address\":\"9dRHnXoN7PHGTBQAryLzD3GamgjAVwdoxspads3XCEiW\",\"amount\":\"181058190929203\"},{\"address\":\"8qRh3qa4eLMa45zP5d7K53BCdEi5LSff5m94RBPashRt\",\"amount\":\"177876604468575\"},{\"address\":\"EgCcxxBVcqo8JS2Cqcs7HFJh2XsPFRRF2sHGn7xrWiAf\",\"amount\":\"175001224634129\"},{\"address\":\"EsCJgLUiLwESKHzgDimThSqjJHct2FAfayaud4oA5iRe\",\"amount\":\"126641784816726\"},{\"address\":\"7majdTTDvD6HcUHkRpiKmJqyoW3TRV1dUQs6xEXmXJiW\",\"amount\":\"54259114370578\"},{\"address\":\"GeLVapv4t5kwtqFkFHMYR5rFWZcaNwcnforAAKkcNBDG\",\"amount\":\"52334073539696\"},{\"address\":\"7bTFa2LWCsnPYDGfhhFmQFtJZTU8TkMZLYixy567dt7c\",\"amount\":\"47341454887741\"},{\"address\":\"GzbAPYTrmJ76HznyKG9yNW6kgbUySwRyQiGk9SZxP551\",\"amount\":\"29512937371733\"},{\"address\":\"HnBzHJxKrcGJduajzXA1BuZtnn3yh7GZP9T7Gk576tcp\",\"amount\":\"25300331365229\"},{\"address\":\"4Ycyqnh8BXGE2mRhFfyfocwjz2J9EYyv6Kx8GFe3PKCw\",\"amount\":\"19718163843024\"},{\"address\":\"2oUgfnnrup4Fom5D2nTFjHiL82ge64A7SkUMV7V5wWtG\",\"amount\":\"13038886032566\"},{\"address\":\"93QpEY6qEhZAQMKV656bvBtZC8pfCSaTRnHgWSKXLvZR\",\"amount\":\"10614493298850\"},{\"address\":\"4iTbrjFCYN3AxhcrQTXFiV6RYrLpZuoNwtYMYmD9GJLm\",\"amount\":\"24156525\"},{\"address\":\"HKGU4pBqyWdvvrcXVsPqUGdAvhkUHFyErQuxszo2bD8X\",\"amount\":\"0\"},{\"address\":\"FhYq2f2dXoKQHzN6K32TTAPGXE42Ao3g7vdnFKFytdQ4\",\"amount\":\"0\"},{\"address\":\"EdV3VkFEoVh7StgZuMTvwAFoBk1p89FghS1H7uisiuj8\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "G2t8uMqpPzep9P9WsCd739zNb51ZxBP622ekoyjnpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1854473709044332/2000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "G2t8uMqpPzep9P9WsCd739zNb51ZxBP622ekoyjnpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "1.8362009858859002e-8",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-20T00:12:45.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "G2t8uMqpPzep9P9WsCd739zNb51ZxBP622ekoyjnpump",
+            "scope": "provider_token_price"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:54.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "4zLysPCLCTn1eqWhwpF7MGBhDL2PZeDyCiY7zzhunu99",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "4zLysPCLCTn1eqWhwpF7MGBhDL2PZeDyCiY7zzhunu99",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "481.4",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "4zLysPCLCTn1eqWhwpF7MGBhDL2PZeDyCiY7zzhunu99",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":181,\"sells\":168}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "4zLysPCLCTn1eqWhwpF7MGBhDL2PZeDyCiY7zzhunu99",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "E6nDhtXcR3cEFQ8HqNrpMFRNBJYqQnXqij7ps5n3pump:T+15M",
+      "token": "E6nDhtXcR3cEFQ8HqNrpMFRNBJYqQnXqij7ps5n3pump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:12:48.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:13:24.605Z",
+      "manifestHash": "74b3116db75b63dfb12d3d487ca2b20f8df67e2509f9f89cfdce7ef8c4ee868f",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1073000000000000\",\"virtualSolReserves\":\"30000000043\",\"realTokenReserves\":\"793100000000000\",\"realSolReserves\":\"43\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"69GZRDPsuy9Qpr1q96LQRBfhkbik4qRoAceeAXjbvWpE\",\"amount\":\"1000000000000000\"},{\"address\":\"HuqWE3rhfeRry6D3PD2TcsHzXiSu4B4XeJa14ZPqTNqQ\",\"amount\":\"0\"},{\"address\":\"HZqMt57vTgLRpRPBTgdDpfRBsQAnfdCw6KSiQj7T3noJ\",\"amount\":\"0\"},{\"address\":\"HSxh44KASF44LjkkbAPCBskmE4CcZaNRZKeDKuNy3rEs\",\"amount\":\"0\"},{\"address\":\"HGATKncNa1eoTUcSfvBBxifbrhq5FPimXLAZ2ddbwx6E\",\"amount\":\"0\"},{\"address\":\"GvKyvHkC7NafvTmMDi42p1vGyeiWLb9iWMVFnFtgke8m\",\"amount\":\"0\"},{\"address\":\"Gu7i3FMskepPPGG6McSVoyuXMkvtm2xsnQhxjKar8tB1\",\"amount\":\"0\"},{\"address\":\"GH5PZm2MbADR5XSkYHs658d4MFUqRtVBQjcVTGz3Yini\",\"amount\":\"0\"},{\"address\":\"Fd7avZygkx8ozcTd56fjjFQD9FYYKhWU1uCLtsjmLec3\",\"amount\":\"0\"},{\"address\":\"EzSJDooodCQgidBuT9xUksCyDTvfsvcphfUZNqKpp733\",\"amount\":\"0\"},{\"address\":\"EoPu8PMZinvFsJGULg9Tbq6vgmMQmV3KJbeQTkqx178b\",\"amount\":\"0\"},{\"address\":\"EZ4f19qtEFx5mMBqFu6crWQFhYLWqZJ7pkV3AWEKEUri\",\"amount\":\"0\"},{\"address\":\"ET15nnoHyY5upopWtX8LukA1S3x3aP9NqMs5iSLket9V\",\"amount\":\"0\"},{\"address\":\"EBpdy3cRqjVhP41f1JZz9SPyNa3vatygf2TbJgeBJah3\",\"amount\":\"0\"},{\"address\":\"DXngVVwNijKKoCgy1iVkuqddETqDc3JTMNj1Xz2Sxnxk\",\"amount\":\"0\"},{\"address\":\"C4thSivayBtBUF18X1n7BB3dxF7drHdEZP6DYAhBVSic\",\"amount\":\"0\"},{\"address\":\"9NTVaqoFHPCu1iKaYLDL5wyTooJHcdA9ee95Bns468wz\",\"amount\":\"0\"},{\"address\":\"9F5HoxKjczSwF2NCEfe3zFBejLGB3wFqca9QxGUwiDbY\",\"amount\":\"0\"},{\"address\":\"9D9v3zPAw9fFQQ9SobtUkTusvsGVkp1rMBD5kHHjoJoy\",\"amount\":\"0\"},{\"address\":\"7rPG5G4oRwjLUR3v7r5sZvGCd58K1XSQGKMZme623kNx\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "E6nDhtXcR3cEFQ8HqNrpMFRNBJYqQnXqij7ps5n3pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "E6nDhtXcR3cEFQ8HqNrpMFRNBJYqQnXqij7ps5n3pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:48.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000003104",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:48.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "4682.07",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":42,\"sells\":41}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "AYDLxzqCSpu9h5ukqDLsZggzTQJxEDb5tK2SYR7qQPMS",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "4mRH1euNL79q1pKmXYpWX4hCzR8Sgd3mnwyET7awpump:T+15M",
+      "token": "4mRH1euNL79q1pKmXYpWX4hCzR8Sgd3mnwyET7awpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:12:47.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:13:24.605Z",
+      "manifestHash": "e3a430da39390fe70777df604172d69979342e6f76e4bed90c6819051f8867b0",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1073000000000000\",\"virtualSolReserves\":\"364822583\",\"realTokenReserves\":\"793100000000000\",\"realSolReserves\":\"13\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"AnQ3Nmpn9eB4QKYgEDJN8u16kEfkkKY94dfgLqgFE8tK\",\"amount\":\"1000000000000000\"},{\"address\":\"J8UWPeNNYREFMsFQUXr9ci2v7WqMHpuxQrz36CJrcRYN\",\"amount\":\"0\"},{\"address\":\"J5eSCVgixTDJZxsmhzN3vyrTFDENKLs9mfJDwbntB2xW\",\"amount\":\"0\"},{\"address\":\"GtFt5cqeV6ua8h2Z4CRCCjfJfMEt2zE7gNzbD8GJWnid\",\"amount\":\"0\"},{\"address\":\"F3Wh5fbKBfC7MH9vzeKALd3RimTMh6QJzNG9iKKCtdUk\",\"amount\":\"0\"},{\"address\":\"EXL8fuF2EDjjKVeNJ2vYHM7JkDrz3TVfMPRytsFM7u5u\",\"amount\":\"0\"},{\"address\":\"D5nLSyTtKCtCtg5kyFjXXRjYAFX3ABZWXKDbMNTmvyRB\",\"amount\":\"0\"},{\"address\":\"Brq5VeSD5V1Rzsgtij69Vk3fVTsbdo7NLod4Ee39ibpT\",\"amount\":\"0\"},{\"address\":\"9yrLLRfuDnJMKk4M3b5ao2f7RL66Rc9QGxApbfAFaRbN\",\"amount\":\"0\"},{\"address\":\"9R1fgkjDNBWz9Ae39BJrB9t7o4h2RkNcWvPYp1aTegx8\",\"amount\":\"0\"},{\"address\":\"661eki64GcCGRZJoJB8apW8S2XoaqKtrykqciAakBiTS\",\"amount\":\"0\"},{\"address\":\"5PyAceCbguy8iwPD2S2y8vtP9aoN82gcTfoZPTmj9VYY\",\"amount\":\"0\"},{\"address\":\"47cbnszn6S7hwXCgf5TrHavopyQWo73nVTZ78F43fbLi\",\"amount\":\"0\"},{\"address\":\"2T6NkYhgNnysgehMVJ27suKWxN6hRgNvzmqBRpDaDrPi\",\"amount\":\"0\"},{\"address\":\"2Mt8S7UM1FNPMU7SQvZ1pvZNAY1UeZQzBiExNSYSWUbu\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "4mRH1euNL79q1pKmXYpWX4hCzR8Sgd3mnwyET7awpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "4mRH1euNL79q1pKmXYpWX4hCzR8Sgd3mnwyET7awpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:47.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000004995",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:47.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "2671.86",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":17,\"sells\":18}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "GeX5N3RamGhW2pLKSVVkokUhHM4pqidozYMCGJoU8UGA",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "CGstTbHx5XrmCY4wyT428HdFHiTvCRS3wCgvQqf9pump:T+15M",
+      "token": "CGstTbHx5XrmCY4wyT428HdFHiTvCRS3wCgvQqf9pump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:12:44.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:13:24.605Z",
+      "manifestHash": "acadca52ab01f0f40ee529ca98e50c032f6dd7effbcdff17294a1e8170bb07d1",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1073000000000000\",\"virtualSolReserves\":\"30000000001\",\"realTokenReserves\":\"793100000000000\",\"realSolReserves\":\"1\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "3k8kj15tyvCeQT4c2QSp5eMESXeSmqkce41KdtYsgchW",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"8sePPZFrJXTHWBHMtyKyk48xyVvLH2fT5q8qkbgoYGob\",\"amount\":\"1000000000000000\"},{\"address\":\"GsmSeSzPWr4w8r6PDLwgcUvBzhh4zQ4Ufb8j5ZbSNwme\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "CGstTbHx5XrmCY4wyT428HdFHiTvCRS3wCgvQqf9pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "CGstTbHx5XrmCY4wyT428HdFHiTvCRS3wCgvQqf9pump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000003100883093715317",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-20T00:03:09.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "CGstTbHx5XrmCY4wyT428HdFHiTvCRS3wCgvQqf9pump",
+            "scope": "provider_token_price"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:44.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3k8kj15tyvCeQT4c2QSp5eMESXeSmqkce41KdtYsgchW",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3k8kj15tyvCeQT4c2QSp5eMESXeSmqkce41KdtYsgchW",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "1.57",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3k8kj15tyvCeQT4c2QSp5eMESXeSmqkce41KdtYsgchW",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":1,\"sells\":1}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3k8kj15tyvCeQT4c2QSp5eMESXeSmqkce41KdtYsgchW",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "Fg2hXdMkR1Er1AauANGVLJ85Hs23xiSwXu3bMneKpump:T+15M",
+      "token": "Fg2hXdMkR1Er1AauANGVLJ85Hs23xiSwXu3bMneKpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:12:39.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:13:24.605Z",
+      "manifestHash": "5202f247051ed2850763543b185caaf008498fc1675b2d303761372ff97401c7",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1073000000000000\",\"virtualSolReserves\":\"30000000001\",\"realTokenReserves\":\"793100000000000\",\"realSolReserves\":\"1\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"FFx7T88JvALqToXK95FWjTNA7r9wiMDnJFc71f71yj2c\",\"amount\":\"1000000000000000\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "Fg2hXdMkR1Er1AauANGVLJ85Hs23xiSwXu3bMneKpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "Fg2hXdMkR1Er1AauANGVLJ85Hs23xiSwXu3bMneKpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:39.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.000003105",
+          "unit": "usd_per_token",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:57:39.000Z",
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "highest_reported_liquidity_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "21.99",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":1,\"sells\":1}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:13:24.605Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "491cmCkmJhY6zP9KPrqt355ybzMnfWFbkJHvHpCuWjzx",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
+    },
+    {
+      "key": "G5KtnydoVgVdWF12Gkj5248FDorwiSV21ps5BFtjpump:T+15M",
+      "token": "G5KtnydoVgVdWF12Gkj5248FDorwiSV21ps5BFtjpump",
+      "name": "T+15M",
+      "checkpointAt": "2026-09-20T00:14:04.000Z",
+      "status": "CAPTURED",
+      "capturedAt": "2026-09-20T00:14:56.905Z",
+      "manifestHash": "864ab3c9374955bcb4080165c26667c2524d2f816d4874a916f15e9022d2ddd6",
+      "observations": [
+        {
+          "capability": "LIFECYCLE",
+          "metric": "curve_state",
+          "state": "AVAILABLE",
+          "value": "{\"complete\":false,\"virtualTokenReserves\":\"1043005917742343\",\"virtualSolReserves\":\"30862720423\",\"realTokenReserves\":\"763105917742343\",\"realSolReserves\":\"862720423\",\"tokenTotalSupply\":\"1000000000000000\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "getAccountInfo",
+            "reference": "3L6c22JajJ6HEiV7yqgZSApZ3CA3KFWKx3yAH1fXf4s8",
+            "scope": "bonding_curve"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top_holders",
+          "state": "AVAILABLE",
+          "value": "{\"holderCount\":null,\"top\":[{\"address\":\"ARfZTkrPXqbuQTpnZd1HarNdhhkAHbSMDJunQmdWFXhf\",\"amount\":\"970005917742343\"},{\"address\":\"9TSiZeV9nUrRFyWJmcjmU7Q7MUb4RuEwKYEWMaT8c1X3\",\"amount\":\"26724307095704\"},{\"address\":\"AZ69yeT1U2M3BzgPJSXGQqZkvMhynWVQcV2fsC5w118A\",\"amount\":\"2899577061369\"},{\"address\":\"nmm1smM8S42b3zRhwLkp8vFm7QsLRuLB3XNCsES3eur\",\"amount\":\"347361334871\"},{\"address\":\"J2hULso5jsAuEPdb2ohQK9KAkWVtVCSkotbM9r6EW6vX\",\"amount\":\"22836765713\"},{\"address\":\"HR9NqXCjn4Bmfmpwgfy5YshTGpyW2H4H41UCe4nE8iTN\",\"amount\":\"0\"},{\"address\":\"GbgixPGwwaLFePeAYZH7BxLhZ3koVctcsB6F3tsKP2PM\",\"amount\":\"0\"},{\"address\":\"GXBkxCJiJrLcfV6PzjgFMbDZH8P3W5yhb2BUnCzzjk56\",\"amount\":\"0\"},{\"address\":\"F6c3yfbZhK1qyrtEYzk3SCZztjeFNHSeq9mhFKS75nwe\",\"amount\":\"0\"},{\"address\":\"EwG6RLLuGg1ZnNp27awgcVAsgTuG7tNoTy4ZjZougSAo\",\"amount\":\"0\"},{\"address\":\"ES94mhBs2A4cKEDeE8dVRvfVmmUsh3dp9Axm1W1stHTV\",\"amount\":\"0\"},{\"address\":\"E5ucqQiyTesPbhGRYqEnjnup1MWXDaAKHM8cAaRHvuXs\",\"amount\":\"0\"},{\"address\":\"CyaSnemmTFqerwknjqU4hSpdhsPSM9YzceWwDdDRZAzL\",\"amount\":\"0\"},{\"address\":\"Cvp4X4NVNgQ1NoFnpzFHpfJeQFHBA1kYskJ1FgBbZPRX\",\"amount\":\"0\"},{\"address\":\"BStA3CLBgtHjLwhqUmLefXLsoMDbFDdtJjukHVh8MEx6\",\"amount\":\"0\"},{\"address\":\"97jAEqjhfFQCDnyLjc6oBDNKWSHGF4T6EjaWLjpuMpGS\",\"amount\":\"0\"},{\"address\":\"93piMjDfcwMZLTSp77m1tR3NGHgdzSb91JMhwjZFNMZ8\",\"amount\":\"0\"},{\"address\":\"8Aso8eqTudrzFtsrAatino8gpace5MKeLGXUFGu9pnfx\",\"amount\":\"0\"},{\"address\":\"78uWYCSFq6cnm4WY9f7WzkVSAz6kzZM7dXVnrG9RH7aW\",\"amount\":\"0\"},{\"address\":\"3ZXGgCCX5dERzRBa9TgoDk831EAZrsjsnfhfa8gqEnQC\",\"amount\":\"0\"}],\"exclusions\":[],\"completeness\":\"PARTIAL\"}",
+          "unit": "json",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "G5KtnydoVgVdWF12Gkj5248FDorwiSV21ps5BFtjpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "HOLDERS",
+          "metric": "top10_concentration",
+          "state": "AVAILABLE",
+          "value": "1000000000000000/1000000000000000",
+          "unit": "raw_units_ratio",
+          "source": "helius",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "getTokenLargestAccounts",
+            "reference": "G5KtnydoVgVdWF12Gkj5248FDorwiSV21ps5BFtjpump",
+            "scope": "top_accounts_only"
+          }
+        },
+        {
+          "capability": "MARKET",
+          "metric": "price",
+          "state": "AVAILABLE",
+          "value": "0.0000032965301763850805",
+          "unit": "quote_per_token",
+          "source": "birdeye",
+          "sourceTimestamp": "2026-09-20T00:04:14.000Z",
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "defi/price",
+            "reference": "G5KtnydoVgVdWF12Gkj5248FDorwiSV21ps5BFtjpump",
+            "scope": "provider_token_price"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_stage",
+          "state": "AVAILABLE",
+          "value": "DEX_POOL_STAGE",
+          "unit": "market_stage",
+          "source": "dex-screener",
+          "sourceTimestamp": "2026-09-19T23:59:04.000Z",
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3L6c22JajJ6HEiV7yqgZSApZ3CA3KFWKx3yAH1fXf4s8",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "LIQUIDITY",
+          "metric": "liquidity_usd",
+          "state": "UNKNOWN",
+          "value": null,
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3L6c22JajJ6HEiV7yqgZSApZ3CA3KFWKx3yAH1fXf4s8",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "volume_24h_usd",
+          "state": "AVAILABLE",
+          "value": "3981.69",
+          "unit": "usd",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3L6c22JajJ6HEiV7yqgZSApZ3CA3KFWKx3yAH1fXf4s8",
+            "scope": "single_primary_pair"
+          }
+        },
+        {
+          "capability": "ACTIVITY",
+          "metric": "transactions_24h",
+          "state": "AVAILABLE",
+          "value": "{\"buys\":42,\"sells\":38}",
+          "unit": "transactions",
+          "source": "dex-screener",
+          "sourceTimestamp": null,
+          "observedAt": "2026-09-20T00:14:56.905Z",
+          "provenance": {
+            "endpoint": "latest/dex/tokens",
+            "reference": "3L6c22JajJ6HEiV7yqgZSApZ3CA3KFWKx3yAH1fXf4s8",
+            "scope": "single_primary_pair"
+          }
+        }
+      ],
+      "noLookAhead": true
     }
   ],
   "telemetry": [
@@ -2016,6 +4370,457 @@
       "credits": 100,
       "errorCode": null,
       "observedAt": "2026-09-19T23:59:14.341Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "DISCOVERY",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": 0,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "shadow-runner",
+      "capability": "CHECKPOINT",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": null,
+      "errorCode": "CHECKPOINT_WINDOW_EXPIRED_PENDING",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "SNAPSHOTS",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 705,
+      "calls": 20,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 307,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 87,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 461,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 177,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 541,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 74,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 63,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 344,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 67,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 369,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 77,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 286,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 72,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 66,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 915,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 71,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:07:55.278Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "DISCOVERY",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 36232,
+      "calls": 19,
+      "credits": 1900,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "provider": "shadow-runner",
+      "capability": "CHECKPOINT",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": null,
+      "errorCode": "CHECKPOINT_WINDOW_EXPIRED_PENDING",
+      "observedAt": "2026-09-20T00:11:30.964Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "DISCOVERY",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 57427,
+      "calls": 31,
+      "credits": 3100,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "provider": "shadow-runner",
+      "capability": "CHECKPOINT",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": null,
+      "errorCode": "CHECKPOINT_WINDOW_EXPIRED_PENDING",
+      "observedAt": "2026-09-20T00:12:20.488Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "DISCOVERY",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 72388,
+      "calls": 39,
+      "credits": 3900,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "shadow-runner",
+      "capability": "CHECKPOINT",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": null,
+      "errorCode": "CHECKPOINT_WINDOW_EXPIRED_PENDING",
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "SNAPSHOTS",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 509,
+      "calls": 10,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 299,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 433,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 68,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 139,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 107,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 316,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 165,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 324,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 97,
+      "calls": 1,
+      "credits": null,
+      "errorCode": "HTTP_429",
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 474,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:13:24.605Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "DISCOVERY",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 108265,
+      "calls": 59,
+      "credits": 5900,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "provider": "shadow-runner",
+      "capability": "CHECKPOINT",
+      "chain": "solana",
+      "success": false,
+      "latencyMs": 0,
+      "calls": 0,
+      "credits": null,
+      "errorCode": "CHECKPOINT_WINDOW_EXPIRED_PENDING",
+      "observedAt": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "provider": "helius",
+      "capability": "SNAPSHOTS",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 300,
+      "calls": 2,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "provider": "birdeye",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 174,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:14:56.905Z"
+    },
+    {
+      "provider": "dex-screener",
+      "capability": "MARKET",
+      "chain": "solana",
+      "success": true,
+      "latencyMs": 317,
+      "calls": 1,
+      "credits": null,
+      "errorCode": null,
+      "observedAt": "2026-09-20T00:14:56.905Z"
     }
   ]
 }

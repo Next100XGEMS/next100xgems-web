@@ -550,11 +550,15 @@ canonical pool account with matching mint/quote identity; the bounded live
 validation linked 7/10 committed completed cases and left 3/10 not found in the
 bounded signature window. No pool was inferred from names, symbols or listings.
 
-The restart-safe shadow runner admits a separate bounded cohort, schedules
-T+5M/T+15M/T+30M/T+1H/T+6H/T+24H checkpoints, preserves exact values and
-provenance, and leaves missed windows pending rather than inserting late
-look-ahead data. The first bootstrap admitted 20 real Pump tokens and captured
-14 T+5M checkpoints; no T+24H or methodology-data readiness claim is made.
+The restart-safe shadow runner admits a separate bounded cohort in batches of at
+most 20, schedules T+5M/T+15M/T+30M/T+1H/T+6H/T+24H checkpoints, preserves
+exact values and provenance, and leaves missed windows pending rather than
+inserting late look-ahead data. The 2026-09-20 expansion reached 62 real
+admissions against a 100-token target and captured 29 checkpoints (14 T+5M and
+15 T+15M); no later checkpoint or objective outcome label is claimed. The
+market contract distinguishes `PUMP_BONDING_CURVE_STAGE` from `DEX_POOL_STAGE`
+and uses `NOT_APPLICABLE` for pre-graduation absence of a DEX pool. No T+24H or
+methodology-data readiness claim is made.
 See [RADAR_SHADOW_COLLECTION.md](RADAR_SHADOW_COLLECTION.md).
 
 This remains `SHADOW_COLLECTION_READY` only after the implementation and

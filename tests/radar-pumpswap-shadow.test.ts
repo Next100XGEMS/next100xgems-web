@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { decodePumpSwapPoolAccount, linkPumpSwapMigration, PUMP_MIGRATION_DISCRIMINATORS, PUMPSWAP_PROGRAM_ID, SOL_MINT } from "@/lib/radar/acceptance/pumpswap";
 import { PUMP_PROGRAM_ID } from "@/lib/radar/acceptance/solana";
-import { admitShadowToken, appendShadowTelemetry, createShadowCheckpoint, createShadowCollectionState, dueShadowCheckpoints, recordImmutableShadowCheckpoint, summarizeShadowAvailability, type ShadowAdmission } from "@/lib/radar/acceptance/shadow";
+import { admitShadowToken, appendShadowTelemetry, classifyShadowMarketStage, createShadowCheckpoint, createShadowCollectionState, dueShadowCheckpoints, recordImmutableShadowCheckpoint, summarizeShadowAvailability, type ShadowAdmission } from "@/lib/radar/acceptance/shadow";
 
 const MINT = "AKbox1hQ5zfLghcbqTukUJq3THaeAJFpXQ31w1M6pump";
 const CURVE = "5a2XSN4qvTbB5oNCDqfYVifFdfU3gdRn8cjhp74GmgaW";
@@ -38,6 +38,12 @@ describe("PumpSwap linkage decoder", () => {
 });
 
 describe("prospective shadow collection", () => {
+  it("separates pre-graduation bonding-curve liquidity from DEX-pool liquidity", () => {
+    expect(classifyShadowMarketStage({ lifecycleComplete: false, poolFound: false })).toBe("PUMP_BONDING_CURVE_STAGE");
+    expect(classifyShadowMarketStage({ lifecycleComplete: true, poolFound: true })).toBe("DEX_POOL_STAGE");
+    expect(classifyShadowMarketStage({ lifecycleComplete: null, poolFound: false })).toBe("UNKNOWN");
+  });
+
   it("admits deterministically, schedules due checkpoints, and preserves idempotency", () => {
     let state = createShadowCollectionState({ now: "2026-09-19T23:31:00.000Z", cohortTarget: 20 });
     state = admitShadowToken(state, admission); state = admitShadowToken(state, admission);

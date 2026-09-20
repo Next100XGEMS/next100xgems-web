@@ -145,6 +145,27 @@ The seven unresolved signals retain these explicit decisions: H07
 `KEEP_MANDATORY_FAST_LANE`. These recommendations are not a claim that the
 signals are currently complete.
 
+## Prospective shadow expansion status — 2026-09-20
+
+The separate prospective shadow cohort was expanded in controlled 20-token
+batches using the existing read-only Helius/Birdeye/DEX configuration. It
+reached 62 unique real Pump admissions against a target of 100; the bounded
+discovery source produced no additional unique candidates on the final
+continuation check. The current observation artifact contains 29 immutable
+captures (14 `T+5M`, 15 `T+15M`) and no fabricated late windows. Later
+checkpoints and all future labels remain pending. This cohort is not merged
+into the frozen 300-token historical universe and does not change its
+chronological split.
+
+The shadow collector now represents pre-graduation absence of a DEX pool as
+`NOT_APPLICABLE` with `PUMP_BONDING_CURVE_STAGE`, while a verified market pair
+is `DEX_POOL_STAGE`. Liquidity amounts are never replaced by zero. The live
+expansion used 213 Helius calls/15,300 estimated credits, 30 Birdeye market
+requests (10 successful and 20 rate-limited with HTTP 429), and 22 successful
+DEX Screener requests. These are measured development values; CoinGecko and
+GMGN were not required for this bounded run. No production schedule or paid
+upgrade is justified.
+
 ## Historical backfill pilot
 
 The Helius Developer historical acquisition used the read-only
