@@ -3,11 +3,17 @@ export function validateAnalyzerClaims(claims: readonly AnalyzerClaim[], manifes
   const observations = new Map(manifest.observations.map((item) => [item.evidenceId, item]));
   return claims.every((claim) => {
     if (!claim.claim || !claim.source || !claim.field || !claim.evidenceType || !Array.isArray(claim.evidenceRefs) || claim.evidenceRefs.length === 0) return false;
+    if (claim.verification === "SUPPORTED" || claim.verification === "PARTIALLY_SUPPORTED") {
+      if (claim.identity === null) return false;
+      if (claim.field === "score" || claim.field === "methodology" || claim.field === "riskScore") return false;
+    }
     const referenced = claim.evidenceRefs.map((ref) => observations.get(ref));
     if (referenced.some((item) => !item)) return false;
     return referenced.every((item) => {
       if (item!.source !== claim.source || item!.key !== claim.field || item!.evidenceClass !== claim.evidenceType) return false;
-      if (claim.identity !== null && claim.identity !== item!.identity && claim.identity !== item!.value) return false;
+      if (item!.state !== "AVAILABLE") return false;
+      if (claim.identity !== item!.identity || item!.identity === null) return false;
+      if (!item!.provenance.some((provenance) => provenance.source === claim.source)) return false;
       if (String(claim.value) !== String(item!.value)) return false;
       if (claim.verification === "SUPPORTED" && item!.evidenceClass !== "VERIFIED_DATA") return false;
       return true;

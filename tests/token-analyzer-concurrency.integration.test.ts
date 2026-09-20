@@ -44,7 +44,7 @@ async function sql(statement: string) {
 describeLocal("Analyzer application/database concurrency", () => {
   const password = `Analyzer-local-${randomUUID()}`;
   const email = `analyzer-concurrency-${randomUUID()}@local.test`;
-  const rawInput = `0x${randomUUID().replaceAll("-", "")}`;
+  const rawInput = "0x0000000000000000000000000000000000000001";
   let admin: SupabaseClient;
   let user: SupabaseClient;
 

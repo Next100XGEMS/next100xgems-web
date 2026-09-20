@@ -35,20 +35,25 @@ describe("Universal Token Analyzer evidence safety", () => {
   it("requires typed evidence, identity, and exact values for claims", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
-    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [] }];
+    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, reference: "pool-1", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
     const manifest = createEvidenceManifest(input, resolution, observations);
     const valid = { claim: "Pool liquidity is 100", source: "chain", verification: "SUPPORTED" as const, evidenceRefs: ["liquidity-1"], evidenceType: "VERIFIED_DATA" as const, field: "liquidity", identity: "pool-1", value: "100" };
     expect(validateAnalyzerClaims([valid], manifest)).toBe(true);
     expect(validateAnalyzerClaims([{ ...valid, field: "wallet" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, identity: "wrong-pool" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, identity: "100" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, identity: null }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, value: "999" }], manifest)).toBe(false);
     expect(validateAnalyzerClaims([{ ...valid, evidenceType: "AI_INFERENCE" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, source: "invented" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", field: "score", identity: "pool-1" }], manifest)).toBe(false);
+    expect(validateAnalyzerClaims([{ ...valid, verification: "SUPPORTED", value: "100", evidenceType: "VERIFIED_DATA" }], { ...manifest, observations: [{ ...observations[0], state: "UNAVAILABLE" }] })).toBe(false);
   });
 
   it("flags a structured output value that disagrees with grounded evidence", () => {
     const input = { raw: "0x0000000000000000000000000000000000000001", hintChain: "ethereum" as const };
     const resolution = resolveAnalyzerInput(input);
-    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [] }];
+    const observations = [{ key: "liquidity", label: "Liquidity", value: "100", state: "AVAILABLE" as const, evidenceClass: "VERIFIED_DATA" as const, source: "chain", observedAt: "2026-09-20T00:00:00.000Z", evidenceId: "liquidity-1", identity: "pool-1", provenance: [{ source: "chain", kind: "DIRECT_CHAIN" as const, reference: "pool-1", capturedAt: "2026-09-20T00:00:00.000Z" }] }];
     const manifest = createEvidenceManifest(input, resolution, observations);
     expect(detectUnsupportedAnalyzerOutput({ liquidity: "999" }, manifest)).toContain("EVIDENCE_VALUE_MISMATCH");
     expect(detectUnsupportedAnalyzerOutput({ liquidity: "100" }, manifest)).not.toContain("EVIDENCE_VALUE_MISMATCH");

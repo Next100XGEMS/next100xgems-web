@@ -92,5 +92,7 @@ describe("Universal Token Analyzer contracts", () => {
     expect(calculatePositionSizing({ portfolioCapital: "0.000000000001", maxRiskPercent: "50", entryPrice: "1", invalidationPrice: "0.9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "0.0000000000005" });
     expect(calculatePositionSizing({ portfolioCapital: "0.000000000000000001", maxRiskPercent: "100", entryPrice: "1", invalidationPrice: "0.9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "0.000000000000000001", positionNotional: "0.00000000000000001" });
     expect(calculatePositionSizing({ portfolioCapital: "10000", maxRiskPercent: "1", entryPrice: "1", invalidationPrice: "1.000000000000000001" })).toMatchObject({ status: "AVAILABLE", stopDistancePercent: "0.0000000000000001" });
+    expect(calculatePositionSizing({ portfolioCapital: "1000", maxRiskPercent: "1", entryPrice: "1000", invalidationPrice: "1000.000000000000000001" }).status).toBe("POSITION_SIZE_UNAVAILABLE");
+    expect(calculatePositionSizing({ portfolioCapital: "0.000000000000000001", maxRiskPercent: "100", entryPrice: "1", invalidationPrice: "1000" }).status).toBe("POSITION_SIZE_UNAVAILABLE");
   });
 });

@@ -100,6 +100,7 @@ export type AnalyzerScore = {
 
 export type AnalyzerResult = {
   requestId: string;
+  analysisVersion?: number;
   status: AnalyzerStatus;
   input: AnalyzerInput;
   resolvedToken: AnalyzerResolution;
