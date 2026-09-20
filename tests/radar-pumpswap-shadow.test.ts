@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { decodePumpSwapPoolAccount, linkPumpSwapMigration, PUMP_MIGRATION_DISCRIMINATORS, PUMPSWAP_PROGRAM_ID, SOL_MINT } from "@/lib/radar/acceptance/pumpswap";
 import { PUMP_PROGRAM_ID } from "@/lib/radar/acceptance/solana";
-import { admitShadowToken, appendShadowTelemetry, classifyShadowMarketStage, createShadowCheckpoint, createShadowCollectionState, dueShadowCheckpoints, recordImmutableShadowCheckpoint, summarizeShadowAvailability, type ShadowAdmission } from "@/lib/radar/acceptance/shadow";
+import { admitShadowToken, allShadowCheckpointsTerminal, appendShadowTelemetry, classifyShadowMarketStage, createShadowCheckpoint, createShadowCollectionState, dueShadowCheckpoints, freezeShadowAdmissions, nextShadowCheckpoint, recordImmutableShadowCheckpoint, resolveShadowCheckpointStatus, summarizeShadowAvailability, syncShadowCheckpointStates, type ShadowAdmission } from "@/lib/radar/acceptance/shadow";
+import { computeWatchPlan, createStopSignal } from "../scripts/radar-shadow-watch.mjs";
 
 const MINT = "AKbox1hQ5zfLghcbqTukUJq3THaeAJFpXQ31w1M6pump";
 const CURVE = "5a2XSN4qvTbB5oNCDqfYVifFdfU3gdRn8cjhp74GmgaW";
@@ -48,11 +49,24 @@ describe("prospective shadow collection", () => {
     let state = createShadowCollectionState({ now: "2026-09-19T23:31:00.000Z", cohortTarget: 20 });
     state = admitShadowToken(state, admission); state = admitShadowToken(state, admission);
     expect(state.admissions).toHaveLength(1);
-    expect(dueShadowCheckpoints(state, "2026-09-19T23:40:00.000Z").map((item) => item.name)).toEqual(["T+5M"]);
+    expect(dueShadowCheckpoints(state, "2026-09-19T23:40:00.000Z")).toEqual([]);
     const checkpoint = createShadowCheckpoint({ admission, name: "T+5M", capturedAt: "2026-09-19T23:40:00.000Z", observations: [{ capability: "LIFECYCLE", metric: "complete", state: "AVAILABLE", value: "false", unit: "boolean", source: "helius", sourceTimestamp: "2026-09-19T23:40:00.000Z", observedAt: "2026-09-19T23:40:00.000Z", provenance: { endpoint: "getAccountInfo", reference: CURVE, scope: "bonding_curve" } }] });
     state = recordImmutableShadowCheckpoint(state, checkpoint); state = recordImmutableShadowCheckpoint(state, checkpoint);
     expect(state.checkpoints).toHaveLength(1);
     expect(summarizeShadowAvailability(appendShadowTelemetry(state, { provider: "helius", capability: "LIFECYCLE", chain: "solana", success: true, latencyMs: 10, calls: 1, credits: null, errorCode: null, observedAt: "2026-09-19T23:40:00.000Z" }), ["complete"]).complete.available).toBe(1);
+  });
+
+  it("resolves PENDING_FUTURE, DUE_NOW and CAPTURED without reopening immutable data", () => {
+    const future = resolveShadowCheckpointStatus({ checkpointAt: "2026-09-19T23:35:00.000Z", now: "2026-09-19T23:34:59.000Z" });
+    const due = resolveShadowCheckpointStatus({ checkpointAt: "2026-09-19T23:35:00.000Z", now: "2026-09-19T23:36:00.000Z" });
+    expect(future).toBe("PENDING_FUTURE");
+    expect(due).toBe("DUE_NOW");
+    const state = syncShadowCheckpointStates(admitShadowToken(createShadowCollectionState({ now: "2026-09-19T23:30:00.000Z" }), admission), "2026-09-19T23:35:30.000Z");
+    const scheduled = state.checkpoints.find((checkpoint) => checkpoint.key === `${MINT}:T+5M`)!;
+    const captured = createShadowCheckpoint({ admission, name: "T+5M", capturedAt: "2026-09-19T23:35:30.000Z", observations: [] });
+    const completed = recordImmutableShadowCheckpoint(state, captured);
+    expect(completed.checkpoints.find((checkpoint) => checkpoint.key === scheduled.key)?.status).toBe("CAPTURED");
+    expect(() => recordImmutableShadowCheckpoint(completed, { ...captured, manifestHash: "changed" })).toThrow(/immutable/);
   });
 
   it("rejects look-ahead observations and conflicting checkpoint replay", () => {
@@ -61,10 +75,30 @@ describe("prospective shadow collection", () => {
     expect(() => recordImmutableShadowCheckpoint(state, { ...state.checkpoints[0], manifestHash: "conflict" })).toThrow(/immutable/);
   });
 
-  it("keeps a missed window due instead of treating it as captured", () => {
-    const checkpoint = createShadowCheckpoint({ admission, name: "T+5M", capturedAt: "2026-09-19T23:40:00.000Z", status: "MISSED", observations: [] });
+  it("marks an expired window MISSED_WINDOW and rejects late backfill", () => {
+    const checkpoint = createShadowCheckpoint({ admission, name: "T+5M", status: "MISSED_WINDOW", observations: [] });
     const admitted = admitShadowToken(createShadowCollectionState({ now: "2026-09-19T23:40:00.000Z" }), admission);
     const state = recordImmutableShadowCheckpoint(admitted, checkpoint);
-    expect(dueShadowCheckpoints(state, "2026-09-19T23:50:00.000Z").map((item) => item.name)).toEqual(["T+5M", "T+15M"]);
+    expect(dueShadowCheckpoints(state, "2026-09-19T23:50:00.000Z")).toEqual([]);
+    expect(() => recordImmutableShadowCheckpoint(state, createShadowCheckpoint({ admission, name: "T+5M", capturedAt: "2026-09-19T23:50:00.000Z", observations: [] }))).toThrow(/immutable|backfill/);
+  });
+
+  it("freezes admissions and stops after all T+24H checkpoints are terminal", () => {
+    const frozen = freezeShadowAdmissions(admitShadowToken(createShadowCollectionState({ now: "2026-09-19T23:30:00.000Z" }), admission), "2026-09-19T23:31:00.000Z");
+    expect(admitShadowToken(frozen, { ...admission, mint: `${MINT.slice(0, -1)}2` })).toBe(frozen);
+    const terminal = syncShadowCheckpointStates(frozen, "2026-09-20T23:40:00.000Z");
+    expect(allShadowCheckpointsTerminal(terminal, "2026-09-20T23:40:00.000Z")).toBe(true);
+  });
+
+  it("calculates the next watcher wake, survives reload, and supports graceful stop", () => {
+    const state = syncShadowCheckpointStates(admitShadowToken(createShadowCollectionState({ now: "2026-09-19T23:30:00.000Z" }), admission), "2026-09-19T23:31:00.000Z");
+    const plan = computeWatchPlan(state, Date.parse("2026-09-19T23:31:00.000Z"));
+    expect(plan.dueNow).toHaveLength(0);
+    expect(plan.future[0].name).toBe("T+5M");
+    expect(computeWatchPlan(JSON.parse(JSON.stringify(state)), Date.parse("2026-09-19T23:31:00.000Z")).nextDueAt).toBe(plan.nextDueAt);
+    const duePlan = computeWatchPlan(syncShadowCheckpointStates(state, "2026-09-19T23:35:30.000Z"), Date.parse("2026-09-19T23:35:30.000Z"));
+    expect(duePlan.dueNow[0].name).toBe("T+5M");
+    const stop = createStopSignal(); expect(stop.isStopped()).toBe(false); stop.stop(); expect(stop.isStopped()).toBe(true);
+    expect(nextShadowCheckpoint(state, "2026-09-19T23:31:00.000Z")?.name).toBe("T+5M");
   });
 });

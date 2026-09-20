@@ -21,6 +21,10 @@ endpoints, build or sign transactions, publish Radar data, or write production
 tables. The expansion target is 100 admissions, but each invocation is capped
 at a 20-token batch and the live source may yield fewer unique creations.
 
+The persisted cohort is now frozen at 73 unique mints. The discovery/admission
+code remains for historical compatibility, but operational collection runs do
+not admit new tokens.
+
 ## Official lifecycle linkage
 
 Pump migration is accepted only when a transaction contains the official
@@ -47,6 +51,8 @@ covered. The normalized result is in
   creation time, bonding-curve PDA, decoder version and selection reason;
 - fixed checkpoints: `T+5M`, `T+15M`, `T+30M`, `T+1H`, `T+6H`, `T+24H`;
 - immutable checkpoint manifests and SHA-256 identities;
+- explicit scheduled states `PENDING_FUTURE`, `DUE_NOW`, `CAPTURED` and
+  `MISSED_WINDOW` for every admission/checkpoint pair;
 - observation states `AVAILABLE`, `UNKNOWN`, `UNAVAILABLE` and `STALE`;
 - lifecycle-aware market-stage observations, including `PUMP_BONDING_CURVE_STAGE`,
   `DEX_POOL_STAGE`, and `NOT_APPLICABLE` when a pre-graduation token has no DEX
@@ -107,21 +113,20 @@ condition. No paid plan is justified by this bootstrap.
 
 ## Expansion and maturation measurement — 2026-09-20
 
-The controlled expansion target was 100 admissions. Four bounded runs advanced
-the live cohort from 20 to 62 unique real Pump creations; the final continuation
-check found no further unique candidates in the bounded discovery pages. The
-cohort target remains recorded as 100, but no synthetic admissions were added.
-The current local normalized state contains 29 immutable captures: 14 `T+5M`
-and 15 `T+15M`; `T+30M`, `T+1H`, `T+6H` and `T+24H` remain pending. Late windows
-are not backfilled with current observations, and no objective outcome label is
-claimed until its real observation window matures.
+The controlled expansion target was 100 admissions. The authoritative persisted
+state contains 73 unique real Pump creations; admissions are now frozen. The
+current local normalized state contains 44 valid immutable captures: 14 `T+5M`,
+16 `T+15M` and 14 `T+30M`; later windows are represented explicitly as
+`MISSED_WINDOW` or `PENDING_FUTURE`. Late windows are not backfilled with
+current observations, and no objective outcome label is claimed until its real
+observation window matures.
 
-Across the live shadow runs, Helius telemetry recorded 213 read calls and
-15,300 estimated credits; Birdeye recorded 30 market requests, 10 successes
-and 20 HTTP 429 responses; DEX Screener recorded 22 successful fallback or
-comparison requests. No CoinGecko or GMGN request was needed in this bounded
-expansion. The state file is a local development observation artifact; it is
-not a public or production record.
+Across the live shadow state, Helius telemetry recorded 289 read calls and
+20,100 estimated credits; Birdeye recorded 44 market requests, 18 successes
+and 26 HTTP 429 responses; DEX Screener recorded 36 successful fallback or
+comparison requests. No CoinGecko or GMGN request was needed. The state file is
+a local development observation artifact; it is not a public or production
+record.
 
 New captures preserve market stage separately from liquidity amount. A token
 without a DEX pair while its bonding curve is incomplete is `NOT_APPLICABLE`
@@ -129,6 +134,33 @@ for DEX-pool liquidity and is labeled `PUMP_BONDING_CURVE_STAGE`; a verified
 pair is `DEX_POOL_STAGE`. This prevents “no pool yet” from becoming a zero or
 provider failure. Existing pre-change captures retain their immutable manifests
 and therefore do not receive retroactive stage observations.
+
+The current persisted state contains 438 scheduled checkpoints: 44 valid
+`CAPTURED`, 321 `MISSED_WINDOW`, and 73 `PENDING_FUTURE`. The audit of the
+original 44 captures found zero observations outside the configured window. A
+missed window is terminal and can never be populated with current market or
+holder data.
+
+## Local watcher
+
+Run `pnpm radar:shadow:watch` from the repository root for the local,
+development-only watcher. It loads `.env.local` without printing it, resumes
+from persisted state, invokes the existing collector only when a checkpoint is
+due, and exits when all frozen-cohort checkpoints through `T+24H` are either
+`CAPTURED` or `MISSED_WINDOW`. Press `Ctrl+C` for graceful shutdown; restarting
+the command reloads the same state and does not recollect captured checkpoints.
+
+The configured capture window is 120 seconds. The watcher cadence is 60
+seconds, half the capture window, so normal wakes remain inside the valid
+window. It waits for the next due time when that is sooner than the cadence and
+does not wait for `T+7D` outcomes.
+
+The direct one-shot collector remains available for an operator-triggered
+capture:
+
+```text
+node scripts/radar-shadow-collect.mjs tests/data/radar-pump-shadow-20260920.json 100 20
+```
 
 ## Operating commands
 

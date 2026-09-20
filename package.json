@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
+    "radar:shadow:watch": "node scripts/radar-shadow-watch.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test:run && pnpm build",
     "supabase:init": "pnpm supabase init",
     "supabase:start": "pnpm supabase start",
