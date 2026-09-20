@@ -23,10 +23,20 @@ authenticated server operations are the only application access path; the
 hardening gateway performs state reads and run persistence transactionally.
 
 An analysis version never mutates a completed manifest. Reanalysis creates a
-new analysis version. Stable request fingerprints permit deterministic evidence
-reuse only inside an explicit freshness window. Stale requests create a new
-immutable analysis version; concurrent submissions serialize on the fingerprint
-boundary.
+new analysis version. The database is the authoritative source for the
+canonical manifest hash and trusted persisted identity; the application may
+perform a local self-check but never supplies the database's final hash as an
+authority. Delivery retries reuse the same durable receipt, while fresh
+analysis and explicit reanalysis are separate operations (explicit
+reanalysis requires a reason). Concurrent submissions serialize on the
+fingerprint boundary, so identical application requests create one version and
+the remaining calls replay it.
+
+The trusted write boundary enforces methodology-inactive results and disabled
+AI, validates resolution/manifest/result identity, and rejects forged hashes,
+scores, AI receipts, or conflicting request context. A feature-off transition
+serializes against the mutation boundary; a request cannot commit a new
+analysis after the disable operation has acquired the feature-row lock.
 
 Provider collection, AI network execution, model budgets, and public Analyzer
 access remain intentionally NOT YET ACTIVE.

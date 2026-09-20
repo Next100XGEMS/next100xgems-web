@@ -33,6 +33,12 @@ describe("Universal Token Analyzer contracts", () => {
     expect(result.tokenAddress).toBe(mint);
     expect(result.canonicalTokenId).toBe(`solana:${mint}`);
     expect(result.confidence).toBe("CANDIDATE_IDENTITY");
+    expect(resolveAnalyzerInput({ raw: mint }).tokenAddress).toBe(mint);
+  });
+
+  it("accepts valid off-curve PDA encodings as Solana address candidates", () => {
+    const pda = "6PiyjiAPkp2KdZtqkyQYzVsD1Prv7t8v4TaYd8ip4YFd";
+    expect(resolveAnalyzerInput({ raw: pda }).tokenAddress).toBe(pda);
   });
 
   it("rejects spoofed provider hosts and conflicting chain context", () => {
@@ -83,5 +89,8 @@ describe("Universal Token Analyzer contracts", () => {
     expect(calculatePositionSizing({ portfolioCapital: "1000", maxRiskPercent: "1", entryPrice: "10", invalidationPrice: "9", maxPositionNotional: "50" }).positionNotional).toBe("50");
     expect(calculatePositionSizing({ portfolioCapital: "1000000000000000000000000000000", maxRiskPercent: "100", entryPrice: "10", invalidationPrice: "9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "1000000000000000000000000000000", positionNotional: "10000000000000000000000000000000" });
     expect(calculatePositionSizing({ portfolioCapital: "1" + "0".repeat(38), maxRiskPercent: "100", entryPrice: "10", invalidationPrice: "9" }).status).toBe("INVALID_INPUT");
+    expect(calculatePositionSizing({ portfolioCapital: "0.000000000001", maxRiskPercent: "50", entryPrice: "1", invalidationPrice: "0.9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "0.0000000000005" });
+    expect(calculatePositionSizing({ portfolioCapital: "0.000000000000000001", maxRiskPercent: "100", entryPrice: "1", invalidationPrice: "0.9" })).toMatchObject({ status: "AVAILABLE", riskBudget: "0.000000000000000001", positionNotional: "0.00000000000000001" });
+    expect(calculatePositionSizing({ portfolioCapital: "10000", maxRiskPercent: "1", entryPrice: "1", invalidationPrice: "1.000000000000000001" })).toMatchObject({ status: "AVAILABLE", stopDistancePercent: "0.0000000000000001" });
   });
 });

@@ -5,14 +5,17 @@ const EVM = /^0x[0-9a-fA-F]{40}$/;
 const CHAIN_ALIASES: Record<string, AnalyzerChain> = { eth: "ethereum", ethereum: "ethereum", base: "base", bsc: "bnb", bnb: "bnb", solana: "solana", sol: "solana" };
 const CHAINS = new Set<AnalyzerChain>(["solana", "ethereum", "base", "bnb"]);
 const now = () => new Date().toISOString();
-function normalizeAddress(chain: AnalyzerChain, value: string) { return chain === "solana" ? value : value.toLowerCase(); }
+function isAnalyzerChain(value: unknown): value is AnalyzerChain { return typeof value === "string" && CHAINS.has(value as AnalyzerChain); }
+function normalizeAddress(chain: AnalyzerChain, value: string) {
+  return chain === "solana" || (chain === "unknown" && isValidSolanaPublicKey(value)) ? value : value.toLowerCase();
+}
 function base(inputType: AnalyzerInputType, source: string, chain: AnalyzerChain, tokenAddress: string | null, pairAddress: string | null, poolAddress: string | null, reference: string, confidence: AnalyzerResolution["confidence"] = "UNKNOWN"): AnalyzerResolution {
   const capturedAt = now(); const normalizedToken = tokenAddress ? normalizeAddress(chain, tokenAddress) : null;
   const provenance = [{ source, kind: source === "direct-input" ? "DIRECT_INPUT" as const : "URL_STRUCTURE" as const, reference, capturedAt }];
   return { inputType, source, chain, tokenAddress: normalizedToken, canonicalTokenId: normalizedToken && CHAINS.has(chain) ? `${chain}:${normalizedToken}` : null, pairAddress: pairAddress ? normalizeAddress(chain, pairAddress) : null, poolAddress: poolAddress ? normalizeAddress(chain, poolAddress) : null, symbol: null, name: null, decimals: null, supply: null, launchpad: null, creator: null, creationTimestamp: null, programOrContract: null, confidence, provenance };
 }
 function identifyAddress(raw: string, hintChain?: AnalyzerChain): AnalyzerResolution | null {
-  if (EVM.test(raw)) { const chain = hintChain && CHAINS.has(hintChain) && hintChain !== "solana" ? hintChain : "unknown"; return base("CONTRACT_ADDRESS", "direct-input", chain, raw, null, null, raw, "CANDIDATE_IDENTITY"); }
+  if (EVM.test(raw)) { const chain = hintChain && isAnalyzerChain(hintChain) && hintChain !== "solana" ? hintChain : "unknown"; return base("CONTRACT_ADDRESS", "direct-input", chain, raw, null, null, raw, "CANDIDATE_IDENTITY"); }
   if (isValidSolanaPublicKey(raw)) { const chain = hintChain === "solana" ? "solana" : "unknown"; return base("TOKEN_MINT", "direct-input", chain, raw, null, null, raw, "CANDIDATE_IDENTITY"); }
   return null;
 }
@@ -41,7 +44,8 @@ export function classifyAnalyzerInput(raw: string): AnalyzerInputType {
 export function resolveAnalyzerInput(input: AnalyzerInput): AnalyzerResolution {
   const raw = input.raw.trim();
   if (raw.length === 0 || raw.length > 4096) return base("UNKNOWN", "direct-input", "unknown", null, null, null, "");
-  const address = identifyAddress(raw, input.hintChain);
+  const hintChain = isAnalyzerChain(input.hintChain) ? input.hintChain : undefined;
+  const address = identifyAddress(raw, hintChain);
   if (address) return address;
   try { const url = new URL(raw); if (!/^https?:$/.test(url.protocol) || url.username || url.password) return base("UNKNOWN", "direct-input", "unknown", null, null, null, raw); return urlResolution(raw, url); } catch { return base("UNKNOWN", "direct-input", "unknown", null, null, null, raw); }
 }

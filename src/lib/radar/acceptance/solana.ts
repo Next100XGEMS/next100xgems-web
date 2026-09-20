@@ -31,10 +31,10 @@ function isEd25519Point(bytes: Uint8Array): boolean {
   return mod(x * x - x2) === BigInt(0);
 }
 
-/** Validates a Solana public-key encoding without accepting syntax-only strings. */
+/** Validates a Solana address encoding. Token/account verification is separate. */
 export function isValidSolanaPublicKey(value: string): boolean {
   try {
-    return base58Decode(value).length === 32 && isEd25519Point(base58Decode(value));
+    return base58Decode(value).length === 32;
   } catch {
     return false;
   }

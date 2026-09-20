@@ -52,6 +52,7 @@ export type AnalyzerObservation = {
   source: string;
   observedAt: string | null;
   evidenceId: string;
+  identity?: string | null;
   provenance: AnalyzerProvenance[];
 };
 
@@ -75,6 +76,10 @@ export type AnalyzerClaim = {
   source: string;
   verification: AnalyzerClaimVerification;
   evidenceRefs: string[];
+  evidenceType: AnalyzerEvidenceClass;
+  field: string;
+  identity: string | null;
+  value: string | number | boolean | null;
 };
 
 export type AnalyzerProviderConflict = {
