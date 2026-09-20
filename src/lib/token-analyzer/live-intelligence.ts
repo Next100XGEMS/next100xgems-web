@@ -2,7 +2,7 @@ import "server-only";
 
 import { collectPumpLifecycle, PUMP_PROGRAM_ID, isValidSolanaPublicKey } from "@/lib/radar/acceptance/solana";
 import { canonicalAddress, verifySolanaMint, totalSupplyShare, TOKEN_PROGRAM, TOKEN_2022_PROGRAM } from "./provider-integrity";
-import type { AnalyzerCapabilityStatus, AnalyzerInput, AnalyzerObservation, AnalyzerProviderConflict, AnalyzerProviderUsage, AnalyzerResolution } from "./contracts";
+import type { AnalyzerCapabilityStatus, AnalyzerInput, AnalyzerObservation, AnalyzerProviderConflict, AnalyzerProviderUsage, AnalyzerResolution, AnalyzerTrustedPool } from "./contracts";
 import { createEvidenceManifest } from "./evidence";
 import { resolveAnalyzerInput } from "./input-resolver";
 
@@ -93,6 +93,13 @@ export class ProviderIdentityError extends Error { readonly code = "IDENTITY_CON
 function selectPair(pairs: JsonRecord[], chain: string, token: string) {
   return pairs.filter((pair) => pairMatches(pair, chain, token)).sort((a, b) => Number(((b.liquidity as JsonRecord | undefined)?.usd) ?? 0) - Number(((a.liquidity as JsonRecord | undefined)?.usd) ?? 0))[0] ?? null;
 }
+function trustedPoolTuple(pair: JsonRecord, chain: string, token: string): AnalyzerTrustedPool | null {
+  const poolAddress = canonicalAddress(chain, pair.pairAddress);
+  const baseToken = canonicalAddress(chain, (pair.baseToken as JsonRecord | undefined)?.address);
+  const quoteToken = canonicalAddress(chain, (pair.quoteToken as JsonRecord | undefined)?.address);
+  if (pair.chainId !== chainForDex(chain) || !poolAddress || !baseToken || !quoteToken || baseToken !== token) return null;
+  return { provider: "dex-screener", chain: chain as AnalyzerTrustedPool["chain"], poolAddress, baseToken, quoteToken };
+}
 async function fetchDexMarket(chain: string, token: string | null, pairAddress: string | null, usage: AnalyzerProviderUsage[]): Promise<SeedMarket> {
   if (!token && !pairAddress) return null;
   const path = pairAddress ? `/latest/dex/pairs/${encodeURIComponent(chainForDex(chain))}/${encodeURIComponent(pairAddress)}` : `/latest/dex/tokens/${encodeURIComponent(token!)}`;
@@ -173,7 +180,8 @@ async function solanaEvidence(resolution: AnalyzerResolution, observations: Anal
     return await jsonRequest(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }, "helius", method, usage) ?? { error: { message: "RPC response unavailable" } };
   };
   const account = await request("getAccountInfo", [resolution.tokenAddress, { encoding: "base64", commitment: "confirmed" }]);
-  const rawAccount = (account.result as JsonRecord | undefined)?.value as JsonRecord | undefined;
+  const rawValue = (account.result as JsonRecord | undefined)?.value;
+  const rawAccount = rawValue && typeof rawValue === "object" && !Array.isArray(rawValue) ? rawValue as JsonRecord : undefined;
   const mint = verifySolanaMint(rawAccount);
   const ownerIsString = rawAccount !== undefined && typeof rawAccount.owner === "string";
   const ownerIsApproved = ownerIsString && [TOKEN_PROGRAM, TOKEN_2022_PROGRAM].includes(rawAccount.owner as string);
@@ -254,13 +262,13 @@ export async function prepareLiveAnalyzerResolution(input: AnalyzerInput, reserv
   if (!resolution.tokenAddress && seedMarket) {
     const token = canonicalAddress(resolution.chain, (seedMarket.pair.baseToken as JsonRecord)?.address)!;
     const quote = canonicalAddress(resolution.chain, (seedMarket.pair.quoteToken as JsonRecord)?.address)!;
-    const trustedPoolIds = seedMarket.pairs.map((candidate) => canonicalAddress(resolution.chain, candidate.pairAddress)).filter((candidate): candidate is string => candidate !== null);
-    resolution = { ...resolution, tokenAddress: token, canonicalTokenId: `${resolution.chain}:${token}`, confidence: "PARTIAL", resolvedBaseToken: token, resolvedQuoteToken: quote, trustedPoolIds: [...new Set(trustedPoolIds)] };
+    const trustedPools = seedMarket.pairs.map((candidate) => trustedPoolTuple(candidate, resolution.chain, token)).filter((candidate): candidate is AnalyzerTrustedPool => candidate !== null);
+    resolution = { ...resolution, tokenAddress: token, canonicalTokenId: `${resolution.chain}:${token}`, confidence: "PARTIAL", resolvedBaseToken: token, resolvedQuoteToken: quote, trustedPools };
   } else if (seedMarket && resolution.tokenAddress) {
-    const trustedPoolIds = seedMarket.pairs.map((candidate) => canonicalAddress(resolution.chain, candidate.pairAddress)).filter((candidate): candidate is string => candidate !== null);
     const matchingPair = seedMarket.pairs.find((candidate) => canonicalAddress(resolution.chain, (candidate.baseToken as JsonRecord)?.address) === resolution.tokenAddress);
     const resolvedQuoteToken = canonicalAddress(resolution.chain, (matchingPair?.quoteToken as JsonRecord)?.address);
-    resolution = { ...resolution, resolvedBaseToken: resolution.tokenAddress, resolvedQuoteToken: resolvedQuoteToken ?? resolution.resolvedQuoteToken, trustedPoolIds: [...new Set([...(resolution.trustedPoolIds ?? []), ...trustedPoolIds])] };
+    const trustedPools = seedMarket.pairs.map((candidate) => trustedPoolTuple(candidate, resolution.chain, resolution.tokenAddress!)).filter((candidate): candidate is AnalyzerTrustedPool => candidate !== null);
+    resolution = { ...resolution, resolvedBaseToken: resolution.tokenAddress, resolvedQuoteToken: resolvedQuoteToken ?? resolution.resolvedQuoteToken, trustedPools };
   }
   return { resolution, seedMarket, usage, statuses };
 }

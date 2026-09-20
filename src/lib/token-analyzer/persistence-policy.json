@@ -314,6 +314,9 @@
         "resolvedBaseToken": { "type": "string", "minLength": 1 },
         "resolvedQuoteToken": { "type": "string", "minLength": 1 },
         "trustedPoolIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "maxItems": 100 },
+        "trustedPools": { "type": "array", "items": { "type": "object", "properties": { "provider": { "type": "string", "minLength": 1 }, "chain": { "type": "string", "enum": ["solana", "ethereum", "base", "bnb"] }, "poolAddress": { "type": "string", "minLength": 1 }, "baseToken": { "type": "string", "minLength": 1 }, "quoteToken": { "type": "string", "minLength": 1 } }, "optional": [] }, "maxItems": 100 },
+        "lifecycleReceiptId": { "type": "string", "pattern": "^[0-9a-fA-F-]{36}$" },
+        "resolutionVersion": { "type": "number" },
         "pairProof": {
           "type": "object",
           "properties": {
@@ -355,7 +358,10 @@
         "resolutionReceiptId",
         "resolvedBaseToken",
         "resolvedQuoteToken",
-        "trustedPoolIds"
+        "trustedPoolIds",
+        "trustedPools",
+        "lifecycleReceiptId"
+        ,"resolutionVersion"
       ]
     },
     "observation": {

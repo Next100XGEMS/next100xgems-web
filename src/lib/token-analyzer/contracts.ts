@@ -21,6 +21,7 @@ export type AnalyzerResolution = {
   resolvedBaseToken?: string;
   resolvedQuoteToken?: string;
   trustedPoolIds?: string[];
+  trustedPools?: AnalyzerTrustedPool[];
   inputType: AnalyzerInputType;
   source: string;
   chain: AnalyzerChain;
@@ -38,6 +39,14 @@ export type AnalyzerResolution = {
   programOrContract: string | null;
   confidence: "RESOLVED" | "CANDIDATE_IDENTITY" | "PARTIAL" | "UNKNOWN";
   provenance: AnalyzerProvenance[];
+};
+
+export type AnalyzerTrustedPool = {
+  provider: string;
+  chain: AnalyzerChain;
+  poolAddress: string;
+  baseToken: string;
+  quoteToken: string;
 };
 
 export type AnalyzerProvenance = {
@@ -129,6 +138,7 @@ export type AnalyzerObservationContext = {
   returnedAccountCount?: number; requestedTopN?: number; metricTopN?: number; exclusions?: string[];
   rawBalances?: { address: string; balance: string }[];
   tokenProgram?: string; decoderVersion?: string; curveAddress?: string;
+  provider?: string; lifecycleReceiptId?: string;
   virtualTokenReserves?: string; virtualSolReserves?: string;
   realTokenReserves?: string; realSolReserves?: string; complete?: boolean;
 };

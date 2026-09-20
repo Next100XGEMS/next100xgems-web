@@ -6,7 +6,7 @@ import policy from "./persistence-policy.json";
 import { verifyEvidenceManifestHash } from "./evidence";
 import type { AnalyzerInput, AnalyzerResolution, AnalyzerResult } from "./contracts";
 import { collectLiveAnalyzerEvidence, prepareLiveAnalyzerResolution, initialLiveResolution, type LivePreparedResolution } from "./live-intelligence";
-import { attestAnalyzerResolution } from "./trusted-resolution";
+import { attestAnalyzerPumpLifecycle, attestAnalyzerResolution } from "./trusted-resolution";
 
 export type AnalyzerRunOperation = "FRESH_ANALYSIS" | "EXPLICIT_REANALYSIS";
 export type AnalyzerRunOptions = { operation?: AnalyzerRunOperation; reanalysisReason?: string; intentId?: string; sourceDeliveryId?: string };
@@ -112,7 +112,28 @@ export async function runAnalyzer(input: AnalyzerInput, options: AnalyzerRunOpti
     prepared = { ...prepared, resolution: attestation.resolution };
     const live = await collectLiveAnalyzerEvidence(reservation.input as AnalyzerInput, prepared);
     prepared = { ...prepared, statuses: live.statuses };
-    const manifest = live.manifest;
+    let manifest = live.manifest;
+    const lifecycle = manifest.observations.find((item) => item.key === "lifecycle" && item.state === "AVAILABLE" && item.evidenceClass === "VERIFIED_DATA");
+    if (lifecycle?.context) {
+      const lifecycleReceipt = await attestAnalyzerPumpLifecycle({
+        deliveryKey: key,
+        lifecycle: {
+          mint: prepared.resolution.tokenAddress,
+          programId: lifecycle.context.tokenProgram,
+          curveAddress: lifecycle.context.curveAddress,
+          decoderVersion: lifecycle.context.decoderVersion,
+          complete: lifecycle.context.complete,
+          virtualTokenReserves: lifecycle.context.virtualTokenReserves,
+          virtualSolReserves: lifecycle.context.virtualSolReserves,
+          realTokenReserves: lifecycle.context.realTokenReserves,
+          realSolReserves: lifecycle.context.realSolReserves,
+        },
+      });
+      manifest = {
+        ...manifest,
+        observations: manifest.observations.map((item) => item === lifecycle ? { ...item, evidenceId: lifecycleReceipt.id } : item),
+      };
+    }
     liveUsage = live.usage;
     if (!verifyEvidenceManifestHash(manifest)) throw new AnalyzerOperationError("PERSISTENCE_FAILURE", "Evidence failed its local integrity check.");
     const { manifestHash: localHash, ...content } = manifest;

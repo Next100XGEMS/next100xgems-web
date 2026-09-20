@@ -2,7 +2,7 @@ import policy from "./persistence-policy.json";
 import { canonicalJson } from "@/lib/radar/hash";
 import { isValidSolanaPublicKey } from "@/lib/radar/acceptance/solana";
 import type { AnalyzerClaim, AnalyzerObservation, AnalyzerResolution } from "./contracts";
-import { totalSupplyShare } from "./provider-integrity";
+import { totalSupplyShare, trustedPoolForObservation } from "./provider-integrity";
 
 type Shape = { ref?: string; const?: unknown; type?: string; nullable?: boolean; enum?: unknown[]; properties?: Record<string, Shape>; optional?: string[]; items?: Shape; maxItems?: number; minLength?: number; maxLength?: number; pattern?: string; format?: string };
 const shapes = policy.schemas as unknown as Record<string, Shape>;
@@ -53,11 +53,7 @@ export function assertObservation(observation: AnalyzerObservation, resolution: 
   assertContract(observation, "observation");
   const scopedContext = observation.context;
   if (scopedContext && ["PAIR", "POOL"].includes(scopedContext.scope)) {
-    const trustedPools = resolution.trustedPoolIds ?? [];
-    const expectedPool = resolution.pairAddress ?? resolution.poolAddress;
-    if ((!expectedPool || scopedContext.poolId !== expectedPool) && !trustedPools.includes(scopedContext.poolId ?? "")) throw new Error("Analyzer scoped observation is not bound to trusted provider resolution.");
-    if (resolution.resolvedBaseToken && scopedContext.token !== resolution.resolvedBaseToken) throw new Error("Analyzer scoped observation base token mismatch.");
-    if (resolution.resolvedQuoteToken && scopedContext.quoteAsset !== resolution.resolvedQuoteToken) throw new Error("Analyzer scoped observation quote mismatch.");
+    if (!trustedPoolForObservation(resolution, { ...scopedContext, provider: observation.source })) throw new Error("Analyzer scoped observation is not bound to an attested provider tuple.");
   }
   if (observation.state !== "AVAILABLE") return;
   const registered = policy.fields[observation.key as keyof typeof policy.fields];
@@ -68,11 +64,7 @@ export function assertObservation(observation: AnalyzerObservation, resolution: 
   if (observation.source === "birdeye" && (c?.scope !== "TOKEN_AGGREGATE" || c.methodology !== "BIRDEYE_TOKEN_OVERVIEW")) throw new Error("Birdeye overview cannot claim a pool.");
   if (c && (c.chain !== resolution.chain || c.token !== resolution.tokenAddress || (c.scope === "TOKEN_AGGREGATE" && c.poolId !== null) || (["PAIR", "POOL"].includes(c.scope) && (!c.poolId || !validEntityAddress(c.chain, c.poolId))) || (c.quoteAsset !== null && !validEntityAddress(c.chain, c.quoteAsset)))) throw new Error("Analyzer observation scope is invalid.");
   if (c && observation.state === "AVAILABLE" && ["PAIR", "POOL"].includes(c.scope)) {
-    const trustedPools = resolution.trustedPoolIds ?? [];
-    const expectedPool = resolution.pairAddress ?? resolution.poolAddress;
-    if ((!expectedPool || c.poolId !== expectedPool) && !trustedPools.includes(c.poolId!)) throw new Error("Analyzer scoped observation is not bound to trusted provider resolution.");
-    if (resolution.resolvedBaseToken && c.token !== resolution.resolvedBaseToken) throw new Error("Analyzer scoped observation base token mismatch.");
-    if (resolution.resolvedQuoteToken && c.quoteAsset !== resolution.resolvedQuoteToken) throw new Error("Analyzer scoped observation quote mismatch.");
+    if (!trustedPoolForObservation(resolution, { ...c, provider: observation.source })) throw new Error("Analyzer scoped observation is not bound to an attested provider tuple.");
   }
   if (c && rule.identityType === "POOL" && c.poolId !== observation.identity) throw new Error("Analyzer scope/provenance pool mismatch.");
   if (c?.classification === "OBJECTIVE_DERIVED" && observation.evidenceClass === "VERIFIED_DATA") throw new Error("Derived metrics are not direct verified facts.");

@@ -1,4 +1,5 @@
 import { isValidSolanaPublicKey } from "@/lib/radar/acceptance/solana";
+import type { AnalyzerResolution, AnalyzerTrustedPool } from "./contracts";
 
 export const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 export const TOKEN_2022_PROGRAM = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
@@ -48,4 +49,15 @@ export function totalSupplyShare(rows: { address: string; balance: string }[], s
   // Do not represent a positive share as zero if it is below display precision.
   if (numerator > BigInt(0) && scaled === BigInt(0)) return null;
   return `${scaled / scale}.${(scaled % scale).toString().padStart(18, "0")}`.replace(/0+$/, "").replace(/\.$/, "");
+}
+
+export function trustedPoolForObservation(resolution: AnalyzerResolution, context: { provider?: string; chain: string; token: string; poolId: string | null; quoteAsset: string | null }): AnalyzerTrustedPool | null {
+  if (!context.poolId || !context.quoteAsset) return null;
+  return (resolution.trustedPools ?? []).find((pool) =>
+    pool.provider === (context.provider ?? "") &&
+    pool.chain === context.chain &&
+    pool.poolAddress === context.poolId &&
+    pool.baseToken === context.token &&
+    pool.quoteToken === context.quoteAsset
+  ) ?? null;
 }

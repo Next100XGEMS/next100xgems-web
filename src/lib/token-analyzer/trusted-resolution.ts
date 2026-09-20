@@ -27,3 +27,12 @@ export async function attestAnalyzerResolution(args: { deliveryKey: string; inpu
   if (error || !data || typeof data !== "object" || Array.isArray(data) || typeof (data as { id?: unknown }).id !== "string") throw new Error("Trusted Analyzer resolution could not be attested.");
   return data as { id: string; resolution: AnalyzerResolution };
 }
+
+export async function attestAnalyzerPumpLifecycle(args: { deliveryKey: string; lifecycle: Record<string, unknown> }) {
+  const { data, error } = await getTrustedClient().rpc("analyzer_attest_pump_lifecycle", {
+    p_delivery_key: args.deliveryKey,
+    p_lifecycle: args.lifecycle,
+  });
+  if (error || !data || typeof data !== "object" || Array.isArray(data) || typeof (data as { id?: unknown }).id !== "string") throw new Error("Trusted Pump lifecycle could not be attested.");
+  return data as { id: string; facts: Record<string, unknown> };
+}

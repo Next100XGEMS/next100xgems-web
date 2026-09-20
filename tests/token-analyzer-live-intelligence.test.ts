@@ -20,7 +20,7 @@ describe("deterministic live provider routing", () => {
     const calls: string[] = [];
     vi.stubGlobal("fetch", vi.fn(async (input: URL | RequestInfo, init?: RequestInit) => {
       const url = String(input);
-      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "solana", pairAddress: pool, baseToken: { address: mint }, priceUsd: "1.25", liquidity: { usd: 1000 }, volume: { h24: 500 }, txns: { h24: { buys: 3, sells: 2 } }, marketCap: 10000, fdv: 12000 }] }), { status: 200 });
+      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "solana", pairAddress: pool, baseToken: { address: mint }, quoteToken: { address: pool }, priceUsd: "1.25", liquidity: { usd: 1000 }, volume: { h24: 500 }, txns: { h24: { buys: 3, sells: 2 } }, marketCap: 10000, fdv: 12000 }] }), { status: 200 });
       if (url.includes("birdeye.so")) return new Response(JSON.stringify({ data: { price: "1.50", liquidity: 1000, volume24h: 500, trade24h: 5 } }), { status: 200 });
       if (url.includes("rpc.test")) {
         const body = JSON.parse(String(init?.body ?? "{}")) as { method?: string };
@@ -50,7 +50,7 @@ describe("deterministic live provider routing", () => {
     vi.stubEnv("ALCHEMY_API_KEY", "test-alchemy");
     vi.stubGlobal("fetch", vi.fn(async (input: URL | RequestInfo) => {
       const url = String(input);
-      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "bsc", pairAddress: "0xToken:4meme", baseToken: { address: "0x2023c949863bdd874b0743979c374c7d44f0ffff" }, priceUsd: "2.0" }] }), { status: 200 });
+      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "bsc", pairAddress: "0xToken:4meme", baseToken: { address: "0x2023c949863bdd874b0743979c374c7d44f0ffff" }, quoteToken: { address: "0x0000000000000000000000000000000000000001" }, priceUsd: "2.0" }] }), { status: 200 });
       if (url.includes("alchemy.com")) return new Response(JSON.stringify({ result: "0x" + "0".repeat(64) }), { status: 200 });
       return new Response("{}", { status: 404 });
     }));
@@ -64,7 +64,7 @@ describe("deterministic live provider routing", () => {
     vi.stubEnv("BIRDEYE_API_KEY", "test-birdeye");
     vi.stubGlobal("fetch", vi.fn(async (input: URL | RequestInfo) => {
       const url = String(input);
-      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "solana", pairAddress: pool, baseToken: { address: mint }, priceUsd: "1.25" }] }), { status: 200 });
+      if (url.includes("dexscreener.com")) return new Response(JSON.stringify({ pairs: [{ chainId: "solana", pairAddress: pool, baseToken: { address: mint }, quoteToken: { address: pool }, priceUsd: "1.25" }] }), { status: 200 });
       if (url.includes("birdeye.so")) return new Response("{}", { status: 429 });
       return new Response("{}", { status: 200 });
     }));
