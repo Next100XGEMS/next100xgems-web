@@ -1,0 +1,19 @@
+export const ANALYZER_AI_PROVIDERS = ["OpenAI", "Mistral", "DeepSeek", "Qwen", "Gemini", "Anthropic", "xAI"] as const;
+export type AnalyzerAiProvider = (typeof ANALYZER_AI_PROVIDERS)[number];
+export type AnalyzerModelConfig = { provider: AnalyzerAiProvider; model: string; enabled: boolean; role: "DEFAULT_ANALYST" | "OPEN_MODEL_CHALLENGER" | "SOCIAL_SPECIALIST" | "ESCALATION"; inputCostPerMillion: string | null; outputCostPerMillion: string | null; maxInputTokens: number; maxOutputTokens: number; supportsStructuredOutput: boolean; supportsVision: boolean; supportsTools: boolean; socialSpecialist: boolean; escalationOnly: boolean };
+export const ANALYZER_MODEL_REGISTRY: readonly AnalyzerModelConfig[] = [
+  { provider: "OpenAI", model: "gpt-5.6-luna", enabled: false, role: "DEFAULT_ANALYST", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: false, escalationOnly: false },
+  { provider: "Mistral", model: "mistral-small-4", enabled: false, role: "OPEN_MODEL_CHALLENGER", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: false, escalationOnly: false },
+  { provider: "DeepSeek", model: "deepseek-v4.1-flash", enabled: false, role: "OPEN_MODEL_CHALLENGER", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: false, escalationOnly: false },
+  { provider: "Qwen", model: "qwen3.8-27b", enabled: false, role: "OPEN_MODEL_CHALLENGER", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: false, escalationOnly: false },
+  { provider: "xAI", model: "grok", enabled: false, role: "SOCIAL_SPECIALIST", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: true, escalationOnly: false },
+  { provider: "Anthropic", model: "claude-sonnet", enabled: false, role: "ESCALATION", inputCostPerMillion: null, outputCostPerMillion: null, maxInputTokens: 0, maxOutputTokens: 0, supportsStructuredOutput: true, supportsVision: false, supportsTools: false, socialSpecialist: false, escalationOnly: true },
+];
+export type AnalyzerAiRoutingDecision = { role: "DEFAULT_ANALYST" | "SOCIAL_SPECIALIST" | "ESCALATION" | "DISABLED"; reason: string };
+export function routeAnalyzerAi(input: { enabled: boolean; hasSocialInput: boolean; needsEscalation: boolean; socialSpecialistEnabled: boolean; escalationEnabled: boolean }): AnalyzerAiRoutingDecision {
+  if (!input.enabled) return { role: "DISABLED", reason: "AI is disabled by default and no model call is permitted." };
+  if (input.hasSocialInput && input.socialSpecialistEnabled) return { role: "SOCIAL_SPECIALIST", reason: "Social input is present and the separately enabled specialist route applies." };
+  if (input.needsEscalation && input.escalationEnabled) return { role: "ESCALATION", reason: "Evidence conflict requires an explicitly enabled escalation route." };
+  return { role: "DEFAULT_ANALYST", reason: "One primary model call is permitted for a configured default analyst." };
+}
+export function estimateAnalyzerCost(inputTokens: number, outputTokens: number, inputRate: number | null, outputRate: number | null) { if (![inputTokens, outputTokens].every(Number.isInteger) || inputTokens < 0 || outputTokens < 0 || inputRate === null || outputRate === null || !Number.isFinite(inputRate) || !Number.isFinite(outputRate)) return null; return (inputTokens / 1_000_000) * inputRate + (outputTokens / 1_000_000) * outputRate; }

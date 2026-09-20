@@ -15,6 +15,8 @@ const featureFlagRows = [
   ["newsletter_enabled", "Newsletter", "Newsletter entry points"],
   ["maintenance_mode", "Maintenance Mode", "Conservative public availability state"],
   ["radar_auto_publish", "Radar Auto Publish", "OFF by default; review policy remains separate"],
+  ["token_analyzer_enabled", "Token Analyzer", "Private internal analysis console; audited control"],
+  ["token_analyzer_public_enabled", "Token Analyzer Public", "Prepared only; public route does not exist and remains OFF"],
 ] as const;
 
 export default async function FeatureFlagsAdminPage() {

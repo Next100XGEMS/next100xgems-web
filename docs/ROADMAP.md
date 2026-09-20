@@ -133,6 +133,16 @@ Production Radar Intelligence Design — requirements baseline COMPLETE, pending
 
 Production Radar Provider Evaluation — research/architecture documentation COMPLETE and expanded (2026-09-20), using the approved requirements baseline at `41ef51a`. [RADAR_PROVIDER_EVALUATION.md](RADAR_PROVIDER_EVALUATION.md) now evaluates ten sources, including direct Pump/PumpSwap state and read-only GMGN, across all 31 capabilities; the 30 mandatory signals, 21 mandatory authority routes and 80-signal inventory are unchanged. Revised Option B is the smallest Pump-aware pilot (Pump + Helius + Birdeye); Option D adds conditional GMGN enrichment and CoinGecko market verification for the proposed private beta. Bitquery remains gap-driven/deferred. Coverage, precision, history, rights, read-only access and cost acceptance gates remain unresolved until tested and approved.
 
+Universal Token Analyzer foundation — IMPLEMENTED as private, development-only
+infrastructure. Added additive Analyzer storage, typed input/URL resolution,
+SSRF-safe retrieval primitives, immutable evidence-manifest and result
+contracts, methodology-not-active score behavior, risk-math boundaries,
+model-neutral disabled AI routing/benchmark contracts, cost/claim validation,
+and an Owner/Admin console at `/admin/token-analyzer`. Both Analyzer flags are
+OFF by default; the master switch is audited and public access remains absent.
+No provider/model was activated, no public route/navigation was added, and no
+trading/execution capability was introduced. See the TOKEN_ANALYZER documents.
+
 Radar Multi-Chain Provider Acceptance Sandbox — IMPLEMENTED as a local/development-only harness. Added versioned dataset templates, Tier A/B/C chain plans, fixture adapters for Pump program/Helius/Birdeye/GMGN/CoinGecko/DEX Screener/EVM RPC profiles, shared Radar normalization, exact-decimal comparison, missingness handling, telemetry and development chain summaries in [RADAR_PROVIDER_ACCEPTANCE.md](RADAR_PROVIDER_ACCEPTANCE.md) and [RADAR_CHAIN_ACCEPTANCE.md](RADAR_CHAIN_ACCEPTANCE.md). No live provider keys, SDKs, paid plans, API calls, production feature flags, migrations, AI, trading or execution functionality were added. Live acceptance remains pending approved real-token datasets and server-only read-only credentials.
 
 Live Multi-Chain Provider Acceptance Run — PARTIAL / MEASURED 2026-09-20. A frozen public-discovery cohort of 108 real addresses was collected without credentials: Solana 40, BNB 40, Base 20 and Robinhood Chain 8. DEX Screener matched 101/108; GeckoTerminal discovery returned 5 successful pages and 8 HTTP 429 responses. All authenticated provider/RPC variables were missing, so Helius, Birdeye, GMGN, CoinGecko Demo, Pump direct state and RPC capabilities remain unmeasured. Solana, BNB and Base remain SHADOW; Robinhood is WATCH ONLY; no chain is promoted and no paid upgrade is justified. See [RADAR_PROVIDER_ACCEPTANCE.md](RADAR_PROVIDER_ACCEPTANCE.md), [RADAR_CHAIN_ACCEPTANCE.md](RADAR_CHAIN_ACCEPTANCE.md), and the frozen fixture.

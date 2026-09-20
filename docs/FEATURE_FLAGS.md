@@ -18,6 +18,8 @@ The supported system keys are:
 | `newsletter_enabled` | `false` | Newsletter entry-point control |
 | `maintenance_mode` | `true` | Restricts normal public operation while preserving authorized recovery access |
 | `radar_auto_publish` | `false` | Independent automation permission; never a substitute for review or publication rules |
+| `token_analyzer_enabled` | `false` | Private Owner/Admin Analyzer availability; fails closed |
+| `token_analyzer_public_enabled` | `false` | Reserved future public Analyzer availability; no public route exists |
 
 The existing `public.feature_flags` table already seeds one unique row for each key. Gate 7 adds no migration and preserves those defaults. `radar_auto_publish` remains false by default and fails closed.
 

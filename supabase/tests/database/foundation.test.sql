@@ -12,8 +12,11 @@ select tables_are('public', array[
   'radar_work_items', 'radar_work_inputs', 'radar_deep_lane_requests', 'radar_deep_lane_attempts',
   'radar_evidence', 'radar_methodology_versions',
   'radar_freshness_policies', 'radar_evidence_freezes', 'research_authors', 'article_sources',
-  'article_related_research', 'article_tokens'
-], 'Only the intended foundation/Research/Radar tables exist; no trading or analytics event tables');
+  'article_related_research', 'article_tokens',
+  'analyzer_config', 'analyzer_requests', 'analyzer_resolutions',
+  'analyzer_evidence_manifests', 'analyzer_analyses', 'analyzer_model_calls',
+  'analyzer_provider_events', 'analyzer_cost_usage'
+], 'Only the intended foundation/Research/Radar/Analyzer tables exist; no trading or analytics event tables');
 
 select ok(c.relrowsecurity, c.relname || ': RLS enabled')
 from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -82,10 +85,12 @@ select ok(not exists (
   left join public.roles r on r.id = u.role_id
   where p.id is null or r.id is null
 ), 'Every role assignment references an existing profile and seeded role');
-select is((select count(*)::integer from public.feature_flags), 9, 'Nine shared safe feature defaults');
+select is((select count(*)::integer from public.feature_flags), 11, 'Eleven shared safe feature defaults');
 select is((select enabled from public.feature_flags where key = 'radar_auto_publish'), false, 'Auto-publish OFF');
 select is((select enabled from public.feature_flags where key = 'maintenance_mode'), true, 'Maintenance ON initially');
 select is((select enabled from public.feature_flags where key = 'radar_emergency_paused'), true, 'Radar emergency pause ON initially');
+select is((select enabled from public.feature_flags where key = 'token_analyzer_enabled'), false, 'Token Analyzer OFF initially');
+select is((select enabled from public.feature_flags where key = 'token_analyzer_public_enabled'), false, 'Public Token Analyzer OFF initially');
 select is((select count(*)::integer from public.feature_flags where key not in ('maintenance_mode', 'radar_emergency_paused') and enabled), 0,
   'All feature availability defaults OFF');
 

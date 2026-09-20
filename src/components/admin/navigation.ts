@@ -37,6 +37,11 @@ const navigationGroups: readonly (AdminNavGroup & { operatorOnly?: boolean })[] 
         href: "/admin/radar",
         permissions: ["radar.read.analysis", "radar.read.review"],
       },
+      {
+        label: "Token Analyzer",
+        href: "/admin/token-analyzer",
+        permissions: ["configuration.read"],
+      },
     ],
   },
   {

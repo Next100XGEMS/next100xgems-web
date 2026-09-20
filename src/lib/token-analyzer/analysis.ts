@@ -1,0 +1,13 @@
+import { sha256 } from "@/lib/radar/hash";
+import { calculateAnalyzerScore } from "./score-engine";
+import type { AnalyzerEvidenceManifest, AnalyzerInput, AnalyzerResult } from "./contracts";
+
+export function analyzeEvidence(requestId: string, input: AnalyzerInput, manifest: AnalyzerEvidenceManifest): AnalyzerResult {
+  const available = manifest.observations.filter((item) => item.state === "AVAILABLE").length;
+  const total = manifest.observations.length + manifest.missing.length;
+  const coverage = total === 0 ? 0 : Math.round((available / total) * 100);
+  const status = manifest.resolvedToken.tokenAddress ? (available ? "PARTIAL" : "INSUFFICIENT_DATA") : "TOKEN_NOT_RESOLVED";
+  return { requestId, status, input, resolvedToken: manifest.resolvedToken, chain: manifest.resolvedToken.chain, pair: { address: manifest.resolvedToken.pairAddress, pool: manifest.resolvedToken.poolAddress }, freshness: manifest.freshness, dataConfidence: { state: coverage >= 80 ? "HIGH" : coverage >= 40 ? "MEDIUM" : coverage > 0 ? "LOW" : "UNKNOWN", coverage, reason: "Data confidence describes evidence coverage, freshness and provenance; it is not profit confidence." }, evidenceSummary: { total, available, unknown: manifest.missing.length, sources: [...new Set(manifest.observations.map((item) => item.source))] }, score: calculateAnalyzerScore(manifest), market: {}, liquidity: {}, holders: {}, creator: {}, activity: {}, topTrades: manifest.observations.filter((item) => item.key.startsWith("trade")), whyMoving: [{ classification: "UNKNOWN", explanation: "No causal explanation is asserted without current normalized evidence.", evidenceRefs: [] }], claimVerification: manifest.claims, riskFactors: [{ key: "data_quality", state: manifest.missing.length ? "UNKNOWN" : "ABSENT", explanation: manifest.missing.length ? "Required evidence is missing or unavailable." : "No additional data-quality risk was identified by this manifest.", evidenceRefs: [] }], unknowns: manifest.missing, positionSizing: { status: "POSITION_SIZE_UNAVAILABLE", riskBudget: null, stopDistancePercent: null, positionNotional: null, reason: "No user-provided risk parameters and objective invalidation are available." }, aiInterpretation: { status: "DISABLED", provider: null, model: null, content: null }, citations: manifest.resolvedToken.provenance, providerConflicts: manifest.providerConflicts, methodologyVersion: manifest.methodologyVersion, schemaVersion: manifest.schemaVersion, createdAt: new Date().toISOString() };
+}
+
+export function stableAnalyzerRequestFingerprint(input: AnalyzerInput) { return sha256({ raw: input.raw.trim(), hintChain: input.hintChain ?? null }); }

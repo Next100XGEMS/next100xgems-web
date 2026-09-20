@@ -11,6 +11,11 @@ NEXT100XGEMS is a premium Crypto Intelligence + Crypto Media platform. Its produ
 
 It is not a generic influencer landing page, a guaranteed “next 100x” service, an automated trading platform, a custody product, or an auto-buy/auto-sell system.
 
+The Universal Token Analyzer is an internal-only development intelligence
+console. It is feature-flagged OFF by default, has no public route or
+navigation entry, and does not change the public product boundary until a
+separate reviewed launch decision.
+
 ## Audiences
 
 - B2C: crypto investors, traders, researchers, and followers.

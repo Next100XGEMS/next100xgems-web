@@ -16,6 +16,17 @@ Use Server Components by default and Client Components for interaction. Server A
 
 The conceptual flow is market/token discovery → deterministic screening → deeper analysis → persistence → human review → public Radar. Deterministic data must remain distinguishable from AI inference. Automatic public publishing is off by default and manual review is required.
 
+## Universal Token Analyzer boundary
+
+The private Universal Token Analyzer is a server-first internal extension of
+the Radar intelligence boundary. It resolves bounded token/URL inputs into an
+immutable evidence manifest and a deterministic report; optional AI is a
+disabled, model-neutral explanation layer. Its additive private tables have no
+browser grants, and its `token_analyzer_enabled` /
+`token_analyzer_public_enabled` flags fail closed. The Admin console is not a
+public route and cannot publish, trade, sign, or submit transactions. See
+[TOKEN_ANALYZER_ARCHITECTURE.md](TOKEN_ANALYZER_ARCHITECTURE.md).
+
 ## Conceptual domains
 
 Potential domains include users, roles, articles, tokens, Radar events, Radar analysis, partners, sponsors, campaigns, ad slots, creatives, impressions, clicks, leads, settings, feature flags, and audit logs. Gate 4 defines only the initial database foundation for these boundaries; detailed authorization policies, storage rules, and later product schemas remain deferred.

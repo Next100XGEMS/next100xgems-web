@@ -99,6 +99,8 @@ describe("server feature flags", () => {
       newsletter_enabled: false,
       maintenance_mode: true,
       radar_auto_publish: false,
+      token_analyzer_enabled: false,
+      token_analyzer_public_enabled: false,
     });
   });
 
