@@ -101,6 +101,9 @@ describe("server feature flags", () => {
       radar_auto_publish: false,
       token_analyzer_enabled: false,
       token_analyzer_public_enabled: false,
+      project_console_enabled: false,
+      project_claims_enabled: false,
+      project_corrections_enabled: false,
     });
   });
 

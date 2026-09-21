@@ -13,6 +13,9 @@ export const FEATURE_FLAG_KEYS = [
   "radar_auto_publish",
   "token_analyzer_enabled",
   "token_analyzer_public_enabled",
+  "project_console_enabled",
+  "project_claims_enabled",
+  "project_corrections_enabled",
 ] as const;
 
 export type FeatureFlagKey = (typeof FEATURE_FLAG_KEYS)[number];
@@ -33,6 +36,9 @@ const FEATURE_FLAG_DEFAULTS: Record<FeatureFlagKey, boolean> = {
   radar_auto_publish: false,
   token_analyzer_enabled: false,
   token_analyzer_public_enabled: false,
+  project_console_enabled: false,
+  project_claims_enabled: false,
+  project_corrections_enabled: false,
 };
 
 type FeatureFlagRow = {

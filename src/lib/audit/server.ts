@@ -14,6 +14,11 @@ export const AUDIT_ACTIONS = [
   "partner.updated",
   "campaign.updated",
   "role.assigned",
+  "project.claim.submitted",
+  "project.claim.reviewed",
+  "project.field.updated",
+  "project.correction.submitted",
+  "project.correction.reviewed",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
@@ -24,7 +29,10 @@ export type AuditResourceType =
   | "radar_review"
   | "partner"
   | "campaign"
-  | "role";
+  | "role"
+  | "project_claim"
+  | "project_field"
+  | "project_correction";
 
 type JsonValue =
   | null

@@ -20,10 +20,10 @@ export function getSafeNextPath(value: string | null | undefined) {
     return FALLBACK_NEXT_PATH;
   }
 
-  if (
-    destination.origin !== REDIRECT_ORIGIN ||
-    !(destination.pathname === "/admin" || destination.pathname.startsWith("/admin/"))
-  ) {
+  const path = destination.pathname;
+  const isAdminPath = path === "/admin" || path.startsWith("/admin/");
+  const isProjectConsolePath = path === "/projects" || path.startsWith("/projects/");
+  if (destination.origin !== REDIRECT_ORIGIN || !(isAdminPath || isProjectConsolePath)) {
     return FALLBACK_NEXT_PATH;
   }
 

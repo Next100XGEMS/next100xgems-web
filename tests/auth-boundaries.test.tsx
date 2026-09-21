@@ -54,6 +54,8 @@ describe("authentication boundaries", () => {
     expect(getSafeNextPath("/admin/reports?tab=security#members")).toBe(
       "/admin/reports?tab=security#members",
     );
+    expect(getSafeNextPath("/projects/abc")).toBe("/projects/abc");
+    expect(getSafeNextPath("/projects")).toBe("/projects");
     expect(getLoginRedirect("/admin")).toBe("/login?next=%2Fadmin");
   });
 
