@@ -13,9 +13,10 @@ export default async function Page({
     <ProjectSectionShell
       eyebrow="Analytics"
       title="Analytics"
-      description="Usage and performance analytics are deferred; this page stays empty until a real data path exists."
+      description="Usage and performance analytics are deferred; this page stays empty until a real data path exists. Flags fail closed — no fabricated charts."
+      emptyCode="COMING_SOON"
       emptyTitle="Analytics not available yet"
-      emptyDescription="Analytics is not available yet. No metrics are fabricated for this surface."
+      emptyDescription="NO_DATA for this surface. Analytics is not available yet. No metrics are fabricated for this ops desk."
     />
   );
 }

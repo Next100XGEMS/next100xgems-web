@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Container } from "@/components/ui";
+import { Container, InstrumentRule } from "@/components/ui";
 import type { Project, ProjectMemberRole } from "@/lib/projects/types";
 
 import { getProjectConsoleNav } from "./navigation";
@@ -26,25 +26,34 @@ export default function ProjectConsoleShell({
   return (
     <div className="min-h-screen bg-[var(--n100-canvas)] text-[var(--n100-text-primary)]">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-[var(--n100-border-subtle)] bg-[var(--n100-surface-subtle)] lg:block">
+        <aside className="hidden w-64 shrink-0 border-r border-[var(--n100-border-subtle)] bg-[var(--n100-surface-admin)] lg:block">
           <div className="sticky top-0 flex h-screen flex-col px-5 py-6">
-            <div className="border-b border-[var(--n100-border-subtle)] pb-6">
+            <div className="border-b border-[var(--n100-border-subtle)] pb-5">
               <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[var(--n100-accent)]">
-                Project Console
+                Project Console · Ops
               </p>
-              <p className="mt-2 truncate text-sm font-medium text-[var(--n100-text-primary)]" title={project.displayName}>
+              <p
+                className="mt-3 truncate text-sm font-medium text-[var(--n100-text-primary)]"
+                title={project.displayName}
+              >
                 {project.displayName}
               </p>
               <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-[var(--n100-text-tertiary)]">
                 {project.slug} · {project.status}
               </p>
+              <InstrumentRule className="mt-4" />
             </div>
-            <div className="flex-1 overflow-y-auto py-7">
+            <div className="flex-1 overflow-y-auto py-6">
               <ProjectConsoleNav items={items} />
             </div>
             <div className="border-t border-[var(--n100-border-subtle)] pt-5">
-              <p className="text-[0.625rem] uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">Membership</p>
+              <p className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">
+                Membership
+              </p>
               <p className="mt-2 text-xs text-[var(--n100-text-secondary)]">{roleLabels[role]}</p>
+              <p className="mt-3 text-[0.625rem] leading-4 text-[var(--n100-text-tertiary)]">
+                Ops desk for claimed project data. Intelligence scores and Analyzer conclusions are out of scope here.
+              </p>
             </div>
           </div>
         </aside>
@@ -52,16 +61,21 @@ export default function ProjectConsoleShell({
         <div className="min-w-0 flex-1">
           <header className="border-b border-[var(--n100-border-subtle)] bg-[var(--n100-canvas)]">
             <Container className="space-y-4 py-4">
-              <div>
-                <p className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[var(--n100-text-tertiary)]">
-                  Project Console
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[var(--n100-text-tertiary)]">
+                    Project Console
+                  </p>
+                  <p className="mt-0.5 text-sm text-[var(--n100-text-secondary)]">{project.displayName}</p>
+                </div>
+                <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-[var(--n100-text-tertiary)]">
+                  Status · {project.status}
                 </p>
-                <p className="mt-0.5 text-sm text-[var(--n100-text-secondary)]">{project.displayName}</p>
               </div>
               <ProjectConsoleMobileNav items={items} />
             </Container>
           </header>
-          <main className="py-10 sm:py-14">
+          <main className="py-8 sm:py-10">
             <Container size="wide">{children}</Container>
           </main>
         </div>
