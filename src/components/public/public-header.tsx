@@ -6,6 +6,7 @@ import { useState } from "react";
 
 const primaryLinks = [
   ["Radar", "/radar"],
+  ["Finder", "/finder"],
   ["Research", "/research"],
   ["Partners", "/partners"],
   ["Advertise", "/advertise"],

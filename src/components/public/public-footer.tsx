@@ -3,7 +3,7 @@ import Link from "next/link";
 const footerGroups = [
   {
     label: "Product",
-    links: [["Radar", "/radar"], ["Research", "/research"]],
+    links: [["Radar", "/radar"], ["Finder", "/finder"], ["Research", "/research"]],
   },
   {
     label: "Company / Network",
