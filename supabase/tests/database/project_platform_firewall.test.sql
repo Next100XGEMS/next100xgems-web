@@ -4,7 +4,7 @@ set local search_path = public, extensions;
 select no_plan();
 
 -- Fixtures: staff profile, project member (no staff role), second project for CF-43,
--- radar/analyzer rows.
+-- radar/analyzer/research rows, SUBMITTED claim for CF-13.
 insert into auth.users (id) values
   ('00000000-0000-4000-8000-00000000a001'),
   ('00000000-0000-4000-8000-00000000a002'),
@@ -46,6 +46,61 @@ values (
   '00000000-0000-4000-8000-00000000c002',
   '00000000-0000-4000-8000-00000000c001',
   1, 'EARLY', 42, now()
+);
+
+-- CF-03 fixtures: real Analyzer request/manifest/analysis rows for byte-equality.
+insert into public.analyzer_requests (
+  id, requester_id, raw_input, input_type, request_fingerprint, status
+) values (
+  '00000000-0000-4000-8000-00000000c010',
+  '00000000-0000-4000-8000-00000000a001',
+  '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+  'CONTRACT_ADDRESS',
+  repeat('ab', 32),
+  'ANALYZED'
+);
+insert into public.analyzer_evidence_manifests (
+  id, request_id, manifest_version, manifest_hash, manifest
+) values (
+  '00000000-0000-4000-8000-00000000c011',
+  '00000000-0000-4000-8000-00000000c010',
+  1,
+  repeat('cd', 32),
+  '{"sources":["fixture"]}'::jsonb
+);
+insert into public.analyzer_analyses (
+  id, request_id, evidence_manifest_id, analysis_version, status, result
+) values (
+  '00000000-0000-4000-8000-00000000c012',
+  '00000000-0000-4000-8000-00000000c010',
+  '00000000-0000-4000-8000-00000000c011',
+  1,
+  'ANALYZED',
+  '{"conclusion":"fixture-safe","score":7}'::jsonb
+);
+
+-- CF-04 fixture: research article title must remain unchanged after denied UPDATE.
+insert into public.articles (id, title, slug, author_id, status, category, tldr)
+values (
+  '00000000-0000-4000-8000-00000000c020',
+  'Firewall Research Fixture',
+  'firewall-research-fixture',
+  '00000000-0000-4000-8000-00000000a001',
+  'DRAFT',
+  'MARKET',
+  'Synthetic research conclusion fixture'
+);
+
+-- CF-13 fixture: SUBMITTED claim used to prove approve cannot skip UNDER_REVIEW.
+insert into public.project_claims (
+  id, claimant_user_id, proposed_slug, proposed_display_name, payload, state
+) values (
+  '00000000-0000-4000-8000-00000000d001',
+  '00000000-0000-4000-8000-00000000a002',
+  'firewall-skip-claim',
+  'Firewall Skip Claim',
+  '{"website_url":"https://example.test/claim"}'::jsonb,
+  'SUBMITTED'
 );
 
 -- FZ-6: seed defaults must be strictly false before enabling any path under test.
@@ -103,26 +158,57 @@ select throws_ok(
 );
 
 select throws_ok(
-  $$update public.analyzer_analyses set result = '{"hacked":true}'::jsonb where false$$,
+  $$update public.analyzer_analyses
+      set result = '{"hacked":true,"score":99}'::jsonb
+      where id = '00000000-0000-4000-8000-00000000c012'$$,
   '42501',
   null,
   'CF-03: project member cannot UPDATE analyzer_analyses'
 );
 
+reset role;
+select is(
+  (select result from public.analyzer_analyses where id = '00000000-0000-4000-8000-00000000c012'),
+  '{"conclusion":"fixture-safe","score":7}'::jsonb,
+  'CF-03: analyzer result unchanged after denied UPDATE'
+);
+
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000a002', true);
+select set_config('request.jwt.claim.role', 'authenticated', true);
+set local role authenticated;
+
 select throws_ok(
   $$insert into public.analyzer_evidence_manifests (request_id, manifest_version, manifest_hash, manifest)
-    values ('00000000-0000-4000-8000-00000000c001', 1, repeat('a', 64), '{}'::jsonb)$$,
+    values (
+      '00000000-0000-4000-8000-00000000c010',
+      2,
+      repeat('ef', 32),
+      '{"sources":["forged"]}'::jsonb
+    )$$,
   '42501',
   null,
   'CF-03: project member cannot INSERT analyzer_evidence_manifests'
 );
 
 select throws_ok(
-  $$update public.articles set title = 'bought' where false$$,
+  $$update public.articles
+      set title = 'bought-research-conclusion'
+      where id = '00000000-0000-4000-8000-00000000c020'$$,
   '42501',
   null,
   'CF-04: project member cannot UPDATE articles / research conclusions'
 );
+
+reset role;
+select is(
+  (select title from public.articles where id = '00000000-0000-4000-8000-00000000c020'),
+  'Firewall Research Fixture',
+  'CF-04: article title unchanged after denied UPDATE'
+);
+
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000a002', true);
+select set_config('request.jwt.claim.role', 'authenticated', true);
+set local role authenticated;
 
 -- Correction forbidden keys rejected by DB helper / submit RPC (CF-11).
 select throws_ok(
@@ -217,6 +303,33 @@ select throws_ok(
   null,
   'CF-14: project_owner cannot call staff claim review RPC'
 );
+
+-- CF-13: staff approve cannot skip SUBMITTED → APPROVED without UNDER_REVIEW.
+reset role;
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000a001', true);
+select set_config('request.jwt.claim.role', 'authenticated', true);
+set local role authenticated;
+
+select throws_ok(
+  $$select public.review_project_claim_approve(
+      '00000000-0000-4000-8000-00000000d001',
+      'skip under review'
+    )$$,
+  '55000',
+  null,
+  'CF-13: claim approve refused when state is SUBMITTED (no skip)'
+);
+
+reset role;
+select is(
+  (select state from public.project_claims where id = '00000000-0000-4000-8000-00000000d001'),
+  'SUBMITTED',
+  'CF-13: claim remains SUBMITTED after refused skip-approve'
+);
+
+select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-00000000a002', true);
+select set_config('request.jwt.claim.role', 'authenticated', true);
+set local role authenticated;
 
 -- Helper: staff role check is independent of project membership.
 reset role;
