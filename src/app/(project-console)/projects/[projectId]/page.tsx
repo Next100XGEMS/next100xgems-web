@@ -1,5 +1,8 @@
+import Link from "next/link";
+
 import ProjectSectionShell from "@/components/project-console/section-shell";
 import { Panel } from "@/components/ui";
+import { isFeatureEnabled } from "@/lib/feature-flags/server";
 import { requireProjectAccess } from "@/lib/projects/authorization";
 import { getProjectForMember } from "@/lib/projects/server";
 
@@ -11,6 +14,7 @@ export default async function ProjectOverviewPage({
   const { projectId } = await params;
   const access = await requireProjectAccess(projectId, "project_viewer");
   const project = await getProjectForMember(access);
+  const correctionsEnabled = await isFeatureEnabled("project_corrections_enabled");
 
   return (
     <ProjectSectionShell
@@ -40,6 +44,20 @@ export default async function ProjectOverviewPage({
           </div>
         </dl>
       </Panel>
+      {correctionsEnabled ? (
+        <Panel tone="quiet" padding="sm">
+          <p className="text-sm text-[var(--n100-text-secondary)]">
+            Editors can propose allowlisted factual corrections via{" "}
+            <Link
+              href={`/projects/${projectId}/corrections`}
+              className="underline underline-offset-2"
+            >
+              Corrections
+            </Link>
+            . Paid status never implies verified.
+          </p>
+        </Panel>
+      ) : null}
     </ProjectSectionShell>
   );
 }

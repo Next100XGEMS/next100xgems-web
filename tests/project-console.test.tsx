@@ -63,3 +63,72 @@ describe("project console shells", () => {
     expect(existsSync(resolve(process.cwd(), "src/app/(project-console)/projects/[projectId]/campaigns/page.tsx"))).toBe(true);
   });
 });
+
+describe("project claim and correction submit surfaces", () => {
+  it("gates claim submit page on project_claims_enabled and identity", () => {
+    const page = readFileSync(
+      resolve(process.cwd(), "src/app/(public)/projects/claim/page.tsx"),
+      "utf8",
+    );
+    const actions = readFileSync(
+      resolve(process.cwd(), "src/app/(public)/projects/claim/actions.ts"),
+      "utf8",
+    );
+    expect(page).toContain('isFeatureEnabled("project_claims_enabled")');
+    expect(page).toContain("notFound()");
+    expect(page).toContain("requireIdentity()");
+    expect(actions).toContain('rpc("submit_project_claim"');
+    expect(actions).toContain("website_url");
+    expect(actions).toContain("token_mint");
+    expect(actions).toContain("proof_url");
+    expect(actions).toContain("contact_email");
+    expect(actions).toContain("notes");
+    expect(actions).not.toMatch(/\bscore\b|\brisk\b|organic_rank|evidence/);
+  });
+
+  it("gates correction submit page on project_corrections_enabled and calls RPC", () => {
+    const page = readFileSync(
+      resolve(process.cwd(), "src/app/(project-console)/projects/[projectId]/corrections/page.tsx"),
+      "utf8",
+    );
+    const actions = readFileSync(
+      resolve(
+        process.cwd(),
+        "src/app/(project-console)/projects/[projectId]/corrections/actions.ts",
+      ),
+      "utf8",
+    );
+    expect(page).toContain('isFeatureEnabled("project_corrections_enabled")');
+    expect(page).toContain("notFound()");
+    expect(actions).toContain('rpc("submit_project_correction"');
+    expect(actions).toContain("isProjectFieldKey");
+    expect(actions).toMatch(/forbidden|not allowlisted/i);
+  });
+
+  it("keeps nine primary nav sections and links corrections from Official Data", () => {
+    const items = getProjectConsoleNav("11111111-1111-4111-8111-111111111111");
+    expect(items).toHaveLength(9);
+    expect(items.map((item) => item.segment)).not.toContain("corrections");
+
+    const officialData = readFileSync(
+      resolve(process.cwd(), "src/app/(project-console)/projects/[projectId]/official-data/page.tsx"),
+      "utf8",
+    );
+    expect(officialData).toContain("/corrections");
+    expect(officialData).toContain('isFeatureEnabled("project_corrections_enabled")');
+  });
+
+  it("fail-closes Data Center RPC on project_console_enabled in follow-up migration", () => {
+    const migration = readFileSync(
+      resolve(
+        process.cwd(),
+        "supabase/migrations/20260922000007_project_console_flag_data_center.sql",
+      ),
+      "utf8",
+    );
+    expect(migration).toContain("private.project_console_enabled()");
+    expect(migration).toContain("Project console is not available");
+    expect(migration).toContain("set_project_field_value");
+    expect(migration).toContain("55000");
+  });
+});
