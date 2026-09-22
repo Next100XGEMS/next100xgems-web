@@ -26,24 +26,27 @@ function NavLink({
   label,
   onNavigate,
   subtle = false,
+  touchTarget = false,
 }: {
   href: string;
   label: string;
   onNavigate?: () => void;
   subtle?: boolean;
+  /** ≥44px min height for mobile drawer / touch surfaces */
+  touchTarget?: boolean;
 }) {
   const current = isCurrentPath(usePathname(), href);
+  const tone = current
+    ? "relative text-[var(--n100-text-primary)] after:absolute after:-bottom-2 after:left-0 after:h-px after:w-full after:bg-[var(--n100-accent)]"
+    : subtle
+      ? "text-[var(--n100-text-tertiary)] hover:text-[var(--n100-text-primary)]"
+      : "text-[var(--n100-text-secondary)] hover:text-[var(--n100-text-primary)]";
+  const touch = touchTarget ? "inline-flex min-h-11 items-center py-2" : "";
 
   return (
     <Link
       href={href}
-      className={
-        current
-          ? "relative text-[var(--n100-text-primary)] after:absolute after:-bottom-2 after:left-0 after:h-px after:w-full after:bg-[var(--n100-accent)]"
-          : subtle
-            ? "text-[var(--n100-text-tertiary)] hover:text-[var(--n100-text-primary)]"
-            : "text-[var(--n100-text-secondary)] hover:text-[var(--n100-text-primary)]"
-      }
+      className={[tone, touch].filter(Boolean).join(" ")}
       aria-current={current ? "page" : undefined}
       onClick={onNavigate}
     >
@@ -112,7 +115,13 @@ export default function PublicHeader() {
         >
           <div className="mx-auto flex w-full max-w-[var(--n100-content-max)] flex-col gap-1 text-sm font-medium">
             {primaryLinks.map(([label, href]) => (
-              <NavLink key={href} href={href} label={label} onNavigate={() => setMobileOpen(false)} />
+              <NavLink
+                key={href}
+                href={href}
+                label={label}
+                touchTarget
+                onNavigate={() => setMobileOpen(false)}
+              />
             ))}
             <p className="mt-3 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-[var(--n100-text-tertiary)]">
               Trust

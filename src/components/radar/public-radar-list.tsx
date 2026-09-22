@@ -197,7 +197,7 @@ export default function PublicRadarList({ feed }: { feed: PublicRadarFeed }) {
           <Panel family="radar" padding="sm" className="mt-7 overflow-hidden">
             <div
               className="hidden gap-4 border-b border-[var(--n100-radar)]/25 px-4 pb-3 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-[var(--n100-text-tertiary)] lg:grid lg:grid-cols-[minmax(12rem,1.4fr)_7rem_6.5rem_5.5rem_minmax(8rem,1fr)_minmax(7rem,0.9fr)_6rem]"
-              role="row"
+              aria-hidden="true"
             >
               <span>Identity</span>
               <span>Status</span>
