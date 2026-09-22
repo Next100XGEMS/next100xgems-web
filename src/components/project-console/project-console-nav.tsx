@@ -13,7 +13,7 @@ export function ProjectConsoleNav({ items }: { items: readonly ProjectConsoleNav
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Project console" className="space-y-1">
+    <nav aria-label="Project console" className="space-y-0.5">
       {items.map((item) => {
         const active =
           item.segment === ""
@@ -24,10 +24,10 @@ export function ProjectConsoleNav({ items }: { items: readonly ProjectConsoleNav
             key={item.href}
             href={item.href}
             className={cx(
-              "block rounded-[var(--n100-radius-control)] px-3 py-2 text-sm transition-colors",
+              "block min-h-11 rounded-[var(--n100-radius-control)] px-3 py-2.5 text-sm transition-colors",
               active
-                ? "bg-[var(--n100-surface-elevated)] font-medium text-[var(--n100-text-primary)]"
-                : "text-[var(--n100-text-secondary)] hover:bg-[var(--n100-surface-subtle)] hover:text-[var(--n100-text-primary)]",
+                ? "border-l-2 border-[var(--n100-accent)] bg-[var(--n100-surface-elevated)] font-medium text-[var(--n100-text-primary)]"
+                : "border-l-2 border-transparent text-[var(--n100-text-secondary)] hover:bg-[var(--n100-surface-subtle)] hover:text-[var(--n100-text-primary)]",
             )}
             aria-current={active ? "page" : undefined}
           >
@@ -54,7 +54,7 @@ export function ProjectConsoleMobileNav({ items }: { items: readonly ProjectCons
             key={item.href}
             href={item.href}
             className={cx(
-              "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium tracking-wide",
+              "inline-flex min-h-11 shrink-0 items-center rounded-[var(--n100-radius-control)] border px-3 text-xs font-medium tracking-wide",
               active
                 ? "border-[var(--n100-accent)]/40 bg-[var(--n100-accent)]/10 text-[var(--n100-text-primary)]"
                 : "border-[var(--n100-border-subtle)] text-[var(--n100-text-secondary)]",

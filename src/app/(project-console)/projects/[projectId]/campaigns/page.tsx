@@ -13,9 +13,10 @@ export default async function Page({
     <ProjectSectionShell
       eyebrow="Campaigns"
       title="Campaigns"
-      description="Paid campaign tools are out of Project Platform Phase 1 scope."
+      description="Paid campaign tools are out of Project Platform Phase 1 scope. Campaign Studio is not implemented on this branch."
+      emptyCode="COMING_SOON"
       emptyTitle="Campaigns not available yet"
-      emptyDescription="Campaign Studio is not available yet. This section is an empty shell only."
+      emptyDescription="Campaign Studio is not available yet. This section is an honest empty shell only — no campaign builder, entitlements, or performance claims."
     />
   );
 }

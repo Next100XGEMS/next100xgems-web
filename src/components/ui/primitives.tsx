@@ -121,7 +121,7 @@ export function Button({
 }) {
   const variants = {
     primary:
-      "border-transparent bg-[var(--n100-accent)] text-[#11201a] hover:bg-[var(--n100-accent-strong)]",
+      "border-transparent bg-[var(--n100-accent)] text-[var(--n100-accent-ink)] hover:bg-[var(--n100-accent-strong)]",
     secondary:
       "border-[var(--n100-border-strong)] bg-[var(--n100-surface-secondary)] text-[var(--n100-text-primary)] hover:border-[var(--n100-accent)]/60 hover:bg-[var(--n100-surface-elevated)]",
     ghost:
@@ -129,7 +129,7 @@ export function Button({
     destructive:
       "border-[var(--n100-negative)]/50 bg-[var(--n100-negative)]/8 text-[var(--n100-negative)] hover:bg-[var(--n100-negative)]/15",
   } as const;
-  const sizes = { sm: "min-h-8 px-3 text-xs", md: "min-h-10 px-4 text-sm" } as const;
+  const sizes = { sm: "min-h-9 px-3 text-xs", md: "min-h-11 px-4 text-sm" } as const;
 
   return (
     <button

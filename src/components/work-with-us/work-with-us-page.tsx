@@ -9,7 +9,7 @@ function SectionMarker({ number, label }: { number: string; label: string }) {
 }
 
 function WorkLink({ children, href, variant = "secondary" }: { children: React.ReactNode; href: string; variant?: "primary" | "secondary" }) {
-  return <Link href={href} className={variant === "primary" ? "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] bg-[var(--n100-accent)] px-5 text-sm font-semibold text-[#11201a] transition-colors hover:bg-[var(--n100-accent-strong)]" : "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] border border-[var(--n100-border-strong)] px-5 text-sm font-semibold text-[var(--n100-text-primary)] transition-colors hover:border-[var(--n100-accent)] hover:text-[var(--n100-accent)]"}>{children}</Link>;
+  return <Link href={href} className={variant === "primary" ? "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] bg-[var(--n100-accent)] px-5 text-sm font-semibold text-[var(--n100-accent-ink)] transition-colors hover:bg-[var(--n100-accent-strong)]" : "inline-flex min-h-11 items-center justify-center rounded-[var(--n100-radius-control)] border border-[var(--n100-border-strong)] px-5 text-sm font-semibold text-[var(--n100-text-primary)] transition-colors hover:border-[var(--n100-accent)] hover:text-[var(--n100-accent)]"}>{children}</Link>;
 }
 
 export default function WorkWithUsPageContent({ bookingEnabled }: { bookingEnabled: boolean }) {
