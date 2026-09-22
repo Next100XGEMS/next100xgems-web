@@ -16,7 +16,7 @@ describe("public shell", () => {
     render(<PublicHeader />);
 
     const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
-    for (const label of ["Radar", "Research", "Partners", "Advertise", "Network"]) {
+    for (const label of ["Radar", "Finder", "Research", "Partners", "Advertise", "Network"]) {
       expect(within(navigation).getByRole("link", { name: label })).toBeTruthy();
     }
     expect(screen.getAllByRole("link", { name: "Work With Us" }).length).toBeGreaterThan(0);
