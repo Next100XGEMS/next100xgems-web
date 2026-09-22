@@ -69,14 +69,15 @@ insert into public.analyzer_evidence_manifests (
   '{"sources":["fixture"]}'::jsonb
 );
 insert into public.analyzer_analyses (
-  id, request_id, evidence_manifest_id, analysis_version, status, result
+  id, request_id, evidence_manifest_id, analysis_version, status, result, delivery_identity
 ) values (
   '00000000-0000-4000-8000-00000000c012',
   '00000000-0000-4000-8000-00000000c010',
   '00000000-0000-4000-8000-00000000c011',
   1,
   'ANALYZED',
-  '{"conclusion":"fixture-safe","score":7}'::jsonb
+  '{"conclusion":"fixture-safe","score":7}'::jsonb,
+  repeat('11', 32)
 );
 
 -- CF-04 fixture: research article title must remain unchanged after denied UPDATE.
