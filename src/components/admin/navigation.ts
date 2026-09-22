@@ -57,6 +57,8 @@ const navigationGroups: readonly (AdminNavGroup & { operatorOnly?: boolean })[] 
     label: "Operations",
     items: [
       { label: "Leads", href: "/admin/leads", permissions: ["leads.read"] },
+      { label: "Project Claims", href: "/admin/project-claims", permissions: ["configuration.read"] },
+      { label: "Project Corrections", href: "/admin/project-corrections", permissions: ["configuration.read"] },
       { label: "Bookings", href: "/admin/bookings", permissions: [], planned: true, operatorOnly: true },
       { label: "Network", href: "/admin/network", permissions: [], planned: true, operatorOnly: true },
     ],

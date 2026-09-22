@@ -20,6 +20,9 @@ The supported system keys are:
 | `radar_auto_publish` | `false` | Independent automation permission; never a substitute for review or publication rules |
 | `token_analyzer_enabled` | `false` | Private Owner/Admin Analyzer availability; fails closed |
 | `token_analyzer_public_enabled` | `false` | Reserved future public Analyzer availability; no public route exists |
+| `project_console_enabled` | `false` | Project Console availability; fails closed |
+| `project_claims_enabled` | `false` | Project ownership claim submissions; fails closed |
+| `project_corrections_enabled` | `false` | Project factual correction submissions; fails closed |
 
 The existing `public.feature_flags` table already seeds one unique row for each key. Gate 7 adds no migration and preserves those defaults. `radar_auto_publish` remains false by default and fails closed.
 

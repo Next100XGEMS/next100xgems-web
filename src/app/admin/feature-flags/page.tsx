@@ -17,6 +17,9 @@ const featureFlagRows = [
   ["radar_auto_publish", "Radar Auto Publish", "OFF by default; review policy remains separate"],
   ["token_analyzer_enabled", "Token Analyzer", "Private internal analysis console; audited control"],
   ["token_analyzer_public_enabled", "Token Analyzer Public", "Prepared only; public route does not exist and remains OFF"],
+  ["project_console_enabled", "Project Console", "Project-side console; fails closed"],
+  ["project_claims_enabled", "Project Claims", "Ownership claim submissions; fails closed"],
+  ["project_corrections_enabled", "Project Corrections", "Factual correction submissions; fails closed"],
 ] as const;
 
 export default async function FeatureFlagsAdminPage() {

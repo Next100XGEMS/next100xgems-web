@@ -15,15 +15,16 @@ select tables_are('public', array[
   'article_related_research', 'article_tokens',
   'analyzer_config', 'analyzer_requests', 'analyzer_resolutions', 'analyzer_resolution_receipts',
   'analyzer_evidence_manifests', 'analyzer_analyses', 'analyzer_model_calls',
-  'analyzer_provider_events', 'analyzer_pump_lifecycle_receipts', 'analyzer_cost_usage', 'analyzer_deliveries', 'analyzer_delivery_intents'
-], 'Only the intended foundation/Research/Radar/Analyzer tables exist; no trading or analytics event tables');
+  'analyzer_provider_events', 'analyzer_pump_lifecycle_receipts', 'analyzer_cost_usage', 'analyzer_deliveries', 'analyzer_delivery_intents',
+  'projects', 'project_members', 'project_claims', 'project_field_values', 'project_field_versions', 'project_corrections'
+], 'Only the intended foundation/Research/Radar/Analyzer/Project Platform tables exist; no trading or analytics event tables');
 
 select ok(c.relrowsecurity, c.relname || ': RLS enabled')
 from pg_class c join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public' and c.relkind = 'r' order by c.relname;
 
-select is((select count(*)::integer from pg_policies where schemaname = 'public'), 25,
-  'Exactly the Gate 6B, Research, and Radar staff-read policies exist');
+select is((select count(*)::integer from pg_policies where schemaname = 'public'), 31,
+  'Exactly the Gate 6B, Research, Radar, and Project Platform staff/member-read policies exist');
 
 select ok(not exists (
   select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
